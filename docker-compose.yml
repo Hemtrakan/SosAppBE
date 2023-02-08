@@ -49,6 +49,8 @@ services:
       - './:/app'
     ports:
       - "80:80"
+    links:
+      - account-rdbms
 
   emergency-service:
     build: ./emergency
@@ -62,8 +64,8 @@ services:
       - './:/app'
     ports:
       - "81:81"
-
-
+    links:
+      - emergency-rdbms
 
   hotline-service:
     build: ./hotline
@@ -77,3 +79,5 @@ services:
       - './:/app'
     ports:
       - "82:82"
+    links:
+      - hotline-rdbms
