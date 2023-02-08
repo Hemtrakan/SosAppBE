@@ -1,15 +1,9 @@
 service:
   name: "SosApp"
-  port: 80
-  endpoint: "/SosApp"
+  port: 82
+  endpoint: "/SosApp/hotline"
 
 token:
   secret: "SosAppToken"
-
-role:
-  user: "/user"
-  admin: "/admin"
-
-
 jwt:
   secret: "SosApp"

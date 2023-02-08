@@ -1,12 +1,12 @@
 package restapi
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/token"
 	jwt "github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config "github.com/spf13/viper"
 	"github.com/tylerb/graceful"
+	"hotline/utility/token"
 	"net/http"
 	"time"
 )
@@ -18,12 +18,11 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(200)))
 
-	r := e.Group("/SosApp")
-	//r := e.Group(config.GetString("service.endpoint"))
-	r.POST("/sendOTP", ctrl.SendOTP)
-	r.POST("/verifyOTP", ctrl.VerifyOTP)
-	r.POST("/createUser", ctrl.CreateUser)
-	r.POST("/signIn", ctrl.SignInUser)
+	//r := e.Group("/SosApp")
+	r := e.Group(config.GetString("service.endpoint"))
+	r.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Ok")
+	})
 	// "/user"
 	u := r.Group(config.GetString("role.user"))
 	{
@@ -38,15 +37,6 @@ func NewControllerMain(ctrl Controller) {
 			name := claims["id"].(string)
 			return c.String(http.StatusOK, "Welcome "+name+"!")
 		})
-	}
-
-	//a := r.Group(config.GetString("role.admin"))
-	a := r.Group("/admin")
-	{
-		a.GET("/role", ctrl.GetRoleList)
-		a.POST("/role", ctrl.AddRole)
-		//a.PUT("/role", AddRole)
-		//a.DELETE("/role", AddRole)
 	}
 
 	//e.Logger.Fatal(e.Start(":80"))
