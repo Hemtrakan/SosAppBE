@@ -1,9 +1,9 @@
 package db
 
 import (
+	"accounts/db/structure"
+	"accounts/utility/verify"
 	"fmt"
-	"github.com/Hemtrakan/SosAppBE.git/db/structure"
-	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"sync"

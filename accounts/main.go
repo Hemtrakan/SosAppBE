@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Hemtrakan/SosAppBE.git/restapi"
+	"accounts/restapi"
 	"os"
 	"os/signal"
 )

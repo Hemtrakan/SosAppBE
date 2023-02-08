@@ -1,9 +1,9 @@
 package restapi
 
 import (
-	"github.com/Hemtrakan/SosAppBE.git/constant"
-	"github.com/Hemtrakan/SosAppBE.git/restapi/model/role/request"
-	"github.com/Hemtrakan/SosAppBE.git/utility/response"
+	"accounts/constant"
+	"accounts/restapi/model/role/request"
+	"accounts/utility/response"
 	"github.com/labstack/echo/v4"
 )
 

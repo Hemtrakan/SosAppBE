@@ -1,10 +1,10 @@
 package restapi
 
 import (
+	"accounts/control"
+	"accounts/db"
 	"errors"
 	"fmt"
-	"github.com/Hemtrakan/SosAppBE.git/control"
-	"github.com/Hemtrakan/SosAppBE.git/db"
 	"github.com/Netflix/go-env"
 	"github.com/go-playground/validator"
 	config "github.com/spf13/viper"

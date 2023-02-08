@@ -1,10 +1,10 @@
 package restapi
 
 import (
-	"github.com/Hemtrakan/SosAppBE.git/constant"
-	singup "github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/request"
-	"github.com/Hemtrakan/SosAppBE.git/utility/logs"
-	"github.com/Hemtrakan/SosAppBE.git/utility/response"
+	"accounts/constant"
+	singup "accounts/restapi/model/singup/request"
+	"accounts/utility/logs"
+	"accounts/utility/response"
 	"github.com/labstack/echo/v4"
 )
 

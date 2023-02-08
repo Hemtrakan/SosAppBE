@@ -1,27 +1,52 @@
 version: '3'
 
 services:
-  rdbms:
+  account-rdbms:
     image: postgres:latest
     environment:
       POSTGRES_DB: postgresdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgpassword
     volumes:
-      - './.postgresql/:/var/lib/postgresql'
+      - './.postgresql/:/var/lib/postgresql/account'
     ports:
       - '5432:5432'
+    command: -p 5432
+
+  emergency-rdbms:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgpassword
+    volumes:
+      - './.postgresql/:/var/lib/postgresql/emergency'
+    ports:
+      - "5433:5433"
+    command: -p 5433
 
   accounts-service:
-    build:
-      context: .
-      dockerfile: ./accounts/Dockerfile
+    build: ./accounts
     environment:
       - GORM_NAME=postgresdb
       - GORM_USER=postgres
       - GORM_PASS=pgpassword
-      - GORM_HOST=rdbms
+      - GORM_HOST=account-rdbms
+      - GORM_PORT=5432
     volumes:
-      - './:/accounts'
+      - './:/app'
     ports:
       - "80:80"
+
+  emergency-service:
+    build: ./emergency
+    environment:
+      - GORM_NAME=postgresdb
+      - GORM_USER=postgres
+      - GORM_PASS=pgpassword
+      - GORM_HOST=emergency-rdbms
+      - GORM_PORT=5433
+    volumes:
+      - './:/app'
+    ports:
+      - "81:81"

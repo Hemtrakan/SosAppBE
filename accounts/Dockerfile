@@ -1,19 +1,21 @@
-FROM golang:1.18-alpine AS build_stage
+FROM golang:1.19-alpine AS build_stage
+
+ENV ENV="dev"
 
 RUN apk update && apk upgrade && apk add --no-cache build-base bash git openssh
 LABEL maintainer="Chirapon Hemtrakan <chirapon.job@gmail.com>"
 
-ENV PACKAGE_PATH=accounts
+ARG PACKAGE_PATH=accounts
 RUN mkdir -p /go/src/
-WORKDIR /go/src/$PACKAGE_PATH
+WORKDIR /go/src/${PACKAGE_PATH}
 
-COPY . /go/src/$PACKAGE_PATH/
+COPY . /go/src/${PACKAGE_PATH}/
 RUN go mod download
 
-RUN go build -o bin/accounts
+RUN go build -o accounts
 
-ENV ENV="dev"
+ENTRYPOINT ./accounts
 
-ENTRYPOINT ./bin/accounts
 EXPOSE 80
-CMD ["sh", "-c", "/bin/accounts"]
+
+CMD ["sh", "-c", "/accounts"]

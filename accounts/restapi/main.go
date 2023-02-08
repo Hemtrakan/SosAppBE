@@ -1,7 +1,7 @@
 package restapi
 
 import (
-	"github.com/Hemtrakan/SosAppBE.git/utility/token"
+	"accounts/utility/token"
 	jwt "github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,8 +18,10 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(200)))
 
-	r := e.Group("/SosApp")
-	//r := e.Group(config.GetString("service.endpoint"))
+	r := e.Group(config.GetString("service.endpoint"))
+	r.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Ok")
+	})
 	r.POST("/sendOTP", ctrl.SendOTP)
 	r.POST("/verifyOTP", ctrl.VerifyOTP)
 	r.POST("/createUser", ctrl.CreateUser)

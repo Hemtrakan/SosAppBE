@@ -1,10 +1,10 @@
 package control
 
 import (
-	"github.com/Hemtrakan/SosAppBE.git/db/structure"
-	singin "github.com/Hemtrakan/SosAppBE.git/restapi/model/singin/request"
-	"github.com/Hemtrakan/SosAppBE.git/utility/token"
-	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
+	"accounts/db/structure"
+	singin "accounts/restapi/model/singin/request"
+	"accounts/utility/token"
+	"accounts/utility/verify"
 	"gorm.io/gorm"
 )
 

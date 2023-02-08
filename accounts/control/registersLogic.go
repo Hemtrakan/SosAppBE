@@ -1,12 +1,12 @@
 package control
 
 import (
+	"accounts/common"
+	rdbmsstructure "accounts/db/structure"
+	"accounts/restapi/model/singup/request"
+	response "accounts/restapi/model/singup/response"
+	"accounts/utility/verify"
 	"errors"
-	"github.com/Hemtrakan/SosAppBE.git/common"
-	rdbmsstructure "github.com/Hemtrakan/SosAppBE.git/db/structure"
-	"github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/request"
-	response "github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/response"
-	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
 	"math/rand"
 	"strconv"
 	"time"

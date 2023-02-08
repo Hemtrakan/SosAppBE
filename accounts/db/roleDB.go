@@ -1,8 +1,8 @@
 package db
 
 import (
+	"accounts/db/structure"
 	"errors"
-	"github.com/Hemtrakan/SosAppBE.git/db/structure"
 	"gorm.io/gorm"
 )
 

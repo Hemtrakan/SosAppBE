@@ -1,6 +1,6 @@
 package control
 
-import "github.com/Hemtrakan/SosAppBE.git/db"
+import "accounts/db"
 
 type ConController struct {
 	GORMFactory *db.GORMFactory

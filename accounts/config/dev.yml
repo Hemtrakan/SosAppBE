@@ -1,7 +1,7 @@
 service:
   name: "SosApp"
   port: 80
-  endpoint: "/SosApp"
+  endpoint: "/SosApp/accounts"
 
 token:
   secret: "SosAppToken"

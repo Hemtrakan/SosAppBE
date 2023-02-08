@@ -1,11 +1,11 @@
 package restapi
 
 import (
+	"emergency/control"
+	"emergency/db"
 	"errors"
 	"fmt"
 	"github.com/Netflix/go-env"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/control"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db"
 	"github.com/go-playground/validator"
 	config "github.com/spf13/viper"
 	"os"

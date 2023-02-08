@@ -1,6 +1,6 @@
 package account
 
-import "github.com/Hemtrakan/SosAppBE.git/db"
+import "accounts/db"
 
 type AccountController struct {
 	GORMFactory *db.GORMFactory

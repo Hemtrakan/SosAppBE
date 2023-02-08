@@ -1,11 +1,11 @@
 package control
 
 import (
+	"accounts/constant"
+	rdbmsstructure "accounts/db/structure"
+	"accounts/restapi/model/role/request"
+	response "accounts/restapi/model/role/response"
 	"errors"
-	"github.com/Hemtrakan/SosAppBE.git/constant"
-	rdbmsstructure "github.com/Hemtrakan/SosAppBE.git/db/structure"
-	"github.com/Hemtrakan/SosAppBE.git/restapi/model/role/request"
-	response "github.com/Hemtrakan/SosAppBE.git/restapi/model/role/response"
 	"strings"
 )
 
