@@ -2,11 +2,11 @@ package restapi
 
 import (
 	"errors"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/constant"
-	singin "github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singin/request"
-	singinResp "github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singin/response"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/logs"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/response"
+	"github.com/Hemtrakan/SosAppBE.git/constant"
+	singin "github.com/Hemtrakan/SosAppBE.git/restapi/model/singin/request"
+	singinResp "github.com/Hemtrakan/SosAppBE.git/restapi/model/singin/response"
+	"github.com/Hemtrakan/SosAppBE.git/utility/logs"
+	"github.com/Hemtrakan/SosAppBE.git/utility/response"
 	"github.com/labstack/echo/v4"
 )
 

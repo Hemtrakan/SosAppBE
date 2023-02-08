@@ -1,10 +1,10 @@
 package control
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
-	singin "github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singin/request"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/token"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/verify"
+	"github.com/Hemtrakan/SosAppBE.git/db/structure"
+	singin "github.com/Hemtrakan/SosAppBE.git/restapi/model/singin/request"
+	"github.com/Hemtrakan/SosAppBE.git/utility/token"
+	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
 	"gorm.io/gorm"
 )
 

@@ -2,11 +2,11 @@ package control
 
 import (
 	"errors"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/common"
-	rdbmsstructure "github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singup/request"
-	response "github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singup/response"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/verify"
+	"github.com/Hemtrakan/SosAppBE.git/common"
+	rdbmsstructure "github.com/Hemtrakan/SosAppBE.git/db/structure"
+	"github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/request"
+	response "github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/response"
+	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
 	"math/rand"
 	"strconv"
 	"time"

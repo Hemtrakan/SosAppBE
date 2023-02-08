@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/restapi"
+	"github.com/Hemtrakan/SosAppBE.git/restapi"
 	"os"
 	"os/signal"
 )

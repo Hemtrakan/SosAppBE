@@ -3,9 +3,9 @@ package restapi
 import (
 	"errors"
 	"fmt"
+	"github.com/Hemtrakan/SosAppBE.git/control"
+	"github.com/Hemtrakan/SosAppBE.git/db"
 	"github.com/Netflix/go-env"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/control"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db"
 	"github.com/go-playground/validator"
 	config "github.com/spf13/viper"
 	"os"

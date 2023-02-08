@@ -2,7 +2,7 @@ package db
 
 import (
 	"errors"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
+	"github.com/Hemtrakan/SosAppBE.git/db/structure"
 	"gorm.io/gorm"
 )
 

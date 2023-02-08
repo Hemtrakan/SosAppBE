@@ -1,10 +1,10 @@
 package restapi
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/constant"
-	singup "github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/singup/request"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/logs"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/response"
+	"github.com/Hemtrakan/SosAppBE.git/constant"
+	singup "github.com/Hemtrakan/SosAppBE.git/restapi/model/singup/request"
+	"github.com/Hemtrakan/SosAppBE.git/utility/logs"
+	"github.com/Hemtrakan/SosAppBE.git/utility/response"
 	"github.com/labstack/echo/v4"
 )
 

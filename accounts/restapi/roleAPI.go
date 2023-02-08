@@ -1,9 +1,9 @@
 package restapi
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/constant"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/restapi/model/role/request"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/response"
+	"github.com/Hemtrakan/SosAppBE.git/constant"
+	"github.com/Hemtrakan/SosAppBE.git/restapi/model/role/request"
+	"github.com/Hemtrakan/SosAppBE.git/utility/response"
 	"github.com/labstack/echo/v4"
 )
 

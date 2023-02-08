@@ -1,7 +1,7 @@
 package restapi
 
 import (
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/token"
+	"github.com/Hemtrakan/SosAppBE.git/utility/token"
 	jwt "github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

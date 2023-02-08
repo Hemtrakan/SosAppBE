@@ -2,8 +2,8 @@ package db
 
 import (
 	"fmt"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/verify"
+	"github.com/Hemtrakan/SosAppBE.git/db/structure"
+	"github.com/Hemtrakan/SosAppBE.git/utility/verify"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"sync"
@@ -69,23 +69,6 @@ func gormInstance(env *Properties) GORMFactory {
 		structure.Address{},
 		structure.OTP{},
 		structure.LogLogin{},
-
-		structure.Type{},
-		structure.SubType{},
-
-		// hotline
-		structure.HotlineNumber{},
-		structure.History{},
-
-		//chat
-		structure.RoomChat{},
-		structure.GroupChat{},
-		structure.Message{},
-
-		//Inform
-		structure.Inform{},
-		structure.InformImage{},
-		structure.InformNotification{},
 	)
 
 	var CheckRole []structure.Role
