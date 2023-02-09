@@ -76,7 +76,7 @@ type Properties struct {
 	//GormHost string `env:"GORM_HOST,default=access"`
 	GormHost string `env:"GORM_HOST,default=localhost"`
 	//GormHost string `env:"GORM_HOST,default=access"`
-	GormPort string `env:"GORM_PORT,default=5432"`
+	GormPort string `env:"GORM_PORT,default=5435"`
 	GormName string `env:"GORM_NAME,default=postgresdb"`
 	GormUser string `env:"GORM_USER,default=postgres"`
 	GormPass string `env:"GORM_PASS,default=pgpassword"`

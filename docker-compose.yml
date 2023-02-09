@@ -102,7 +102,7 @@ services:
       - GORM_NAME=postgresdb
       - GORM_USER=postgres
       - GORM_PASS=pgpassword
-      - GORM_HOST=account-rdbms
+      - GORM_HOST=messenger-rdbms
       - GORM_PORT=5435
     volumes:
       - './:/app'

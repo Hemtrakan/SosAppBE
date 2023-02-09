@@ -78,7 +78,7 @@ type Properties struct {
 	// -- Gorm
 	//GormHost string `env:"GORM_HOST,default=emergency-rdbms"`
 	GormHost string `env:"GORM_HOST,default=localhost"`
-	GormPort string `env:"GORM_PORT,default=5431"`
+	GormPort string `env:"GORM_PORT,default=5433"`
 	GormName string `env:"GORM_NAME,default=postgresdb"`
 	GormUser string `env:"GORM_USER,default=postgres"`
 	GormPass string `env:"GORM_PASS,default=pgpassword"`
