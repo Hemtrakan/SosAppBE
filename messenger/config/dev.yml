@@ -1,0 +1,14 @@
+service:
+  name: "SosApp"
+  port: 83
+  endpoint: "/SosApp/messenger"
+
+token:
+  secret: "SosAppToken"
+
+role:
+  user: "/user"
+  admin: "/admin"
+
+jwt:
+  secret: "SosApp"

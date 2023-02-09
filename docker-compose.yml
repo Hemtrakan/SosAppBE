@@ -37,6 +37,20 @@ services:
       - "5434:5434"
     command: -p 5434
 
+
+  messenger-rdbms:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgpassword
+    volumes:
+      - './.postgresql/:/var/lib/postgresql/emergency'
+    ports:
+      - "5435:5435"
+    command: -p 5435
+
+
   accounts-service:
     build: ./accounts
     environment:
@@ -81,3 +95,18 @@ services:
       - "82:82"
     links:
       - hotline-rdbms
+
+  messenger-service:
+    build: ./accounts
+    environment:
+      - GORM_NAME=postgresdb
+      - GORM_USER=postgres
+      - GORM_PASS=pgpassword
+      - GORM_HOST=account-rdbms
+      - GORM_PORT=5432
+    volumes:
+      - './:/app'
+    ports:
+      - "83:83"
+    links:
+      - messenger-rdbms

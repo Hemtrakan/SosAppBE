@@ -5,5 +5,10 @@ service:
 
 token:
   secret: "SosAppToken"
+
+role:
+  user: "/user"
+  admin: "/admin"
+
 jwt:
   secret: "SosApp"

@@ -1,8 +1,8 @@
 package restapi
 
 import (
-	"accounts/utility/token"
-	jwt "github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config "github.com/spf13/viper"
@@ -10,6 +10,10 @@ import (
 	"net/http"
 	"time"
 )
+
+type jwtCustomClaims struct {
+	jwt.RegisteredClaims
+}
 
 func NewControllerMain(ctrl Controller) {
 
@@ -29,16 +33,15 @@ func NewControllerMain(ctrl Controller) {
 	// "/user"
 	u := r.Group(config.GetString("role.user"))
 	{
-		config := middleware.JWTConfig{
-			Claims:     &token.JwtCustomClaims{},
+		config := echojwt.Config{
+			NewClaimsFunc: func(c echo.Context) jwt.Claims {
+				return new(jwtCustomClaims)
+			},
 			SigningKey: []byte(config.GetString("jwt.secret")),
 		}
-		r.Use(middleware.JWTWithConfig(config))
-		u.GET("/name", func(c echo.Context) error {
-			user := c.Get("user").(*jwt.Token)
-			claims := user.Claims.(jwt.MapClaims)
-			name := claims["id"].(string)
-			return c.String(http.StatusOK, "Welcome "+name+"!")
+		u.Use(echojwt.WithConfig(config))
+		u.GET("/", func(c echo.Context) error {
+			return c.JSON(http.StatusOK, "Ok Token")
 		})
 	}
 

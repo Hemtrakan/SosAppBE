@@ -19,10 +19,9 @@ func NewControllerMain(ctrl Controller) {
 	//r := e.Group("/SosApp")
 	r := e.Group(config.GetString("service.endpoint"))
 	r.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Ok")
+		return c.JSON(http.StatusOK, "Ok Service Emergency")
 	})
 
-	//e.Logger.Fatal(e.Start(":80"))
 	e.Start(":" + config.GetString("service.port"))
 	//e.Server.Addr = ":" + config.GetString("service.port")
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
