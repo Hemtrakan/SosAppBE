@@ -3,11 +3,9 @@ package db
 import (
 	"fmt"
 	"github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/utility/verify"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"sync"
-	"time"
 )
 
 var (
@@ -16,22 +14,6 @@ var (
 )
 
 type FactoryInterface interface {
-	//Role
-	GetRoleListDB() (response []structure.Role, Error error)
-	GetRoleDBByName(req structure.Role) (response structure.Role, Error error)
-	GetRoleDBById(req structure.Role) (response structure.Role, Error error)
-	AddRoleDB(req structure.Role) (Error error)
-
-	// OTP
-	SendOTPDB(req structure.OTP) (Error error)
-	GetOTPDb(req structure.OTP) (response *structure.OTP, Error error)
-	UpdateOTPDB(req structure.OTP) (Error error)
-
-	// CreateUser
-	CreateUserDB(req structure.Users) (Error error)
-
-	// Users
-	GetAccountDB(req structure.Users) (response *structure.Users, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -62,81 +44,12 @@ func gormInstance(env *Properties) GORMFactory {
 	}
 
 	_ = db.AutoMigrate(
-		// Account
-		structure.Users{},
-		structure.Role{},
-		structure.IDCard{},
-		structure.Address{},
-		structure.OTP{},
-		structure.LogLogin{},
-
-		structure.Type{},
-		structure.SubType{},
-
-		// hotline
-		structure.HotlineNumber{},
-		structure.History{},
-
 		//chat
 		structure.RoomChat{},
 		structure.GroupChat{},
 		structure.Message{},
-
-		//Inform
-		structure.Inform{},
-		structure.InformImage{},
-		structure.InformNotification{},
 	)
 
-	var CheckRole []structure.Role
-	db.Find(&CheckRole)
-	if len(CheckRole) == 0 {
-		dataAdmin := structure.Role{
-			Name: "admin",
-		}
-		dataUser := structure.Role{
-			Name: "user",
-		}
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&dataAdmin)
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&dataUser)
-
-		role := structure.Role{}
-		address := structure.Address{
-			Address:     "",
-			SubDistrict: "",
-			District:    "",
-			Province:    "",
-			PostalCode:  "",
-			Country:     "",
-		}
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&address)
-		db.Where("name = ?", "admin").Take(&role)
-
-		IDCard := structure.IDCard{
-			IDCardText: "13xxxxxxxx347",
-			PathImage:  "",
-			DeletedBy:  nil,
-		}
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&IDCard)
-
-		Password, _ := verify.Hash("BELLkub4424506")
-		data := structure.Users{
-			PhoneNumber:  "0815476439",
-			Password:     string(Password),
-			Firstname:    "admin",
-			Lastname:     "admin",
-			Email:        nil,
-			Birthday:     time.Now(),
-			Gender:       "M",
-			IDCardID:     IDCard.ID,
-			ImageProfile: nil,
-			DeletedBy:    nil,
-			Workplace:    nil,
-			AddressID:    address.ID,
-			RoleID:       role.ID,
-		}
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&data)
-	}
 	return GORMFactory{env: env, client: db}
 }
 
