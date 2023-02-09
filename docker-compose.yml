@@ -97,13 +97,13 @@ services:
       - hotline-rdbms
 
   messenger-service:
-    build: ./accounts
+    build: ./messenger
     environment:
       - GORM_NAME=postgresdb
       - GORM_USER=postgres
       - GORM_PASS=pgpassword
       - GORM_HOST=account-rdbms
-      - GORM_PORT=5432
+      - GORM_PORT=5435
     volumes:
       - './:/app'
     ports:
