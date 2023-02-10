@@ -28,7 +28,7 @@ func (ctrl ConController) LoginLogic(request *singin.Login) (Token string, Error
 
 	roleStr := structure.Role{
 		Model: gorm.Model{
-			//ID: account.RoleID,
+			ID: account.RoleID,
 		},
 	}
 

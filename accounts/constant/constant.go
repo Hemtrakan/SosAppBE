@@ -1,9 +1,10 @@
 package constant
 
 const (
-	SuccessMsg  string = "Success"
-	SuccessCode string = "0"
-	ErrorCode   string = "400"
+	SuccessMsg              string = "Success"
+	SuccessCode             string = "0"
+	ErrorCode               string = "400"
+	ErrorStatusUnauthorized        = "401"
 )
 
 const (
