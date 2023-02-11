@@ -3,6 +3,7 @@ package restapi
 import (
 	"accounts/constant"
 	"accounts/utility/response"
+	"accounts/utility/token"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -10,12 +11,9 @@ import (
 	config "github.com/spf13/viper"
 	"github.com/tylerb/graceful"
 	"net/http"
+	"strings"
 	"time"
 )
-
-type jwtCustomClaims struct {
-	jwt.RegisteredClaims
-}
 
 func NewControllerMain(ctrl Controller) {
 
@@ -23,47 +21,32 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Recover())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(200)))
+	e.Use(middleware.Logger())
 
-	r := e.Group(config.GetString("service.endpoint"))
-	r.GET("/", func(c echo.Context) error {
+	s := e.Group(config.GetString("service.endpoint"))
+	s.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "Ok")
 	})
-	r.POST("/sendOTP", ctrl.SendOTP)
-	r.POST("/verifyOTP", ctrl.VerifyOTP)
-	r.POST("/createUser", ctrl.CreateUser)
-	r.POST("/signIn", ctrl.SignInUser)
+	s.POST("/sendOTP", ctrl.SendOTP)
+	s.POST("/verifyOTP", ctrl.VerifyOTP)
+	s.POST("/createUser", ctrl.CreateUser)
+	s.POST("/signIn", ctrl.SignInUser)
 	// "/user"
-	u := r.Group(config.GetString("role.user"))
-	{
-		config := echojwt.Config{
-			NewClaimsFunc: func(c echo.Context) jwt.Claims {
-				return new(jwtCustomClaims)
-			},
-			ErrorHandler: func(c echo.Context, err error) error {
-				role := c.Get("role").(*jwt.Token)
-				claims := role.Claims.(jwt.MapClaims)
-				if claims["role"].(string) != config.GetString("role.user") {
-					var res response.RespMag
-					res.Code = constant.ErrorStatusUnauthorized
-					res.Msg = "Unauthorized"
-					return c.JSON(http.StatusUnauthorized, res)
-				} else {
-					var res response.RespMag
-					res.Code = constant.ErrorStatusUnauthorized
-					res.Msg = "Invalid role"
-					return c.JSON(http.StatusUnauthorized, res)
-				}
-			},
-			SigningKey: []byte(config.GetString("jwt.secret")),
-		}
-		u.Use(echojwt.WithConfig(config))
 
-		u.GET("/", func(c echo.Context) error {
-			return c.JSON(http.StatusOK, "Ok Token")
-		})
+	configs := echojwt.Config{
+		ErrorHandler:  ErrorHandler,
+		SigningKey:    []byte(config.GetString("jwt.secret")),
+		NewClaimsFunc: NewClaimsFunc,
 	}
 
-	a := r.Group("/admin")
+	u := s.Group(config.GetString("role.user"))
+	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
+
+	u.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Ok !!")
+	})
+
+	a := s.Group("/admin")
 	{
 		a.GET("/role", ctrl.GetRoleList)
 		a.POST("/role", ctrl.AddRole)
@@ -73,8 +56,48 @@ func NewControllerMain(ctrl Controller) {
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
-
 	if err != nil {
 		panic(err)
+	}
+}
+
+func NewClaimsFunc(c echo.Context) jwt.Claims {
+	return new(token.JwtCustomClaims)
+}
+
+func ErrorHandler(c echo.Context, e error) error {
+	var res response.RespMag
+	res.Code = constant.ErrorStatusUnauthorized
+	res.Msg = "Unauthorized"
+	return c.JSON(http.StatusUnauthorized, res)
+}
+
+func AuthRoleUser(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+		role := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+		role := strings.Replace(config.GetString("role.admin"), "/", "", 2)
+		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
 	}
 }

@@ -4,14 +4,13 @@ import (
 	"accounts/constant"
 	singin "accounts/restapi/model/singin/request"
 	singinResp "accounts/restapi/model/singin/response"
-	"accounts/utility/logs"
 	"accounts/utility/response"
 	"errors"
 	"github.com/labstack/echo/v4"
 )
 
 func (ctrl Controller) SignInUser(c echo.Context) error {
-	logs.LogStart("SignInUser")
+
 	var request = new(singin.Login)
 	var res response.RespMag
 
@@ -19,20 +18,17 @@ func (ctrl Controller) SignInUser(c echo.Context) error {
 	if err != nil {
 		return response.EchoError(c, 400, err)
 	}
-	logs.LogRequest(request)
 
 	token, err := ctrl.Ctx.LoginLogic(request)
 	if err != nil {
 		res.Msg = err.Error()
 		res.Code = constant.ErrorCode
-		logs.LogError(err)
 		return response.EchoSucceed(c, res)
 	}
 
 	if token == "" {
 		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัส่ผ่านผิด").Error()
 		res.Code = constant.ErrorCode
-		logs.LogResponse(res)
 		return response.EchoSucceed(c, res)
 	}
 
@@ -42,7 +38,6 @@ func (ctrl Controller) SignInUser(c echo.Context) error {
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
 	res.Data = resp
-	logs.LogResponse(res)
 	return response.EchoSucceed(c, resp)
 }
 

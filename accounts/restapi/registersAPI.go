@@ -3,13 +3,11 @@ package restapi
 import (
 	"accounts/constant"
 	singup "accounts/restapi/model/singup/request"
-	"accounts/utility/logs"
 	"accounts/utility/response"
 	"github.com/labstack/echo/v4"
 )
 
 func (ctrl Controller) SendOTP(c echo.Context) error {
-	logs.LogStart("SendOTP")
 	var request = new(singup.PhoneNumber)
 	var res response.RespMag
 	err := c.Bind(request)
@@ -21,23 +19,19 @@ func (ctrl Controller) SendOTP(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		logs.LogError(err)
 		return response.EchoError(c, 400, res)
 	}
-	logs.LogRequest(request)
 
 	resp, err := ctrl.Ctx.SentOTPLogic(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		logs.LogError(err)
 		return response.EchoError(c, 400, res)
 	}
 
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
 	res.Data = resp
-	logs.LogResponse(res)
 	return response.EchoSucceed(c, res)
 }
 
