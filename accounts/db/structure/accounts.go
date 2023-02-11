@@ -28,7 +28,7 @@ type Users struct {
 type OTP struct {
 	gorm.Model
 	PhoneNumber string
-	Key         int
+	Key         string
 	VerifyCode  string
 	Expired     time.Time
 	Active      bool

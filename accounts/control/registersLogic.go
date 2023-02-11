@@ -47,10 +47,10 @@ func (ctrl ConController) SentOTPLogic(req *request.PhoneNumber) (res response.O
 		}
 		i++
 	}
-
+	strOTP := strconv.Itoa(OTP)
 	newReq := rdbmsstructure.OTP{
 		PhoneNumber: req.PhoneNumber,
-		Key:         OTP,
+		Key:         strOTP,
 		VerifyCode:  VerifyCode,
 		Expired:     time.Now().Add(time.Minute * 3).Add(time.Hour * 7),
 		Active:      true,
@@ -61,7 +61,7 @@ func (ctrl ConController) SentOTPLogic(req *request.PhoneNumber) (res response.O
 		Error = err
 		return
 	}
-	res.OTP = OTP
+	res.OTP = strOTP
 	res.VerifyCode = VerifyCode
 	return
 }
@@ -72,7 +72,14 @@ func (ctrl ConController) VerifyOTPLogic(req *request.OTP) (Error error) {
 		Error = err
 		return
 	}
-	checkOTPLen, err := common.CheckOTPLen(req.OTP)
+
+	OTP, err := strconv.Atoi(req.OTP)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	checkOTPLen, err := common.CheckOTPLen(OTP)
 	if !checkOTPLen {
 		Error = err
 		return
