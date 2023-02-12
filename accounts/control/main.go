@@ -2,7 +2,7 @@ package control
 
 import "accounts/db"
 
-type ConController struct {
+type Controller struct {
 	GORMFactory *db.GORMFactory
 	Access      *db.Access
 }

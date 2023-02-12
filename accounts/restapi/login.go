@@ -7,16 +7,16 @@ import (
 	"accounts/utility/response"
 	"errors"
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
-func (ctrl Controller) SignInUser(c echo.Context) error {
-
+func (ctrl Controller) SignIn(c echo.Context) error {
 	var request = new(singin.Login)
 	var res response.RespMag
 
 	err := c.Bind(request)
 	if err != nil {
-		return response.EchoError(c, 400, err)
+		return response.EchoError(c, http.StatusBadRequest, err)
 	}
 
 	token, err := ctrl.Ctx.LoginLogic(request)
@@ -39,9 +39,4 @@ func (ctrl Controller) SignInUser(c echo.Context) error {
 	res.Code = constant.SuccessCode
 	res.Data = resp
 	return response.EchoSucceed(c, resp)
-}
-
-func (ctrl Controller) SignUpAdmin(c echo.Context) error {
-
-	return response.EchoSucceed(c, "")
 }

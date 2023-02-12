@@ -16,7 +16,7 @@ import (
 type Controller struct {
 	Properties db.Properties
 	Access     db.Access
-	Ctx        control.ConController
+	Ctx        control.Controller
 	HttpClient httpclient.HttpClient
 }
 
@@ -36,8 +36,8 @@ func Initial(properties *db.Properties) *db.Access {
 	}
 }
 
-func ConController(db *db.Access) *control.ConController {
-	res := control.ConController{
+func ConController(db *db.Access) *control.Controller {
+	res := control.Controller{
 		Access: db,
 	}
 	return &res

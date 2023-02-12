@@ -5,7 +5,6 @@ import (
 	rdbmsstructure "accounts/db/structure"
 	"accounts/restapi/model/singup/request"
 	response "accounts/restapi/model/singup/response"
-	"accounts/utility/verify"
 	"errors"
 	"math/rand"
 	"strconv"
@@ -16,7 +15,7 @@ func rangeIn(low, hi int) int {
 	return low + rand.Intn(hi-low)
 }
 
-func (ctrl ConController) SentOTPLogic(req *request.PhoneNumber) (res response.OTP, Error error) {
+func (ctrl Controller) SentOTPLogic(req *request.PhoneNumber) (res response.OTP, Error error) {
 	Check, err := common.CheckPhoneNumber(req.PhoneNumber)
 	if !Check {
 		Error = errors.New("PhoneNumber Invalid. : 10 Numbers 0-9")
@@ -66,7 +65,7 @@ func (ctrl ConController) SentOTPLogic(req *request.PhoneNumber) (res response.O
 	return
 }
 
-func (ctrl ConController) VerifyOTPLogic(req *request.OTP) (Error error) {
+func (ctrl Controller) VerifyOTPLogic(req *request.OTP) (Error error) {
 	checkNumber, err := common.CheckPhoneNumber(req.PhoneNumber)
 	if !checkNumber {
 		Error = err
@@ -108,50 +107,5 @@ func (ctrl ConController) VerifyOTPLogic(req *request.OTP) (Error error) {
 		return
 	}
 
-	return
-}
-
-func (ctrl ConController) CreateUserLogin(req *request.Account) (Error error) {
-
-	db := rdbmsstructure.OTP{
-		PhoneNumber: req.PhoneNumber,
-		Key:         req.Key,
-		VerifyCode:  req.VerifyCode,
-	}
-
-	err := ctrl.Access.RDBMS.UpdateOTPDB(db)
-	if err != nil {
-		Error = err
-		return
-	}
-
-	if req.Password != req.ConfirmPassword {
-		Error = errors.New("รหัสผ่านไม่ตรงกัน")
-		return
-	}
-
-	hashPass, err := verify.Hash(req.Password)
-
-	newReq := rdbmsstructure.Users{
-		PhoneNumber: req.PhoneNumber,
-		Password:    string(hashPass),
-		Firstname:   req.FirstName,
-		Lastname:    req.LastName,
-		Email:       &req.Email,
-		Birthday:    time.Time{},
-		//Birthday:    req.Birthday,
-		Gender:       req.Gender,
-		ImageProfile: nil,
-		DeletedBy:    nil,
-		Workplace:    nil,
-		AddressID:    1,
-		RoleID:       1,
-	}
-
-	err = ctrl.Access.RDBMS.CreateUserDB(newReq)
-	if err != nil {
-		Error = err
-		return
-	}
 	return
 }

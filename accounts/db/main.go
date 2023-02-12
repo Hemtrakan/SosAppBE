@@ -32,6 +32,7 @@ type FactoryInterface interface {
 
 	// Users
 	GetAccountDB(req structure.Users) (response *structure.Users, Error error)
+	GetUserByID(req structure.Users) (response *structure.Users, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -102,12 +103,12 @@ func gormInstance(env *Properties) GORMFactory {
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&IDCard)
 
-		Password, _ := verify.Hash("BELLkub4424506")
+		Password, _ := verify.Hash("admin")
 		data := structure.Users{
-			PhoneNumber:  "0815476439",
+			PhoneNumber:  "admin",
 			Password:     string(Password),
-			Firstname:    "admin",
-			Lastname:     "admin",
+			Firstname:    "FirstNameAdmin",
+			Lastname:     "LastNameAdmin",
 			Email:        nil,
 			Birthday:     time.Now(),
 			Gender:       "M",

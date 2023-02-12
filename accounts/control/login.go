@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (ctrl ConController) LoginLogic(request *singin.Login) (Token string, Error error) {
+func (ctrl Controller) LoginLogic(request *singin.Login) (Token string, Error error) {
 
 	db := structure.Users{
 		PhoneNumber: request.Username,

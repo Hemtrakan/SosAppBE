@@ -30,7 +30,7 @@ func NewControllerMain(ctrl Controller) {
 	s.POST("/sendOTP", ctrl.SendOTP)
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
-	s.POST("/signIn", ctrl.SignInUser)
+	s.POST("/signIn", ctrl.SignIn)
 	// "/user"
 
 	configs := echojwt.Config{
@@ -40,12 +40,19 @@ func NewControllerMain(ctrl Controller) {
 	}
 
 	u := s.Group(config.GetString("role.user"))
-	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
+	u.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	u.GET("/:id", ctrl.GetUserById)
+	u.PUT("/:id", func(c echo.Context) error {
 
-	u.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Ok !!")
+		return c.JSON(http.StatusOK, "res")
 	})
 
+	u.DELETE("/:id", func(c echo.Context) error {
+
+		return c.JSON(http.StatusOK, "res")
+	})
+
+	// todo admin
 	a := s.Group("/admin")
 	{
 		a.GET("/role", ctrl.GetRoleList)

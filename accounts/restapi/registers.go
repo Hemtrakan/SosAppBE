@@ -5,6 +5,7 @@ import (
 	singup "accounts/restapi/model/singup/request"
 	"accounts/utility/response"
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 func (ctrl Controller) SendOTP(c echo.Context) error {
@@ -70,21 +71,21 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 	var res response.RespMag
 	err := c.Bind(request)
 	if err != nil {
-		return response.EchoError(c, 400, err)
+		return response.EchoError(c, http.StatusBadRequest, err)
 	}
 
 	err = ValidateStruct(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, 400, res)
+		return response.EchoError(c, http.StatusBadRequest, res)
 	}
 
-	err = ctrl.Ctx.CreateUserLogin(request)
+	err = ctrl.Ctx.PostUser(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, 400, res)
+		return response.EchoError(c, http.StatusBadRequest, res)
 	}
 
 	res.Msg = constant.SuccessMsg

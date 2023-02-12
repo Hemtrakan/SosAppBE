@@ -1,6 +1,7 @@
 package token
 
 import (
+	"github.com/labstack/echo/v4"
 	config "github.com/spf13/viper"
 	"time"
 
@@ -27,5 +28,20 @@ func CreateToken(id uint, role string) (token string, Error error) {
 		return
 	}
 	token = t
+	return
+}
+
+type ValueKey struct {
+	ID   uint
+	Role string
+}
+
+func GetTokenKay(c echo.Context) (res ValueKey) {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+	res = ValueKey{
+		ID:   claims.ID,
+		Role: claims.Role,
+	}
 	return
 }

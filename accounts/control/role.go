@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (ctrl ConController) AddRoleCon(req *request.AddRole) (Error error) {
+func (ctrl Controller) AddRoleCon(req *request.AddRole) (Error error) {
 	var newReq rdbmsstructure.Role
 	newReq.Name = strings.ToLower(req.Name)
 
@@ -30,7 +30,7 @@ func (ctrl ConController) AddRoleCon(req *request.AddRole) (Error error) {
 	return
 }
 
-func (ctrl ConController) GetRoleListCon() (res response.ResponseMain, Error error) {
+func (ctrl Controller) GetRoleListCon() (res response.ResponseMain, Error error) {
 	data, err := ctrl.Access.RDBMS.GetRoleListDB()
 	if err != nil {
 		Error = err
