@@ -3,18 +3,21 @@ package restapi
 import (
 	"accounts/control"
 	"accounts/db"
+	"accounts/httpclient"
 	"errors"
 	"fmt"
 	"github.com/Netflix/go-env"
 	"github.com/go-playground/validator"
 	config "github.com/spf13/viper"
 	"os"
+	"time"
 )
 
 type Controller struct {
 	Properties db.Properties
 	Access     db.Access
 	Ctx        control.ConController
+	HttpClient httpclient.HttpClient
 }
 
 func Build() *db.Properties {
@@ -40,14 +43,25 @@ func ConController(db *db.Access) *control.ConController {
 	return &res
 }
 
+func NewHttpClient() (httpClient httpclient.HttpClient) {
+	httpClient = httpclient.HttpClient{
+		Charset:        "utf-8",
+		CertSkipVerify: true,
+		Timeout:        10 * time.Second,
+	}
+	return
+}
+
 func NewController() Controller {
 	build := Build()
 	access := Initial(build)
 	ctx := ConController(access)
+	httpclient := NewHttpClient()
 	return Controller{
 		Properties: *build,
 		Access:     *access,
 		Ctx:        *ctx,
+		HttpClient: httpclient,
 	}
 }
 
