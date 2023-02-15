@@ -16,6 +16,9 @@ var (
 )
 
 type FactoryInterface interface {
+
+	// LogLogin
+	LogLogin(req structure.Users) (Error error)
 	//Role
 	GetRoleListDB() (response []structure.Role, Error error)
 	GetRoleDBByName(req structure.Role) (response structure.Role, Error error)
@@ -97,7 +100,7 @@ func gormInstance(env *Properties) GORMFactory {
 		db.Where("name = ?", "admin").Take(&role)
 
 		IDCard := structure.IDCard{
-			IDCardText: "13xxxxxxxx347",
+			TextIDCard: "13xxxxxxxx347",
 			PathImage:  "",
 			DeletedBy:  nil,
 		}

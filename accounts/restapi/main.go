@@ -40,26 +40,20 @@ func NewControllerMain(ctrl Controller) {
 	}
 
 	u := s.Group(config.GetString("role.user"))
-	u.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
+
 	u.GET("/:id", ctrl.GetUserById)
-	u.PUT("/:id", func(c echo.Context) error {
+	u.PUT("/:id", ctrl.UpdateUser)    // todo ยังไม่ได้ทำ
+	u.DELETE("/:id", ctrl.DeleteUser) // todo ยังไม่ได้ทำ
 
-		return c.JSON(http.StatusOK, "res")
-	})
-
-	u.DELETE("/:id", func(c echo.Context) error {
-
-		return c.JSON(http.StatusOK, "res")
-	})
-
+	// todo Verify ID Card API admin page
 	// todo admin
 	a := s.Group("/admin")
-	{
-		a.GET("/role", ctrl.GetRoleList)
-		a.POST("/role", ctrl.AddRole)
-		//a.PUT("/role", AddRole)
-		//a.DELETE("/role", AddRole)
-	}
+
+	a.GET("/role", ctrl.GetRoleList)
+	a.POST("/role", ctrl.AddRole)
+	//a.PUT("/role", AddRole)
+	//a.DELETE("/role", AddRole)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)

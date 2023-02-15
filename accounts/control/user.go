@@ -3,14 +3,14 @@ package control
 import (
 	rdbmsstructure "accounts/db/structure"
 	"accounts/restapi/model/singup/request"
-	user "accounts/restapi/model/user/response"
+	resUser "accounts/restapi/model/user/response"
+	//reqUser "accounts/restapi/model/user/request"
 	"accounts/utility/verify"
 	"errors"
 	"gorm.io/gorm"
-	"time"
 )
 
-func (ctrl Controller) GetUser(id uint) (res *user.UserProfile, Error error) {
+func (ctrl Controller) GetUser(id uint) (res *resUser.UserProfile, Error error) {
 	req := rdbmsstructure.Users{
 		Model: gorm.Model{
 			ID: id,
@@ -22,31 +22,43 @@ func (ctrl Controller) GetUser(id uint) (res *user.UserProfile, Error error) {
 		Error = err
 		return
 	}
-
-	res = &user.UserProfile{
-		PhoneNumber: data.PhoneNumber,
-		FirstName:   data.Firstname,
-		LastName:    data.Lastname,
-		Birthday:    data.Birthday,
-		Gender:      data.Gender,
-		IDCard:      data.IDCard.IDCardText,
-		RoleID:      data.Role.Name,
+	res = &resUser.UserProfile{
+		PhoneNumber:  data.PhoneNumber,
+		FirstName:    data.Firstname,
+		LastName:     data.Lastname,
+		Email:        *data.Email,
+		Birthday:     data.Birthday,
+		Gender:       data.Gender,
+		ImageProfile: *data.ImageProfile,
+		IdCard: resUser.IdCard{
+			TextIDCard: data.IDCard.TextIDCard,
+			PathImage:  data.IDCard.PathImage,
+			Verify:     false,
+		},
+		Address: resUser.Address{
+			Address:     data.Address.Address,
+			SubDistrict: data.Address.SubDistrict,
+			District:    data.Address.District,
+			Province:    data.Address.Province,
+			PostalCode:  data.Address.PostalCode,
+			Country:     data.Address.Country,
+		},
 	}
 	return
 }
 
 func (ctrl Controller) PostUser(req *request.Account) (Error error) {
-	db := rdbmsstructure.OTP{
-		PhoneNumber: req.PhoneNumber,
-		Key:         req.Key,
-		VerifyCode:  req.VerifyCode,
-	}
-
-	err := ctrl.Access.RDBMS.UpdateOTPDB(db)
-	if err != nil {
-		Error = err
-		return
-	}
+	//otp := rdbmsstructure.OTP{
+	//	PhoneNumber: req.PhoneNumber,
+	//	Key:         req.Verify.OTP,
+	//	VerifyCode:  req.Verify.VerifyCode,
+	//}
+	//
+	//err := ctrl.Access.RDBMS.UpdateOTPDB(otp)
+	//if err != nil {
+	//	Error = err
+	//	return
+	//}
 
 	if req.Password != req.ConfirmPassword {
 		Error = errors.New("รหัสผ่านไม่ตรงกัน")
@@ -55,20 +67,41 @@ func (ctrl Controller) PostUser(req *request.Account) (Error error) {
 
 	hashPass, err := verify.Hash(req.Password)
 
+	roleModel := rdbmsstructure.Role{
+		Name: "user",
+	}
+	role, err := ctrl.Access.RDBMS.GetRoleDBByName(roleModel)
+	if err != nil {
+		Error = err
+		return
+	}
+
 	newReq := rdbmsstructure.Users{
-		PhoneNumber: req.PhoneNumber,
-		Password:    string(hashPass),
-		Firstname:   req.FirstName,
-		Lastname:    req.LastName,
-		Email:       &req.Email,
-		Birthday:    time.Time{},
-		//Birthday:    req.Birthday,
+		PhoneNumber:  req.PhoneNumber,
+		Password:     string(hashPass),
+		Firstname:    req.FirstName,
+		Lastname:     req.LastName,
+		Email:        &req.Email,
+		Birthday:     req.Birthday,
 		Gender:       req.Gender,
-		ImageProfile: nil,
+		ImageProfile: &req.ImageProfile,
 		DeletedBy:    nil,
 		Workplace:    nil,
-		AddressID:    1,
-		RoleID:       1,
+		IDCard: rdbmsstructure.IDCard{
+			TextIDCard: req.IDCard.TextIDCard,
+			PathImage:  req.IDCard.PathImage,
+			DeletedBy:  nil,
+		},
+		Address: rdbmsstructure.Address{
+			Address:     req.Address.Address,
+			SubDistrict: req.Address.SubDistrict,
+			District:    req.Address.District,
+			Province:    req.Address.Province,
+			PostalCode:  req.Address.PostalCode,
+			Country:     req.Address.Country,
+			DeletedBy:   nil,
+		},
+		RoleID: role.ID,
 	}
 
 	err = ctrl.Access.RDBMS.CreateUserDB(newReq)

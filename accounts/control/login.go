@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (ctrl Controller) LoginLogic(request *singin.Login) (Token string, Error error) {
+func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Token string, Error error) {
 
 	db := structure.Users{
 		PhoneNumber: request.Username,
@@ -42,6 +42,7 @@ func (ctrl Controller) LoginLogic(request *singin.Login) (Token string, Error er
 		Error = err
 		return
 	}
+
 	Token = tokenRes
 
 	return

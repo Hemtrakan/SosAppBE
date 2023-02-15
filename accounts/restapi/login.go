@@ -18,8 +18,9 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	if err != nil {
 		return response.EchoError(c, http.StatusBadRequest, err)
 	}
-
-	token, err := ctrl.Ctx.LoginLogic(request)
+	ip := c.RealIP()
+	system := c.Request().Header.Get("User-Agent")
+	token, err := ctrl.Ctx.LoginLogic(request, ip, system)
 	if err != nil {
 		res.Msg = err.Error()
 		res.Code = constant.ErrorCode

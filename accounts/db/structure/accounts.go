@@ -34,11 +34,14 @@ type OTP struct {
 	Active      bool
 }
 
+// todo ต้องทำ Log ในการ Login
 type LogLogin struct {
 	gorm.Model
-	UserID uint
-	System string
-	IP     string
+	UserID      uint
+	System      string
+	IP          string
+	Status      string
+	Description string
 }
 
 type Role struct {
@@ -60,7 +63,8 @@ type Address struct {
 
 type IDCard struct {
 	gorm.Model
-	IDCardText string `gorm:"size:13;unique"`
+	TextIDCard string `gorm:"size:13;unique"`
 	PathImage  string
+	Verify     bool
 	DeletedBy  *uint
 }

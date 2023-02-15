@@ -36,7 +36,7 @@ type ValueKey struct {
 	Role string
 }
 
-func GetTokenKay(c echo.Context) (res ValueKey) {
+func GetValuesToken(c echo.Context) (res ValueKey) {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
 	res = ValueKey{
