@@ -14,7 +14,7 @@ func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Tok
 		PhoneNumber: request.Username,
 	}
 
-	account, err := ctrl.Access.RDBMS.GetAccountDB(db)
+	account, err := ctrl.Access.RDBMS.GetUserByPhone(db)
 	if err != nil {
 		Error = err
 		return

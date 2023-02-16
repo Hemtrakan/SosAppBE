@@ -20,22 +20,22 @@ type FactoryInterface interface {
 	// LogLogin
 	LogLogin(req structure.Users) (Error error)
 	//Role
-	GetRoleListDB() (response []structure.Role, Error error)
+	GetRoleList() (response []structure.Role, Error error)
 	GetRoleDBByName(req structure.Role) (response structure.Role, Error error)
 	GetRoleDBById(req structure.Role) (response structure.Role, Error error)
-	AddRoleDB(req structure.Role) (Error error)
+	AddRole(req structure.Role) (Error error)
 
 	// OTP
 	SendOTPDB(req structure.OTP) (Error error)
 	GetOTPDb(req structure.OTP) (response *structure.OTP, Error error)
 	UpdateOTPDB(req structure.OTP) (Error error)
 
-	// CreateUser
-	CreateUserDB(req structure.Users) (Error error)
-
 	// Users
-	GetAccountDB(req structure.Users) (response *structure.Users, Error error)
+	GetUserByPhone(req structure.Users) (response *structure.Users, Error error)
 	GetUserByID(req structure.Users) (response *structure.Users, Error error)
+	PostUser(req structure.Users) (Error error)
+	PutUser(user *structure.Users, address *structure.Address, idCard *structure.IDCard) (Error []error)
+	DeleteUser(req structure.Users) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

@@ -67,10 +67,12 @@ func (ctrl Controller) VerifyOTP(c echo.Context) error {
 }
 
 func (ctrl Controller) CreateUser(c echo.Context) error {
-	var request = new(singup.Account)
+	var request = new(singup.SingUp)
 	var res response.RespMag
 	err := c.Bind(request)
 	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, err)
 	}
 

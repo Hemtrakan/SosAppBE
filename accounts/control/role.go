@@ -22,7 +22,7 @@ func (ctrl Controller) AddRoleCon(req *request.AddRole) (Error error) {
 	role := rdbmsstructure.Role{
 		Name: req.Name,
 	}
-	err = ctrl.Access.RDBMS.AddRoleDB(role)
+	err = ctrl.Access.RDBMS.AddRole(role)
 	if err != nil {
 		Error = err
 		return
@@ -31,7 +31,7 @@ func (ctrl Controller) AddRoleCon(req *request.AddRole) (Error error) {
 }
 
 func (ctrl Controller) GetRoleListCon() (res response.ResponseMain, Error error) {
-	data, err := ctrl.Access.RDBMS.GetRoleListDB()
+	data, err := ctrl.Access.RDBMS.GetRoleList()
 	if err != nil {
 		Error = err
 		return

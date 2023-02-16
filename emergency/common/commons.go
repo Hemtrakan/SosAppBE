@@ -9,7 +9,7 @@ import (
 func CheckPhoneNumber(req string) (res bool, Error error) {
 	PhoneNumber, err := regexp.MatchString("^[0-9]{10}$", req)
 	if !PhoneNumber {
-		Error = errors.New("PhoneNumber Invalid. : 10 Numbers 0-9")
+		Error = errors.New("Username Invalid. : 10 Numbers 0-9")
 		return
 	}
 	if err != nil {

@@ -4,7 +4,7 @@ const (
 	SuccessMsg              string = "Success"
 	SuccessCode             string = "0"
 	ErrorCode               string = "400"
-	ErrorStatusUnauthorized        = "401"
+	ErrorStatusUnauthorized string = "401"
 )
 
 const (

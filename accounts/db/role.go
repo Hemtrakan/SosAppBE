@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (factory GORMFactory) AddRoleDB(req structure.Role) (Error error) {
+func (factory GORMFactory) AddRole(req structure.Role) (Error error) {
 	err := factory.client.Session(&gorm.Session{FullSaveAssociations: true}).Save(&req).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRegistered) {
@@ -17,7 +17,7 @@ func (factory GORMFactory) AddRoleDB(req structure.Role) (Error error) {
 	return
 }
 
-func (factory GORMFactory) GetRoleListDB() (response []structure.Role, Error error) {
+func (factory GORMFactory) GetRoleList() (response []structure.Role, Error error) {
 	var data []structure.Role
 	err := factory.client.Find(&data).Error
 	if err != nil {

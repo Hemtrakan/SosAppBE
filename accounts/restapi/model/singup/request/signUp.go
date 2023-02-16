@@ -12,7 +12,7 @@ type OTP struct {
 	PhoneNumber string `json:"phoneNumber" validate:"required"`
 }
 
-type Account struct {
+type SingUp struct {
 	PhoneNumber     string    `json:"phoneNumber,omitempty" validate:"required"`
 	Password        string    `json:"password"  validate:"required"`
 	ConfirmPassword string    `json:"confirmPassword"  validate:"required"`

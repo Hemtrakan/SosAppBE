@@ -2,16 +2,18 @@ package request
 
 import "time"
 
-type UserProfile struct {
-	PhoneNumber  string    `json:"phoneNumber,omitempty"`
-	FirstName    string    `json:"firstName,omitempty"`
-	LastName     string    `json:"lastName,omitempty"`
-	Email        string    `json:"email,omitempty"`
-	Birthday     time.Time `json:"birthday,omitempty"`
-	Gender       string    `json:"gender,omitempty"`
-	ImageProfile string    `json:"imageProfile,omitempty"`
-	IdCard       IdCard    `json:"idCard,omitempty"`
-	Address      Address   `json:"address,omitempty"`
+type UserReq struct {
+	OldPassword     string    `json:"oldPassword,omitempty"`
+	NewPassword     string    `json:"newPassword,omitempty"`
+	ConfirmPassword string    `json:"confirmPassword,omitempty"`
+	FirstName       string    `json:"firstName,omitempty"`
+	LastName        string    `json:"lastName,omitempty"`
+	Email           string    `json:"email,omitempty"`
+	Birthday        time.Time `json:"birthday,omitempty"`
+	Gender          string    `json:"gender,omitempty"`
+	ImageProfile    string    `json:"imageProfile,omitempty"`
+	IdCard          *IdCard   `json:"idCard,omitempty"`
+	Address         *Address  `json:"address,omitempty"`
 }
 
 type IdCard struct {

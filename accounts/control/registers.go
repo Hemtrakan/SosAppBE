@@ -18,7 +18,7 @@ func rangeIn(low, hi int) int {
 func (ctrl Controller) SentOTPLogic(req *request.PhoneNumber) (res response.OTP, Error error) {
 	Check, err := common.CheckPhoneNumber(req.PhoneNumber)
 	if !Check {
-		Error = errors.New("PhoneNumber Invalid. : 10 Numbers 0-9")
+		Error = errors.New("Username Invalid. : 10 Numbers 0-9")
 		return
 	}
 	if err != nil {

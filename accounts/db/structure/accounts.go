@@ -15,7 +15,6 @@ type Users struct {
 	Birthday     time.Time
 	Gender       string
 	ImageProfile *string
-	DeletedBy    *uint
 	Workplace    *string
 	IDCard       IDCard
 	IDCardID     uint
@@ -23,6 +22,8 @@ type Users struct {
 	AddressID    uint
 	Role         Role
 	RoleID       uint
+	UpdateBy     *uint
+	DeletedBy    *uint
 }
 
 type OTP struct {
@@ -47,6 +48,7 @@ type LogLogin struct {
 type Role struct {
 	gorm.Model
 	Name      string
+	UpdateBy  *uint
 	DeletedBy *uint
 }
 
@@ -58,6 +60,7 @@ type Address struct {
 	Province    string
 	PostalCode  string
 	Country     string
+	UpdateBy    *uint
 	DeletedBy   *uint
 }
 
@@ -66,5 +69,6 @@ type IDCard struct {
 	TextIDCard string `gorm:"size:13;unique"`
 	PathImage  string
 	Verify     bool
+	UpdateBy   *uint
 	DeletedBy  *uint
 }
