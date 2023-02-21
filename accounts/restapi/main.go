@@ -37,6 +37,7 @@ func NewControllerMain(ctrl Controller) {
 		SigningKey:    []byte(config.GetString("jwt.secret")),
 		NewClaimsFunc: NewClaimsFunc,
 	}
+	//
 
 	u := s.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
