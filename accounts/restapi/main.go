@@ -31,7 +31,6 @@ func NewControllerMain(ctrl Controller) {
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
 	s.POST("/signIn", ctrl.SignIn)
-	// "/user"
 
 	configs := echojwt.Config{
 		ErrorHandler:  ErrorHandler,
@@ -43,17 +42,20 @@ func NewControllerMain(ctrl Controller) {
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
 	u.GET("/:id", ctrl.GetUserById)
-	u.PUT("/:id", ctrl.UpdateUser)    // todo ยังไม่ได้ทำ
-	u.DELETE("/:id", ctrl.DeleteUser) // todo ยังไม่ได้ทำ
+	u.PUT("/:id", ctrl.UpdateUser)
+	u.PUT("/:id", ctrl.ChangePassword)
+	u.DELETE("/:id", ctrl.DeleteUser)
 
 	// todo Verify ID Card API admin page
 	// todo admin
 	a := s.Group("/admin")
+	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 
 	a.GET("/role", ctrl.GetRoleList)
+	a.GET("/role/:id", ctrl.GetRoleById)
 	a.POST("/role", ctrl.AddRole)
-	//a.PUT("/role", AddRole)
-	//a.DELETE("/role", AddRole)
+	a.PUT("/role/:id", ctrl.UpdateRole)
+	a.DELETE("/role/:id", ctrl.DeleteRole)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)

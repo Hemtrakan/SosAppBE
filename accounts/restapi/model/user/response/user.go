@@ -3,6 +3,7 @@ package model
 import "time"
 
 type UserRes struct {
+	ID           string    `json:"id,omitempty"`
 	PhoneNumber  string    `json:"phoneNumber,omitempty"`
 	FirstName    string    `json:"firstName,omitempty"`
 	LastName     string    `json:"lastName,omitempty"`

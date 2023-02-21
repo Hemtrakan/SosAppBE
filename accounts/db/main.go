@@ -21,8 +21,8 @@ type FactoryInterface interface {
 	LogLogin(req structure.Users) (Error error)
 	//Role
 	GetRoleList() (response []structure.Role, Error error)
-	GetRoleDBByName(req structure.Role) (response structure.Role, Error error)
-	GetRoleDBById(req structure.Role) (response structure.Role, Error error)
+	GetRoleByName(req structure.Role) (response structure.Role, Error error)
+	GetRoleById(req structure.Role) (response structure.Role, Error error)
 	AddRole(req structure.Role) (Error error)
 
 	// OTP

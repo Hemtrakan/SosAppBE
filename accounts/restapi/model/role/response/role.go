@@ -7,5 +7,6 @@ type ResponseMain struct {
 }
 
 type GetRoleList struct {
+	Id   string `json:"id"`
 	Name string `json:"name"`
 }

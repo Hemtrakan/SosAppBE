@@ -32,7 +32,7 @@ func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Tok
 		},
 	}
 
-	roleId, err := ctrl.Access.RDBMS.GetRoleDBById(roleStr)
+	roleId, err := ctrl.Access.RDBMS.GetRoleById(roleStr)
 	if err != nil {
 		Error = err
 		return

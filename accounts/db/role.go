@@ -33,7 +33,7 @@ func (factory GORMFactory) GetRoleList() (response []structure.Role, Error error
 	return
 }
 
-func (factory GORMFactory) GetRoleDBByName(req structure.Role) (response structure.Role, Error error) {
+func (factory GORMFactory) GetRoleByName(req structure.Role) (response structure.Role, Error error) {
 	var data structure.Role
 	err := factory.client.Where("name = ?", req.Name).First(&data).Error
 	if err != nil {
@@ -49,7 +49,7 @@ func (factory GORMFactory) GetRoleDBByName(req structure.Role) (response structu
 	return
 }
 
-func (factory GORMFactory) GetRoleDBById(req structure.Role) (response structure.Role, Error error) {
+func (factory GORMFactory) GetRoleById(req structure.Role) (response structure.Role, Error error) {
 	var data structure.Role
 	err := factory.client.Where("id = ?", req.ID).First(&data).Error
 	if err != nil {
