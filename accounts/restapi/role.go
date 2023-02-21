@@ -67,7 +67,23 @@ func (ctrl Controller) GetRoleById(c echo.Context) error {
 	return response.EchoSucceed(c, id)
 }
 
-func (ctrl Controller) GetRoleById(c echo.Context) error {
+func (ctrl Controller) UpdateRole(c echo.Context) error {
+	var res response.RespMag
+	id := c.Param("id")
+	responses, err := ctrl.Ctx.GetRoleById(id)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, err.Error())
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Data = responses
+	return response.EchoSucceed(c, id)
+}
+
+func (ctrl Controller) DeleteRole(c echo.Context) error {
 	var res response.RespMag
 	id := c.Param("id")
 	responses, err := ctrl.Ctx.GetRoleById(id)
