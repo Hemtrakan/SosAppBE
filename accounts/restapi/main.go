@@ -31,7 +31,7 @@ func NewControllerMain(ctrl Controller) {
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
 	s.POST("/signIn", ctrl.SignIn)
-	//
+
 	configs := echojwt.Config{
 		ErrorHandler:  ErrorHandler,
 		SigningKey:    []byte(config.GetString("jwt.secret")),
