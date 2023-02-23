@@ -37,8 +37,8 @@ type Address struct {
 }
 
 type IDCard struct {
-	TextIDCard string `json:"textIDCard"`
-	PathImage  string `json:"pathImage"`
+	TextIDCard string `json:"textIDCard" validate:"required"`
+	PathImage  string `json:"pathImage" validate:"required"`
 }
 
 type Verify struct {
