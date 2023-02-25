@@ -1,8 +1,10 @@
 package response
 
 import (
+	"accounts/loggers"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 type RespMag struct {
@@ -11,10 +13,12 @@ type RespMag struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-func EchoSucceed(c echo.Context, msg interface{}) error {
+func EchoSucceed(c echo.Context, msg interface{}, APIName string) error {
+	loggers.LogProvider(strconv.Itoa(http.StatusOK), APIName, msg)
 	return c.JSON(http.StatusOK, msg)
 }
 
-func EchoError(c echo.Context, statusCode int, msg interface{}) error {
+func EchoError(c echo.Context, statusCode int, msg interface{}, APIName string) error {
+	loggers.LogProvider(strconv.Itoa(statusCode), APIName, msg)
 	return c.JSON(statusCode, msg)
 }

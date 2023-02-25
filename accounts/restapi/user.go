@@ -12,37 +12,38 @@ import (
 
 func (ctrl Controller) GetUserById(c echo.Context) error {
 	var res response.RespMag
+	APIName := "getUserById"
 	values := token.GetValuesToken(c)
-
 	strID := c.Param("id")
 
 	id, err := strconv.ParseUint(strID, 0, 0)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if uint(id) != values.ID {
 		res.Code = constant.ErrorCode
 		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	data, err := ctrl.Ctx.GetUser(uint(id))
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
 	res.Data = data
-	return response.EchoSucceed(c, res)
+	return response.EchoSucceed(c, res, APIName)
 }
 
 func (ctrl Controller) UpdateUser(c echo.Context) error {
 	var res response.RespMag
+	APIName := "updateUser"
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
@@ -50,13 +51,13 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if uint(id) != values.ID {
 		res.Code = constant.ErrorCode
 		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	var req = new(userReq.UserReq)
@@ -64,14 +65,14 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	err = ValidateStruct(req)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	errArr := ctrl.Ctx.PutUser(req, uint(id))
@@ -82,17 +83,19 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 		}
 		res.Code = constant.ErrorCode
 		res.Msg = errRes
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
 	res.Data = "UpdateSuccess"
-	return response.EchoSucceed(c, res)
+	return response.EchoSucceed(c, res, APIName)
 }
 
 func (ctrl Controller) DeleteUser(c echo.Context) error {
 	var res response.RespMag
+	APIName := "deleteUser"
+
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
@@ -100,30 +103,31 @@ func (ctrl Controller) DeleteUser(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if uint(id) != values.ID {
 		res.Code = constant.ErrorCode
 		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	err = ctrl.Ctx.DeleteUser(uint(id))
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
 	res.Data = "DeleteSuccess"
-	return response.EchoSucceed(c, res)
+	return response.EchoSucceed(c, res, APIName)
 }
 
 func (ctrl Controller) ChangePassword(c echo.Context) error {
 	var res response.RespMag
+	APIName := "changePassword"
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
@@ -131,13 +135,13 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if uint(id) != values.ID {
 		res.Code = constant.ErrorCode
 		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	var req = new(userReq.UserReq)
@@ -145,14 +149,14 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	err = ValidateStruct(req)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	errArr := ctrl.Ctx.PutUser(req, uint(id))
@@ -163,11 +167,11 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 		}
 		res.Code = constant.ErrorCode
 		res.Msg = errRes
-		return response.EchoError(c, http.StatusBadRequest, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
 	res.Data = "UpdateSuccess"
-	return response.EchoSucceed(c, res)
+	return response.EchoSucceed(c, res, APIName)
 }

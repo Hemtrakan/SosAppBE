@@ -13,24 +13,28 @@ import (
 func (ctrl Controller) SignIn(c echo.Context) error {
 	var request = new(singin.Login)
 	var res response.RespMag
-
+	APIName := "signIn"
 	err := c.Bind(request)
 	if err != nil {
-		return response.EchoError(c, http.StatusBadRequest, err)
+		res.Msg = err.Error()
+		res.Code = constant.ErrorCode
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
+
 	ip := c.RealIP()
 	system := c.Request().Header.Get("User-Agent")
+
 	token, err := ctrl.Ctx.LoginLogic(request, ip, system)
 	if err != nil {
 		res.Msg = err.Error()
 		res.Code = constant.ErrorCode
-		return response.EchoSucceed(c, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if token == "" {
 		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัส่ผ่านผิด").Error()
 		res.Code = constant.ErrorCode
-		return response.EchoSucceed(c, res)
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	resp := singinResp.TokenRes{
@@ -39,5 +43,5 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
 	res.Data = resp
-	return response.EchoSucceed(c, resp)
+	return response.EchoSucceed(c, resp, APIName)
 }

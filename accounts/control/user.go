@@ -6,6 +6,7 @@ import (
 	"accounts/restapi/model/user/request"
 	resUser "accounts/restapi/model/user/response"
 	"strconv"
+	"time"
 
 	//reqUser "accounts/restapi/model/user/request"
 	"accounts/utility/verify"
@@ -51,14 +52,27 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 	return
 }
 
-func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (Error error) {
+func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.Users, Error error) {
+	checkUserData := rdbmsstructure.Users{
+		PhoneNumber: req.PhoneNumber,
+	}
+	checkUser, err := ctrl.Access.RDBMS.GetUserByPhone(checkUserData)
+	if err != nil {
+		Error = err
+		return
+	}
+	if checkUser.PhoneNumber == req.PhoneNumber {
+		Error = errors.New("This phone number has already been register.")
+		return
+	}
+
 	otp := rdbmsstructure.OTP{
 		PhoneNumber: req.PhoneNumber,
 		Key:         req.Verify.OTP,
 		VerifyCode:  req.Verify.VerifyCode,
 	}
 
-	err := ctrl.Access.RDBMS.UpdateOTPDB(otp)
+	err = ctrl.Access.RDBMS.UpdateOTPDB(otp)
 	if err != nil {
 		Error = err
 		return
@@ -81,12 +95,13 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (Error error) {
 	}
 
 	newReq := rdbmsstructure.Users{
-		PhoneNumber:  req.PhoneNumber,
-		Password:     string(hashPass),
-		Firstname:    req.FirstName,
-		Lastname:     req.LastName,
-		Email:        &req.Email,
-		Birthday:     req.Birthday,
+		PhoneNumber: req.PhoneNumber,
+		Password:    string(hashPass),
+		Firstname:   req.FirstName,
+		Lastname:    req.LastName,
+		Email:       &req.Email,
+		Birthday:    time.Now(),
+		//Birthday:     req.Birthday,
 		Gender:       req.Gender,
 		ImageProfile: &req.ImageProfile,
 		DeletedBy:    nil,
@@ -113,6 +128,9 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (Error error) {
 		Error = err
 		return
 	}
+
+	resUsers.PhoneNumber = req.PhoneNumber
+	resUsers.Password = req.Password
 	return
 }
 
