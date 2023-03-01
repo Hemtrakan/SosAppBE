@@ -51,7 +51,7 @@ func (ctrl Controller) SentOTPLogic(req *request.PhoneNumber) (res response.OTP,
 		PhoneNumber: req.PhoneNumber,
 		Key:         strOTP,
 		VerifyCode:  VerifyCode,
-		Expired:     time.Now().Add(time.Minute * 3).Add(time.Hour * 7),
+		Expired:     time.Now().Add(time.Minute * 20).Add(time.Hour * 7),
 		Active:      true,
 	}
 
