@@ -4,17 +4,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Netflix/go-env"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/control"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db"
 	"github.com/go-playground/validator"
 	config "github.com/spf13/viper"
+	"messenger/control"
+	"messenger/db"
+	"messenger/httpclient"
 	"os"
+	"time"
 )
 
 type Controller struct {
 	Properties db.Properties
 	Access     db.Access
-	Ctx        control.ConController
+	Ctx        control.Controller
+	HttpClient httpclient.HttpClient
 }
 
 func Build() *db.Properties {
@@ -33,21 +36,32 @@ func Initial(properties *db.Properties) *db.Access {
 	}
 }
 
-func ConController(db *db.Access) *control.ConController {
-	res := control.ConController{
+func ConController(db *db.Access) *control.Controller {
+	res := control.Controller{
 		Access: db,
 	}
 	return &res
+}
+
+func NewHttpClient() (httpClient httpclient.HttpClient) {
+	httpClient = httpclient.HttpClient{
+		Charset:        "utf-8",
+		CertSkipVerify: true,
+		Timeout:        10 * time.Second,
+	}
+	return
 }
 
 func NewController() Controller {
 	build := Build()
 	access := Initial(build)
 	ctx := ConController(access)
+	httpclient := NewHttpClient()
 	return Controller{
 		Properties: *build,
 		Access:     *access,
 		Ctx:        *ctx,
+		HttpClient: httpclient,
 	}
 }
 
