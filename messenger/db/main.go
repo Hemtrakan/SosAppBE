@@ -2,9 +2,9 @@ package db
 
 import (
 	"fmt"
-	"github.com/chiraponkub/DPU-SosApp-v.1.git/db/structure"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"messenger/db/structure"
 	"sync"
 )
 
