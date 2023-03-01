@@ -2,6 +2,6 @@ package control
 
 import "hotline/db"
 
-type ConController struct {
+type Controller struct {
 	Access *db.Access
 }
