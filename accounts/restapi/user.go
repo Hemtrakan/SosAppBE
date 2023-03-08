@@ -10,6 +10,23 @@ import (
 	"strconv"
 )
 
+func (ctrl Controller) GetUserByToken(c echo.Context) error {
+	var res response.RespMag
+	APIName := "getUserByToken"
+	values := token.GetValuesToken(c)
+
+	data, err := ctrl.Ctx.GetUser(values.ID)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	res.Code = constant.SuccessCode
+	res.Msg = constant.SuccessMsg
+	res.Data = data
+	return response.EchoSucceed(c, res, APIName)
+}
+
 func (ctrl Controller) GetUserById(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getUserById"
