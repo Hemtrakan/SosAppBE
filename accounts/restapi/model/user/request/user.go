@@ -1,19 +1,14 @@
 package request
 
-import "time"
-
 type UserReq struct {
-	OldPassword     string    `json:"oldPassword,omitempty"`
-	NewPassword     string    `json:"newPassword,omitempty"`
-	ConfirmPassword string    `json:"confirmPassword,omitempty"`
-	FirstName       string    `json:"firstName,omitempty"`
-	LastName        string    `json:"lastName,omitempty"`
-	Email           string    `json:"email,omitempty"`
-	Birthday        time.Time `json:"birthday,omitempty"`
-	Gender          string    `json:"gender,omitempty"`
-	ImageProfile    string    `json:"imageProfile,omitempty"`
-	IdCard          *IdCard   `json:"idCard,omitempty"`
-	Address         *Address  `json:"address,omitempty"`
+	FirstName    string   `json:"firstName,omitempty"`
+	LastName     string   `json:"lastName,omitempty"`
+	Email        string   `json:"email,omitempty"`
+	Birthday     string   `json:"birthday,omitempty"`
+	Gender       string   `json:"gender,omitempty"`
+	ImageProfile string   `json:"imageProfile,omitempty"`
+	IdCard       *IdCard  `json:"idCard,omitempty"`
+	Address      *Address `json:"address,omitempty"`
 }
 
 type IdCard struct {
@@ -28,4 +23,10 @@ type Address struct {
 	Province    string `json:"province,omitempty"`
 	PostalCode  string `json:"postalCode,omitempty"`
 	Country     string `json:"country,omitempty"`
+}
+
+type ChangePassword struct {
+	OldPassword     string `json:"oldPassword,omitempty"`
+	NewPassword     string `json:"newPassword,omitempty"`
+	ConfirmPassword string `json:"confirmPassword,omitempty"`
 }

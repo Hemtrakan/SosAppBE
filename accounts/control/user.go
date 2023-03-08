@@ -1,15 +1,17 @@
 package control
 
 import (
+	_image "accounts/assets/image"
 	rdbmsstructure "accounts/db/structure"
 	reqSingUp "accounts/restapi/model/singup/request"
 	"accounts/restapi/model/user/request"
 	resUser "accounts/restapi/model/user/response"
+	"accounts/utility/verify"
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
-	//reqUser "accounts/restapi/model/user/request"
-	"accounts/utility/verify"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -66,18 +68,6 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		return
 	}
 
-	otp := rdbmsstructure.OTP{
-		PhoneNumber: req.PhoneNumber,
-		Key:         req.Verify.OTP,
-		VerifyCode:  req.Verify.VerifyCode,
-	}
-
-	err = ctrl.Access.RDBMS.UpdateOTPDB(otp)
-	if err != nil {
-		Error = err
-		return
-	}
-
 	if req.Password != req.ConfirmPassword {
 		Error = errors.New("รหัสผ่านไม่ตรงกัน")
 		return
@@ -93,6 +83,41 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		Error = err
 		return
 	}
+	date := time.Now()
+	if req.Birthday != "" {
+		Birthday := strings.Split(req.Birthday, " ")
+		date, err = time.Parse("2006-01-02", Birthday[0])
+		if err != nil {
+			Error = err
+			return
+		}
+	} else {
+		Error = errors.New("กรุณาเพิ่มวันเดือนปีเกิด")
+		return
+	}
+
+	otp := rdbmsstructure.OTP{
+		PhoneNumber: req.PhoneNumber,
+		Key:         req.Verify.OTP,
+		VerifyCode:  req.Verify.VerifyCode,
+	}
+
+	err = ctrl.Access.RDBMS.UpdateOTPDB(otp)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	image := ""
+	if req.ImageProfile == "" {
+		image, err = _image.ImageToBase64()
+		if err != nil {
+			Error = err
+			return
+		}
+	} else {
+		image = req.ImageProfile
+	}
 
 	newReq := rdbmsstructure.Users{
 		PhoneNumber: req.PhoneNumber,
@@ -100,10 +125,10 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		Firstname:   req.FirstName,
 		Lastname:    req.LastName,
 		Email:       &req.Email,
-		Birthday:    time.Now(),
-		//Birthday:     req.Birthday,
+		//Birthday:    time.Now(),
+		Birthday:     date,
 		Gender:       req.Gender,
-		ImageProfile: &req.ImageProfile,
+		ImageProfile: &image,
 		DeletedBy:    nil,
 		Workplace:    nil,
 		IDCard: rdbmsstructure.IDCard{
@@ -122,7 +147,7 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		},
 		RoleID: role.ID,
 	}
-
+	fmt.Printf("%#v", newReq)
 	err = ctrl.Access.RDBMS.PostUser(newReq)
 	if err != nil {
 		Error = err
@@ -146,6 +171,12 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 		return
 	}
 
+	date, err := time.Parse(time.RFC3339, req.Birthday)
+	if err != nil {
+		Error = append(Error, err)
+		return
+	}
+
 	var Users = new(rdbmsstructure.Users)
 	var Address = new(rdbmsstructure.Address)
 	var IDCard = new(rdbmsstructure.IDCard)
@@ -157,7 +188,7 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			Firstname:    req.FirstName,
 			Lastname:     req.LastName,
 			Email:        &req.Email,
-			Birthday:     req.Birthday,
+			Birthday:     date,
 			Gender:       req.Gender,
 			ImageProfile: &req.ImageProfile,
 			UpdateBy:     &userID,
@@ -188,6 +219,10 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			UpdateBy:   &userID,
 		}
 	}
+
+	//fmt.Println(Users)
+	//fmt.Println(Address)
+	//fmt.Println(IDCard)
 	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)
 	if err != nil {
 		Error = errArr
@@ -210,7 +245,7 @@ func (ctrl Controller) DeleteUser(UserID uint) (Error error) {
 	return
 }
 
-func (ctrl Controller) ChangePassword(req *request.UserReq, userID uint) (Error []error) {
+func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) (Error []error) {
 	if req.NewPassword != req.ConfirmPassword {
 		Error = append(Error, errors.New("รหัสผ่านไม่ตรงกัน"))
 		return
