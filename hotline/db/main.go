@@ -14,6 +14,7 @@ var (
 )
 
 type FactoryInterface interface {
+	GetHotLine() (response []structure.HotlineNumber, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -45,10 +46,18 @@ func gormInstance(env *Properties) GORMFactory {
 
 	_ = db.AutoMigrate(
 
-		// hotline
+		// hotline.go
 		structure.HotlineNumber{},
 		structure.History{},
 	)
+
+	hotline := structure.HotlineNumber{
+		Number:           "191",
+		Description:      "ตำรวจ",
+		UserIDLogUpdated: 0,
+	}
+
+	db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
 
 	return GORMFactory{env: env, client: db}
 }

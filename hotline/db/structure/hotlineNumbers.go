@@ -16,7 +16,7 @@ type HotlineNumber struct {
 	gorm.Model
 	Number           string
 	Description      string
-	DeletedBy        uint
+	DeletedBy        *uint
 	UserIDLogUpdated uint
 	History          History
 	HistoryID        uint
