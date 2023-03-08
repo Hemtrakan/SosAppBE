@@ -42,7 +42,7 @@ func NewControllerMain(ctrl Controller) {
 	u := s.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
-	u.GET("/:id", ctrl.GetUserById)
+	u.GET("/", ctrl.GetUserByToken)
 	u.PUT("/:id", ctrl.UpdateUser)
 	u.PUT("/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
@@ -51,6 +51,8 @@ func NewControllerMain(ctrl Controller) {
 	// todo admin
 	a := s.Group("/admin")
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+
+	a.GET("/:id", ctrl.GetUserById)
 
 	a.GET("/role", ctrl.GetRoleList)
 	a.GET("/role/:id", ctrl.GetRoleById)
