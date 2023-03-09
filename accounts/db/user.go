@@ -103,6 +103,18 @@ func (factory GORMFactory) PutUser(user *structure.Users, address *structure.Add
 	return
 }
 
+func (factory GORMFactory) ChangePassword(req *structure.Users) (Error error) {
+	var user structure.Users
+	err := factory.client.Model(&user).Where("id = ?", req.ID).Updates(
+		structure.Users{
+			Password: req.Password,
+		}).Error
+	if err != nil {
+		Error = err
+	}
+	return
+}
+
 func (factory GORMFactory) DeleteUser(req structure.Users) (Error error) {
 	var data structure.Users
 	err := factory.client.Where("id = ?", req.ID).Delete(&data).Error

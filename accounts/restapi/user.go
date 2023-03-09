@@ -161,7 +161,7 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	var req = new(userReq.UserReq)
+	var req = new(userReq.ChangePassword)
 	err = c.Bind(&req)
 	if err != nil {
 		res.Code = constant.ErrorCode
@@ -176,19 +176,15 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	errArr := ctrl.Ctx.PutUser(req, uint(id))
-	if errArr != nil {
-		errRes := ""
-		for _, m1 := range errArr {
-			errRes = errRes + m1.Error() + " | "
-		}
+	err = ctrl.Ctx.ChangePassword(req, uint(id))
+	if err != nil {
 		res.Code = constant.ErrorCode
-		res.Msg = errRes
+		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
-	res.Data = "UpdateSuccess"
+	res.Data = "ChangePassword"
 	return response.EchoSucceed(c, res, APIName)
 }

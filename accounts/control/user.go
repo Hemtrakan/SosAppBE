@@ -256,9 +256,9 @@ func (ctrl Controller) DeleteUser(UserID uint) (Error error) {
 	return
 }
 
-func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) (Error []error) {
+func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) (Error error) {
 	if req.NewPassword != req.ConfirmPassword {
-		Error = append(Error, errors.New("รหัสผ่านไม่ตรงกัน"))
+		Error = errors.New("รหัสผ่านไม่ตรงกัน")
 		return
 	}
 
@@ -268,15 +268,15 @@ func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) 
 		},
 	}
 
-	userData, err := ctrl.Access.RDBMS.GetUserByPhone(mapData)
+	userData, err := ctrl.Access.RDBMS.GetUserByID(mapData)
 	if err != nil {
-		Error = append(Error, err)
+		Error = err
 		return
 	}
 
 	checkPass := verify.VerifyPassword(userData.Password, req.OldPassword)
 	if checkPass != nil {
-		Error = append(Error, errors.New("รหัสผ่านไม่ถูกต้อง"))
+		Error = errors.New("รหัสผ่านไม่ถูกต้อง")
 		return
 	}
 
@@ -292,10 +292,10 @@ func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) 
 		}
 	}
 
-	errArr := ctrl.Access.RDBMS.PutUser(Users, nil, nil)
+	err = ctrl.Access.RDBMS.ChangePassword(Users)
 	if err != nil {
-		Error = errArr
-		return
+		Error = err
 	}
+
 	return
 }

@@ -35,6 +35,7 @@ type FactoryInterface interface {
 	GetUserByID(req structure.Users) (response *structure.Users, Error error)
 	PostUser(req structure.Users) (Error error)
 	PutUser(user *structure.Users, address *structure.Address, idCard *structure.IDCard) (Error []error)
+	ChangePassword(req *structure.Users) (Error error)
 	DeleteUser(req structure.Users) (Error error)
 }
 

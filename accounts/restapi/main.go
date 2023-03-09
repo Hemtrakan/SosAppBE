@@ -44,7 +44,7 @@ func NewControllerMain(ctrl Controller) {
 
 	u.GET("/", ctrl.GetUserByToken)
 	u.PUT("/:id", ctrl.UpdateUser)
-	u.PUT("/:id", ctrl.ChangePassword)
+	u.PUT("/changePassword/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
 
 	// todo Verify ID Card API admin page
