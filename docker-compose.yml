@@ -32,7 +32,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgpassword
     volumes:
-      - './.postgresql/:/var/lib/postgresql/emergency'
+      - './.postgresql/:/var/lib/postgresql/hotline'
     ports:
       - "5434:5434"
     command: -p 5434
@@ -45,7 +45,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgpassword
     volumes:
-      - './.postgresql/:/var/lib/postgresql/emergency'
+      - './.postgresql/:/var/lib/postgresql/messenger'
     ports:
       - "5435:5435"
     command: -p 5435

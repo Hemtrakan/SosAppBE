@@ -51,13 +51,47 @@ func gormInstance(env *Properties) GORMFactory {
 		structure.History{},
 	)
 
-	hotline := structure.HotlineNumber{
-		Number:           "191",
-		Description:      "ตำรวจ",
-		UserIDLogUpdated: 0,
-	}
+	var CheckHotlineNumber []structure.HotlineNumber
+	db.Find(&CheckHotlineNumber)
+	if len(CheckHotlineNumber) == 0 {
+		hotline := structure.HotlineNumber{
+			Number:           "191",
+			Description:      "ตำรวจ",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+		hotline = structure.HotlineNumber{
+			Number:           "1193",
+			Description:      "ตำรวจทางหลวง",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+		hotline = structure.HotlineNumber{
+			Number:           "1192",
+			Description:      "ศูนย์รับแจ้งรถหาย",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+		hotline = structure.HotlineNumber{
+			Number:           "1691",
+			Description:      "โรงพยาบาลตำรวจ",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+		hotline = structure.HotlineNumber{
+			Number:           "1155",
+			Description:      "ตำรวจท่องเที่ยว",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+		hotline = structure.HotlineNumber{
+			Number:           "1197",
+			Description:      "ตำรวจจราจร",
+			UserIDLogUpdated: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
 
-	db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&hotline)
+	}
 
 	return GORMFactory{env: env, client: db}
 }
