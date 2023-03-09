@@ -11,7 +11,7 @@ type Users struct {
 	Password     string
 	Firstname    string
 	Lastname     string
-	Email        *string
+	Email        string
 	Birthday     time.Time
 	Gender       string
 	ImageProfile *string

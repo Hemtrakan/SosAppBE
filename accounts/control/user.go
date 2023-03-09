@@ -7,7 +7,6 @@ import (
 	"accounts/restapi/model/user/request"
 	resUser "accounts/restapi/model/user/response"
 	"accounts/utility/verify"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -33,7 +32,7 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		PhoneNumber:  data.PhoneNumber,
 		FirstName:    data.Firstname,
 		LastName:     data.Lastname,
-		Email:        *data.Email,
+		Email:        data.Email,
 		Birthday:     data.Birthday,
 		Gender:       data.Gender,
 		ImageProfile: *data.ImageProfile,
@@ -96,6 +95,17 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		return
 	}
 
+	image := ""
+	if req.ImageProfile == "" {
+		image, err = _image.ImageToBase64()
+		if err != nil {
+			Error = err
+			return
+		}
+	} else {
+		image = req.ImageProfile
+	}
+
 	otp := rdbmsstructure.OTP{
 		PhoneNumber: req.PhoneNumber,
 		Key:         req.Verify.OTP,
@@ -108,24 +118,12 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		return
 	}
 
-	image := ""
-	if req.ImageProfile == "" {
-		image, err = _image.ImageToBase64()
-		if err != nil {
-			Error = err
-			return
-		}
-	} else {
-		image = req.ImageProfile
-	}
-
 	newReq := rdbmsstructure.Users{
-		PhoneNumber: req.PhoneNumber,
-		Password:    string(hashPass),
-		Firstname:   req.FirstName,
-		Lastname:    req.LastName,
-		Email:       &req.Email,
-		//Birthday:    time.Now(),
+		PhoneNumber:  req.PhoneNumber,
+		Password:     string(hashPass),
+		Firstname:    req.FirstName,
+		Lastname:     req.LastName,
+		Email:        req.Email,
 		Birthday:     date,
 		Gender:       req.Gender,
 		ImageProfile: &image,
@@ -147,7 +145,6 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		},
 		RoleID: role.ID,
 	}
-	fmt.Printf("%#v", newReq)
 	err = ctrl.Access.RDBMS.PostUser(newReq)
 	if err != nil {
 		Error = err
@@ -165,16 +162,32 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			ID: userID,
 		},
 	}
+
 	data, err := ctrl.Access.RDBMS.GetUserByID(reqUserId)
 	if err != nil {
 		Error = append(Error, err)
 		return
 	}
-
-	date, err := time.Parse(time.RFC3339, req.Birthday)
-	if err != nil {
-		Error = append(Error, err)
-		return
+	var date = time.Time{}
+	image := ""
+	if req.Gender == "" {
+		image = req.ImageProfile
+	} else {
+		Birthday := strings.Split(req.Birthday, " ")
+		date, err = time.Parse("2006-01-02", Birthday[0])
+		if err != nil {
+			Error = append(Error, err)
+			return
+		}
+		if req.ImageProfile == "" {
+			image, err = _image.ImageToBase64()
+			if err != nil {
+				Error = append(Error, err)
+				return
+			}
+		} else {
+			image = req.ImageProfile
+		}
 	}
 
 	var Users = new(rdbmsstructure.Users)
@@ -187,10 +200,10 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			},
 			Firstname:    req.FirstName,
 			Lastname:     req.LastName,
-			Email:        &req.Email,
+			Email:        req.Email,
 			Birthday:     date,
 			Gender:       req.Gender,
-			ImageProfile: &req.ImageProfile,
+			ImageProfile: &image,
 			UpdateBy:     &userID,
 		}
 	}
@@ -209,6 +222,7 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			UpdateBy:    &userID,
 		}
 	}
+
 	if req.IdCard != nil {
 		IDCard = &rdbmsstructure.IDCard{
 			Model: gorm.Model{
@@ -220,9 +234,6 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 		}
 	}
 
-	//fmt.Println(Users)
-	//fmt.Println(Address)
-	//fmt.Println(IDCard)
 	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)
 	if err != nil {
 		Error = errArr

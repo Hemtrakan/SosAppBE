@@ -112,7 +112,7 @@ func gormInstance(env *Properties) GORMFactory {
 			Password:     string(Password),
 			Firstname:    "FirstNameAdmin",
 			Lastname:     "LastNameAdmin",
-			Email:        nil,
+			Email:        "",
 			Birthday:     time.Now(),
 			Gender:       "M",
 			IDCardID:     IDCard.ID,
