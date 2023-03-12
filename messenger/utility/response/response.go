@@ -2,7 +2,7 @@ package response
 
 import (
 	"github.com/labstack/echo/v4"
-	"messenger/loggers"
+	"messenger/utility/loggers"
 	"net/http"
 	"strconv"
 )

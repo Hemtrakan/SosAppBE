@@ -17,7 +17,7 @@ type Controller struct {
 	Properties db.Properties
 	Access     db.Access
 	Ctx        control.Controller
-	HttpClient httpclient.HttpClient
+	//HttpClient httpclient.HttpClient
 }
 
 func Build() *db.Properties {
@@ -56,12 +56,12 @@ func NewController() Controller {
 	build := Build()
 	access := Initial(build)
 	ctx := ConController(access)
-	httpclient := NewHttpClient()
+	//httpclient := NewHttpClient()
 	return Controller{
 		Properties: *build,
 		Access:     *access,
 		Ctx:        *ctx,
-		HttpClient: httpclient,
+		//HttpClient: httpclient,
 	}
 }
 

@@ -3,9 +3,6 @@ service:
   port: 80
   endpoint: "/SosApp/accounts"
 
-token:
-  secret: "SosAppToken"
-
 role:
   user: "/user"
   admin: "/admin"

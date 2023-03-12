@@ -2,7 +2,7 @@ package response
 
 import (
 	"github.com/labstack/echo/v4"
-	"hotline/loggers"
+	"hotline/utility/loggers"
 	"net/http"
 	"strconv"
 )

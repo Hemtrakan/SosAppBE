@@ -13,7 +13,7 @@ var (
 
 func TestGetAPI(t *testing.T) {
 
-	URL := "https://jsonplaceholder.typicode.com/todos/5"
+	URL := "http://127.0.0.1:80/SosApp/accounts/user/14"
 	HttpResponse, Error = h.Get(URL, nil)
 	if Error != nil {
 		t.Error("err : ", Error)

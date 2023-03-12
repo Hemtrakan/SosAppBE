@@ -2,6 +2,7 @@ package db
 
 import (
 	"emergency/db/structure"
+	"emergency/db/structure/responsedb"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -14,6 +15,7 @@ var (
 )
 
 type FactoryInterface interface {
+	GetInformList(UserId uint) (response []*responsedb.InformInfo, Error error)
 	PostInform(req structure.InformImage) (Error error)
 }
 

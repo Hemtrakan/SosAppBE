@@ -36,6 +36,7 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		Birthday:     data.Birthday,
 		Gender:       data.Gender,
 		ImageProfile: *data.ImageProfile,
+		Workplace:    *data.Workplace,
 		IdCard: resUser.IdCard{
 			TextIDCard: data.IDCard.TextIDCard,
 			PathImage:  data.IDCard.PathImage,

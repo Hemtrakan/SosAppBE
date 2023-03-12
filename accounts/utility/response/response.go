@@ -1,7 +1,7 @@
 package response
 
 import (
-	"accounts/loggers"
+	"accounts/utility/loggers"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"

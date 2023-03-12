@@ -4,30 +4,30 @@ import (
 	"emergency/constant"
 	"emergency/restapi/model/inform"
 	"emergency/utility/response"
+	"emergency/utility/token"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-//
-//func (ctrl Controller) GetInformList(c echo.Context) error {
-//	var request = new(request.InformRequest)
-//	var res response.RespMag
-//	APIName := "getInformList"
-//	values := token.GetValuesToken(c)
-//
-//
-//	err := c.Bind(request)
-//	if err != nil {
-//		res.Code = constant.ErrorCode
-//		res.Msg = err.Error()
-//		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-//	}
-//
-//	res.Msg = constant.SuccessMsg
-//	res.Code = constant.SuccessCode
-//	res.Data = res
-//	return response.EchoSucceed(c, res, APIName)
-//}
+func (ctrl Controller) GetInformList(c echo.Context) error {
+	var res response.RespMag
+
+	APIName := "getInformList"
+	values := token.GetValuesToken(c)
+	token := token.GetAuthToken(c)
+	resp, err := ctrl.Ctx.GetInform(values.ID, token)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}
+
 //
 //func (ctrl Controller) GetInformById(c echo.Context) error {
 //	var res response.RespMag

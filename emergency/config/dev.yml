@@ -3,9 +3,6 @@ service:
   port: 81
   endpoint: "/SosApp/emergency"
 
-token:
-  secret: "SosAppToken"
-
 role:
   user: "/user"
   admin: "/admin"
