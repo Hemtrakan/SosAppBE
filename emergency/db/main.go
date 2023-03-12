@@ -14,6 +14,7 @@ var (
 )
 
 type FactoryInterface interface {
+	PostInform(req structure.InformImage) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -53,6 +54,62 @@ func gormInstance(env *Properties) GORMFactory {
 		structure.InformNotification{},
 	)
 
+	var typeStructureArr []structure.Type
+	db.Find(&typeStructureArr)
+	if len(typeStructureArr) == 0 {
+		Type1 := structure.Type{
+			Name:      "โรงพยาบาล",
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type1)
+
+		Type2 := structure.Type{
+			Name:      "ปอเต็กตึ๊ง",
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type2)
+
+		Type3 := structure.Type{
+			Name:      "สถานีดับเพลิง",
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type3)
+
+		Type4 := structure.Type{
+			Name:      "สถานีตำรวจ",
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type4)
+
+		subType1 := structure.SubType{
+			Name:      "เจ็บป่วย",
+			TypeID:    Type1.ID,
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType1)
+
+		subType2 := structure.SubType{
+			Name:      "อุบัติเหตุ",
+			TypeID:    Type2.ID,
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType2)
+
+		subType3 := structure.SubType{
+			Name:      "อาคาร/สถานที่",
+			TypeID:    Type3.ID,
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType3)
+
+		subType4 := structure.SubType{
+			Name:      "อื่น",
+			TypeID:    Type4.ID,
+			DeletedBy: 0,
+		}
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType4)
+
+	}
 	return GORMFactory{env: env, client: db}
 }
 

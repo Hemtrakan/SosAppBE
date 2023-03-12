@@ -8,6 +8,8 @@ type Inform struct {
 	gorm.Model
 	Description         string
 	PhoneNumberCallBack string
+	Latitude            string
+	Longitude           string
 	UserID              uint
 	DeletedBy           uint
 	SubTypeID           uint
@@ -15,15 +17,16 @@ type Inform struct {
 
 type InformImage struct {
 	gorm.Model
-	Image    string
-	Inform   Inform
 	InformID uint
+	Inform   Inform
+	Image    string
 }
 
 type InformNotification struct {
 	gorm.Model
-	Inform      Inform
-	InformID    uint
+	InformID uint
+	Inform   Inform
+	// UserID คนที่รับแจ้งเหตุ
 	UserID      uint
 	Description string
 	Status      string

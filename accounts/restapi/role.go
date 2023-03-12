@@ -50,7 +50,7 @@ func (ctrl Controller) GetRoleList(c echo.Context) error {
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
 	res.Data = responses
-	return response.EchoSucceed(c, responses, APIName)
+	return response.EchoSucceed(c, res, APIName)
 }
 
 func (ctrl Controller) GetRoleById(c echo.Context) error {
@@ -62,7 +62,6 @@ func (ctrl Controller) GetRoleById(c echo.Context) error {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-
 	}
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode

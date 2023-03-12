@@ -30,10 +30,17 @@ func NewControllerMain(ctrl Controller) {
 
 	r := e.Group(config.GetString("service.endpoint"))
 
-	r.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Ok Service Emergency")
-	})
+	// user
+	u := r.Group(config.GetString("role.user"))
+	//u.POST("/", ctrl.GetInformList)
+	//u.POST("/:id", ctrl.GetInformById)
+	u.POST("/", ctrl.PostInform)
+	//u.POST("/:id", ctrl.PutInform)
+	//u.POST("/:id", ctrl.DeleteInform)
 
+	u.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+
+	// admin
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 
