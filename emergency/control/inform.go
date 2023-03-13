@@ -8,11 +8,12 @@ import (
 	"emergency/utility/pointer"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"strconv"
+	"time"
 )
 
 func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.InformResponse, Error error) {
-
 	resp, err := ctrl.Access.RDBMS.GetInformList(UserId)
 	if err != nil {
 		Error = err
@@ -20,6 +21,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 	}
 	for _, m1 := range resp {
 		URL := "http://127.0.0.1:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
+		//URL := "localhost:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = Token
 
@@ -47,6 +49,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 		}
 
 		mapData := inform.InformResponse{
+			ID:                  pointer.GetStringValue(m1.ID),
 			Description:         pointer.GetStringValue(m1.Description),
 			Image:               pointer.GetStringValue(m1.Image),
 			PhoneNumberCallBack: pointer.GetStringValue(m1.CALLBack),
@@ -78,6 +81,10 @@ func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
 	}
 	newReqInform := rdbmsstructure.InformImage{
 		Inform: rdbmsstructure.Inform{
+			Model: gorm.Model{
+				CreatedAt: time.Now().Add(time.Hour * 7),
+				UpdatedAt: time.Now().Add(time.Hour * 7),
+			},
 			Description:         req.Description,
 			PhoneNumberCallBack: req.PhoneNumberCallBack,
 			Latitude:            req.Latitude,

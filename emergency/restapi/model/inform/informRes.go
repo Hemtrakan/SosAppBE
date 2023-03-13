@@ -1,6 +1,7 @@
 package inform
 
 type InformResponse struct {
+	ID string `json:"id,omitempty"`
 	// Description คำอธิบายเพิ่มเต็ม
 	Description string `json:"description,omitempty"`
 	// Image รูปภาพที่เก็บสำหรับการแจ้งเหตุ เป็น Base64
@@ -13,7 +14,7 @@ type InformResponse struct {
 	Longitude string `json:"longitude,omitempty"`
 
 	// UserName
-	UserName string `json:"userName,omitempty"`
+	UserName string `json:"username,omitempty"`
 	// Workplace
 	Workplace string `json:"workplace,omitempty"`
 

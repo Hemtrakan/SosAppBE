@@ -11,10 +11,10 @@ import (
 
 func (ctrl Controller) GetInformList(c echo.Context) error {
 	var res response.RespMag
-
 	APIName := "getInformList"
 	values := token.GetValuesToken(c)
 	token := token.GetAuthToken(c)
+
 	resp, err := ctrl.Ctx.GetInform(values.ID, token)
 	if err != nil {
 		res.Code = constant.ErrorCode

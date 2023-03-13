@@ -40,9 +40,9 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 	}
 	defer rows.Close()
 
-	var data = new(responsedb.InformInfo)
 	var dataArr []*responsedb.InformInfo
 	for rows.Next() {
+		var data = new(responsedb.InformInfo)
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,

@@ -32,14 +32,13 @@ type GORMFactory struct {
 }
 
 func gormInstance(env *Properties) GORMFactory {
-	databaseSet := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-		env.GormHost, env.GormPort, env.GormUser, env.GormName, env.GormPass, "disable")
+	databaseSet := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s TimeZone=%s",
+		env.GormHost, env.GormPort, env.GormUser, env.GormName, env.GormPass, "disable", "Asia/Bangkok")
 
 	db, err := gorm.Open(postgres.Open(databaseSet), &gorm.Config{})
 
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect database : %s", err.Error()))
-		//panic(fmt.Sprintf("failed to connect database : %s", err.Error()))
 	}
 
 	if env.Flavor != Production {

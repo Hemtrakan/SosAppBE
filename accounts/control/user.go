@@ -6,6 +6,7 @@ import (
 	reqSingUp "accounts/restapi/model/singup/request"
 	"accounts/restapi/model/user/request"
 	resUser "accounts/restapi/model/user/response"
+	"accounts/utility/pointer"
 	"accounts/utility/verify"
 	"strconv"
 	"strings"
@@ -36,7 +37,7 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		Birthday:     data.Birthday,
 		Gender:       data.Gender,
 		ImageProfile: *data.ImageProfile,
-		Workplace:    *data.Workplace,
+		Workplace:    pointer.GetStringValue(data.Workplace),
 		IdCard: resUser.IdCard{
 			TextIDCard: data.IDCard.TextIDCard,
 			PathImage:  data.IDCard.PathImage,
