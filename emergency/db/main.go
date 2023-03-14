@@ -16,7 +16,7 @@ var (
 
 type FactoryInterface interface {
 	GetInformList(UserId uint) (response []*responsedb.InformInfo, Error error)
-	PostInform(req structure.InformImage) (Error error)
+	PostInform(imageArr []structure.InformImage, inform structure.Inform) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

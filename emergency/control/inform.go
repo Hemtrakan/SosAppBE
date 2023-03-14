@@ -79,23 +79,33 @@ func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
 		Error = err
 		return
 	}
-	newReqInform := rdbmsstructure.InformImage{
-		Inform: rdbmsstructure.Inform{
+
+	newReqInform := rdbmsstructure.Inform{
+		Model: gorm.Model{
+			CreatedAt: time.Now().Add(time.Hour * 7),
+			UpdatedAt: time.Now().Add(time.Hour * 7),
+		},
+		Description:         req.Description,
+		PhoneNumberCallBack: req.PhoneNumberCallBack,
+		Latitude:            req.Latitude,
+		Longitude:           req.Longitude,
+		UserID:              uint(userId),
+		SubTypeID:           req.SubTypeID,
+	}
+
+	var newReqImageArr []rdbmsstructure.InformImage
+	for _, m1 := range req.Images {
+		newReqImage := rdbmsstructure.InformImage{
 			Model: gorm.Model{
 				CreatedAt: time.Now().Add(time.Hour * 7),
 				UpdatedAt: time.Now().Add(time.Hour * 7),
 			},
-			Description:         req.Description,
-			PhoneNumberCallBack: req.PhoneNumberCallBack,
-			Latitude:            req.Latitude,
-			Longitude:           req.Longitude,
-			UserID:              uint(userId),
-			SubTypeID:           req.SubTypeID,
-		},
-		Image: req.Images,
+			Image: m1,
+		}
+		newReqImageArr = append(newReqImageArr, newReqImage)
 	}
 
-	err = ctrl.Access.RDBMS.PostInform(newReqInform)
+	err = ctrl.Access.RDBMS.PostInform(newReqImageArr, newReqInform)
 	if err != nil {
 		Error = err
 		return

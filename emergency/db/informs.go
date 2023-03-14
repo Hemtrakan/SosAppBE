@@ -71,8 +71,8 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 	return
 }
 
-func (factory GORMFactory) PostInform(req structure.InformImage) (Error error) {
-	err := factory.client.Session(&gorm.Session{FullSaveAssociations: true}).Save(&req).Error
+func (factory GORMFactory) PostInform(imageArr []structure.InformImage, inform structure.Inform) (Error error) {
+	err := factory.client.Session(&gorm.Session{FullSaveAssociations: true}).Save(&inform).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRegistered) {
 			Error = err
@@ -82,5 +82,27 @@ func (factory GORMFactory) PostInform(req structure.InformImage) (Error error) {
 			return
 		}
 	}
+
+	for _, m1 := range imageArr {
+		image := structure.InformImage{
+			Model: gorm.Model{
+				CreatedAt: m1.CreatedAt,
+				UpdatedAt: m1.UpdatedAt,
+			},
+			InformID: inform.ID,
+			Image:    m1.Image,
+		}
+		err = factory.client.Session(&gorm.Session{FullSaveAssociations: true}).Save(&image).Error
+		if err != nil {
+			if !errors.Is(err, gorm.ErrRegistered) {
+				Error = err
+				return
+			} else {
+				Error = err
+				return
+			}
+		}
+	}
+
 	return
 }

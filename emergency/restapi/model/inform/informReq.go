@@ -5,7 +5,7 @@ type InformRequest struct {
 	Description string `json:"description,omitempty"`
 
 	// Image รูปภาพที่เก็บสำหรับการแจ้งเหตุ
-	Images string `json:"images,omitempty"`
+	Images []string `json:"images,omitempty"`
 
 	// PhoneNumberCallBack เบอร์โทรติดต่อกลับ
 	PhoneNumberCallBack string `json:"phoneNumberCallBack,omitempty"`
