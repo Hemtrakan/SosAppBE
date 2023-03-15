@@ -20,6 +20,7 @@ type SingUp struct {
 	Birthday        string  `json:"birthday,omitempty" validate:"required"`
 	Gender          string  `json:"gender,omitempty" validate:"required"`
 	ImageProfile    string  `json:"imageProfile"`
+	RoleId          uint    `json:"role"  validate:"required"`
 	IDCard          IDCard  `json:"idCard,omitempty" validate:"required"`
 	Address         Address `json:"address" validate:"required"`
 	Verify          Verify  `json:"verify" validate:"required"`

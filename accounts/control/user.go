@@ -118,13 +118,16 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 	hashPass, err := verify.Hash(req.Password)
 
 	roleModel := rdbmsstructure.Role{
-		Name: "user",
+		Model: gorm.Model{
+			ID: req.RoleId,
+		},
 	}
-	role, err := ctrl.Access.RDBMS.GetRoleByName(roleModel)
+	role, err := ctrl.Access.RDBMS.GetRoleById(roleModel)
 	if err != nil {
 		Error = err
 		return
 	}
+
 	date := time.Now()
 	if req.Birthday != "" {
 		Birthday := strings.Split(req.Birthday, " ")
