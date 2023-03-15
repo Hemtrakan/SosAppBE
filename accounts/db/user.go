@@ -3,6 +3,7 @@ package db
 import (
 	"accounts/db/structure"
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -25,6 +26,22 @@ func (factory GORMFactory) GetUserByPhone(req structure.Users) (response *struct
 func (factory GORMFactory) GetUserByID(req structure.Users) (response *structure.Users, Error error) {
 	var data = new(structure.Users)
 	err := factory.client.Preload("Role").Preload("IDCard").Preload("Address").Where("id = ?", req.ID).First(&data).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = gorm.ErrRecordNotFound
+			return
+		}
+	}
+	response = data
+	return
+}
+
+func (factory GORMFactory) GetUserList() (response []*structure.Users, Error error) {
+	var data []*structure.Users
+	err := factory.client.Preload("Role").Preload("IDCard").Preload("Address").Find(&data).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

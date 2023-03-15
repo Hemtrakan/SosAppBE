@@ -4,15 +4,16 @@ import (
 	"accounts/constant"
 	"accounts/utility/response"
 	"accounts/utility/token"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config "github.com/spf13/viper"
 	"github.com/tylerb/graceful"
-	"net/http"
-	"strings"
-	"time"
 )
 
 func NewControllerMain(ctrl Controller) {
@@ -49,8 +50,9 @@ func NewControllerMain(ctrl Controller) {
 
 	// todo Verify ID Card API admin page
 	// todo admin
-	a := s.Group("/admin")
+	a := s.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	a.GET("/", ctrl.GetUserList)
 
 	a.GET("/:id", ctrl.GetUserById)
 

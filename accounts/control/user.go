@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -52,6 +53,46 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 			Country:     data.Address.Country,
 		},
 	}
+	return
+}
+
+func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
+
+	data, err := ctrl.Access.RDBMS.GetUserList()
+	if err != nil {
+		Error = err
+		return
+	}
+
+	for _, user := range data {
+		objectUser := resUser.UserRes{
+			ID:           strconv.Itoa(int(user.ID)),
+			PhoneNumber:  user.PhoneNumber,
+			FirstName:    user.Firstname,
+			LastName:     user.Lastname,
+			Email:        user.Email,
+			Birthday:     user.Birthday,
+			Gender:       user.Gender,
+			ImageProfile: pointer.GetStringValue(user.ImageProfile),
+			Workplace:    pointer.GetStringValue(user.Workplace),
+			IdCard: resUser.IdCard{
+				TextIDCard: user.IDCard.TextIDCard,
+				PathImage:  user.IDCard.PathImage,
+				Verify:     false,
+			},
+			Address: resUser.Address{
+				Address:     user.Address.Address,
+				SubDistrict: user.Address.SubDistrict,
+				District:    user.Address.District,
+				Province:    user.Address.Province,
+				PostalCode:  user.Address.PostalCode,
+				Country:     user.Address.Country,
+			},
+		}
+
+		res = append(res, objectUser)
+	}
+
 	return
 }
 

@@ -4,10 +4,11 @@ import (
 	"accounts/db/structure"
 	"accounts/utility/verify"
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"sync"
 	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -33,6 +34,7 @@ type FactoryInterface interface {
 	// Users
 	GetUserByPhone(req structure.Users) (response *structure.Users, Error error)
 	GetUserByID(req structure.Users) (response *structure.Users, Error error)
+	GetUserList() (response []*structure.Users, Error error)
 	PostUser(req structure.Users) (Error error)
 	PutUser(user *structure.Users, address *structure.Address, idCard *structure.IDCard) (Error []error)
 	ChangePassword(req *structure.Users) (Error error)

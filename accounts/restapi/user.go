@@ -5,9 +5,10 @@ import (
 	userReq "accounts/restapi/model/user/request"
 	"accounts/utility/response"
 	"accounts/utility/token"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 func (ctrl Controller) GetUserByToken(c echo.Context) error {
@@ -16,6 +17,21 @@ func (ctrl Controller) GetUserByToken(c echo.Context) error {
 	values := token.GetValuesToken(c)
 
 	data, err := ctrl.Ctx.GetUser(values.ID)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	res.Code = constant.SuccessCode
+	res.Msg = constant.SuccessMsg
+	res.Data = data
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) GetUserList(c echo.Context) error {
+	var res response.RespMag
+	APIName := "getUserList"
+	data, err := ctrl.Ctx.GetUserList()
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
