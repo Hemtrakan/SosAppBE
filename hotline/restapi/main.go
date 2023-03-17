@@ -40,11 +40,7 @@ func NewControllerMain(ctrl Controller) {
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 
-	//r := e.Group("/SosApp")
-
-	//e.Logger.Fatal(e.Start(":80"))
 	e.Start(":" + config.GetString("service.port"))
-	//e.Server.Addr = ":" + config.GetString("service.port")
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
 
 	if err != nil {

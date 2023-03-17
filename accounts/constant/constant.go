@@ -1,6 +1,7 @@
 package constant
 
 const (
+	ServiceName             string = "accounts"
 	SuccessMsg              string = "Success"
 	SuccessCode             string = "0"
 	ErrorCode               string = "400"
