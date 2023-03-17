@@ -51,7 +51,6 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 		mapData := inform.InformResponse{
 			ID:                  pointer.GetStringValue(m1.ID),
 			Description:         pointer.GetStringValue(m1.Description),
-			Image:               pointer.GetStringValue(m1.Image),
 			PhoneNumberCallBack: pointer.GetStringValue(m1.CALLBack),
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
@@ -69,6 +68,72 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 	//	Error = err
 	//	return
 	//}
+	return
+}
+
+func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.InformResponse, Error error) {
+	InformId, err := strconv.Atoi(ReqInformId)
+	if err != nil {
+		Error = err
+		return
+	}
+	resp, err := ctrl.Access.RDBMS.GetImageByInformId(uint(InformId))
+	if err != nil {
+		Error = err
+		return
+	}
+	URL := "http://127.0.0.1:80/SosApp/accounts/user/" + pointer.GetStringValue(resp.UserNotiID)
+	//URL := "localhost:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
+	httpHeaderMap := map[string]string{}
+	httpHeaderMap["Authorization"] = Token
+
+	HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	if HttpResponse.HttpStatusCode != 200 {
+		Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v", HttpResponse.HttpStatusCode))
+		return
+	}
+
+	UserRes := new(structure.UserRes)
+	err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+	if err != nil {
+		Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+		return
+	}
+
+	Username := ""
+	if UserRes.FirstName != "" && UserRes.LastName != "" {
+		Username = UserRes.FirstName + " " + UserRes.LastName
+	}
+	var ImageInfoArr []inform.ImageInfo
+
+	for _, image := range resp.ImageInfo {
+		ImageInfo := inform.ImageInfo{
+			ImageId: pointer.GetStringValue(image.ImageId),
+			Image:   pointer.GetStringValue(image.Image),
+		}
+		ImageInfoArr = append(ImageInfoArr, ImageInfo)
+	}
+
+	mapData := inform.InformResponse{
+		ID:                  pointer.GetStringValue(resp.ID),
+		Description:         pointer.GetStringValue(resp.Description),
+		Image:               ImageInfoArr,
+		PhoneNumberCallBack: pointer.GetStringValue(resp.CALLBack),
+		Latitude:            pointer.GetStringValue(resp.Latitude),
+		Longitude:           pointer.GetStringValue(resp.Longitude),
+		UserName:            Username,
+		Workplace:           UserRes.Workplace,
+		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
+		Date:                pointer.GetStringValue(resp.InformCreatedAt),
+		Status:              pointer.GetStringValue(resp.Status),
+	}
+	res = mapData
+
 	return
 }
 

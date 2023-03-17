@@ -5,7 +5,7 @@ type InformResponse struct {
 	// Description คำอธิบายเพิ่มเต็ม
 	Description string `json:"description,omitempty"`
 	// Image รูปภาพที่เก็บสำหรับการแจ้งเหตุ เป็น Base64
-	Image string `json:"image,omitempty"`
+	Image []ImageInfo `json:"image,omitempty"`
 	// PhoneNumberCallBack เบอร์โทรติดต่อกลับ
 	PhoneNumberCallBack string `json:"phoneNumberCallBack,omitempty"`
 	// Latitude
@@ -25,4 +25,9 @@ type InformResponse struct {
 
 	// Status สถานะการแจ้งเหตู
 	Status string `json:"status,omitempty"`
+}
+
+type ImageInfo struct {
+	ImageId string
+	Image   string
 }

@@ -34,7 +34,7 @@ func NewControllerMain(ctrl Controller) {
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 	u.GET("/", ctrl.GetInformList)
-	//u.POST("/:id", ctrl.GetInformById)
+	u.GET("/:id", ctrl.GetInformById)
 	u.POST("/", ctrl.PostInform)
 	//u.POST("/:id", ctrl.PutInform)
 	//u.POST("/:id", ctrl.DeleteInform)

@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const getInfoInfo = `SELECT i.id   AS ID
+const getInformInfo = `SELECT i.id   AS ID
      , i.created_at             AS InformCreatedAt
      , i.user_id                AS UserInformID
      , i.description            AS Description
@@ -18,31 +18,35 @@ const getInfoInfo = `SELECT i.id   AS ID
      , st.name                  AS SubTypeName
      , t.id                     AS TypeID
      , t.name                   AS Type
-     , ii.id                    AS ImageId
-     , ii.image                 AS Image
      , inf.id                   AS NotiID
      , inf.created_at           AS NotiCreatedAt
      , inf.user_id              AS UserNotiID
      , inf.description          AS NotiDes
      , inf.status               as Status
 FROM informs AS i
-         LEFT JOIN inform_images ii ON i.id = ii.inform_id
          LEFT JOIN inform_notifications inf ON i.id = inf.inform_id
-         INNER JOIN sub_types st on st.id = i.sub_type_id
-         INNER JOIN types t on t.id = st.type_id
-where i.user_id = ?`
+         INNER JOIN sub_types st ON st.id = i.sub_type_id
+         INNER JOIN types t ON t.id = st.type_id
+`
 
-func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.InformInfo, Error error) {
-	rows, err := factory.client.Raw(getInfoInfo, UserId).Rows()
+const getInformImage = `SELECT ii.id
+     , ii.image
+FROM inform_images ii
+    INNER JOIN informs i ON i.id = ii.inform_id
+WHERE  ii.inform_id =  ?`
+
+func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error) {
+	sql := getInformInfo + "WHERE i.user_id = ? "
+	rows, err := factory.client.Raw(sql, UserId).Rows()
 	if err != nil {
 		Error = err
 		return
 	}
 	defer rows.Close()
 
-	var dataArr []*responsedb.InformInfo
+	var dataArr []*responsedb.InformInfoList
 	for rows.Next() {
-		var data = new(responsedb.InformInfo)
+		var data = new(responsedb.InformInfoList)
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
@@ -55,8 +59,42 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 			&data.SubTypeName,
 			&data.TypeID,
 			&data.Type,
-			&data.ImageId,
-			&data.Image,
+			&data.NotiID,
+			&data.NotiCreatedAt,
+			&data.UserNotiID,
+			&data.NotiDes,
+			&data.Status,
+		)
+		dataArr = append(dataArr, data)
+	}
+
+	response = dataArr
+	return
+}
+
+func (factory GORMFactory) GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error) {
+	sql := getInformInfo + "WHERE i.id = ? "
+	rows, err := factory.client.Raw(sql, informId).Rows()
+	if err != nil {
+		Error = err
+		return
+	}
+	defer rows.Close()
+
+	var data = new(responsedb.InformInfoById)
+	for rows.Next() {
+		rows.Scan(
+			&data.ID,
+			&data.InformCreatedAt,
+			&data.UserInformID,
+			&data.Description,
+			&data.CALLBack,
+			&data.Latitude,
+			&data.Longitude,
+			&data.SubTypeId,
+			&data.SubTypeName,
+			&data.TypeID,
+			&data.Type,
 			&data.NotiID,
 			&data.NotiCreatedAt,
 			&data.UserNotiID,
@@ -64,10 +102,21 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 			&data.Status,
 		)
 
-		dataArr = append(dataArr, data)
+		var imageInfoArr []*responsedb.ImageInfo
+		getInformImageRow, _ := factory.client.Raw(getInformImage, data.ID).Rows()
+
+		for getInformImageRow.Next() {
+			var imageInfo = new(responsedb.ImageInfo)
+			getInformImageRow.Scan(
+				&imageInfo.ImageId,
+				&imageInfo.Image,
+			)
+			imageInfoArr = append(imageInfoArr, imageInfo)
+		}
+		data.ImageInfo = imageInfoArr
 	}
 
-	response = dataArr
+	response = data
 	return
 }
 

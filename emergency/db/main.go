@@ -15,7 +15,8 @@ var (
 )
 
 type FactoryInterface interface {
-	GetInformList(UserId uint) (response []*responsedb.InformInfo, Error error)
+	GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error)
+	GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error)
 	PostInform(imageArr []structure.InformImage, inform structure.Inform) (Error error)
 }
 
