@@ -25,9 +25,6 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.Logger())
 
 	s := e.Group(config.GetString("service.endpoint"))
-	s.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Ok")
-	})
 	s.POST("/sendOTP", ctrl.SendOTP)
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
@@ -61,9 +58,10 @@ func NewControllerMain(ctrl Controller) {
 	a.POST("/role", ctrl.AddRole)
 	a.PUT("/role/:id", ctrl.UpdateRole)    // todo ยังไม่เสร็จ
 	a.DELETE("/role/:id", ctrl.DeleteRole) // todo ยังไม่เสร็จ
-	//
+
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
+
 	if err != nil {
 		panic(err)
 	}
