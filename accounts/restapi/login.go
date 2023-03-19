@@ -4,6 +4,7 @@ import (
 	"accounts/constant"
 	singin "accounts/restapi/model/singin/request"
 	singinResp "accounts/restapi/model/singin/response"
+	"accounts/utility/loggers"
 	"accounts/utility/response"
 	"errors"
 	"github.com/labstack/echo/v4"
@@ -14,6 +15,8 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	var request = new(singin.Login)
 	var res response.RespMag
 	APIName := "signIn"
+	loggers.LogStart(APIName)
+
 	err := c.Bind(request)
 	if err != nil {
 		res.Msg = err.Error()

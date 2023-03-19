@@ -5,6 +5,7 @@ import (
 	singin "accounts/restapi/model/singin/request"
 	singinResp "accounts/restapi/model/singin/response"
 	singup "accounts/restapi/model/singup/request"
+	"accounts/utility/loggers"
 	"accounts/utility/response"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -14,6 +15,7 @@ func (ctrl Controller) SendOTP(c echo.Context) error {
 	var request = new(singup.PhoneNumber)
 	var res response.RespMag
 	APIName := "sendOTP"
+	loggers.LogStart(APIName)
 	err := c.Bind(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
@@ -45,6 +47,8 @@ func (ctrl Controller) VerifyOTP(c echo.Context) error {
 	var request = new(singup.OTP)
 	var res response.RespMag
 	APIName := "verifyOTP"
+	loggers.LogStart(APIName)
+
 	err := c.Bind(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
@@ -76,6 +80,8 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 	var request = new(singup.SingUp)
 	var res response.RespMag
 	APIName := "createUser"
+	loggers.LogStart(APIName)
+
 	err := c.Bind(request)
 	if err != nil {
 		res.Code = constant.ErrorCode

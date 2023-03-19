@@ -3,6 +3,7 @@ package restapi
 import (
 	"github.com/labstack/echo/v4"
 	"hotline/constant"
+	"hotline/utility/loggers"
 	"hotline/utility/response"
 	"net/http"
 )
@@ -10,6 +11,8 @@ import (
 func (ctrl Controller) GetHotLine(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getHotLine"
+	loggers.LogStart(APIName)
+
 	responses, err := ctrl.Ctx.GetHotLine()
 	if err != nil {
 		res.Code = constant.ErrorCode

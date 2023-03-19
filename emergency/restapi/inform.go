@@ -3,6 +3,7 @@ package restapi
 import (
 	"emergency/constant"
 	"emergency/restapi/model/inform"
+	"emergency/utility/loggers"
 	"emergency/utility/response"
 	"emergency/utility/token"
 	"github.com/labstack/echo/v4"
@@ -12,6 +13,8 @@ import (
 func (ctrl Controller) GetInformList(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getInformList"
+	loggers.LogStart(APIName)
+
 	values := token.GetValuesToken(c)
 	token := token.GetAuthToken(c)
 
@@ -31,6 +34,8 @@ func (ctrl Controller) GetInformList(c echo.Context) error {
 func (ctrl Controller) GetInformById(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getInformById"
+	loggers.LogStart(APIName)
+
 	token := token.GetAuthToken(c)
 	id := c.Param("id")
 
@@ -51,6 +56,7 @@ func (ctrl Controller) PostInform(c echo.Context) error {
 	var request = new(inform.InformRequest)
 	var res response.RespMag
 	APIName := "postInform"
+	loggers.LogStart(APIName)
 
 	err := c.Bind(request)
 	if err != nil {

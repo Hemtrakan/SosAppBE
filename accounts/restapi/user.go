@@ -3,6 +3,7 @@ package restapi
 import (
 	"accounts/constant"
 	userReq "accounts/restapi/model/user/request"
+	"accounts/utility/loggers"
 	"accounts/utility/response"
 	"accounts/utility/token"
 	"net/http"
@@ -14,6 +15,8 @@ import (
 func (ctrl Controller) GetUserByToken(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getUserByToken"
+	loggers.LogStart(APIName)
+
 	values := token.GetValuesToken(c)
 
 	data, err := ctrl.Ctx.GetUser(values.ID)
@@ -31,6 +34,8 @@ func (ctrl Controller) GetUserByToken(c echo.Context) error {
 func (ctrl Controller) GetUserList(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getUserList"
+	loggers.LogStart(APIName)
+
 	data, err := ctrl.Ctx.GetUserList()
 	if err != nil {
 		res.Code = constant.ErrorCode
@@ -46,6 +51,8 @@ func (ctrl Controller) GetUserList(c echo.Context) error {
 func (ctrl Controller) GetUserById(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getUserById"
+	loggers.LogStart(APIName)
+
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
@@ -77,6 +84,8 @@ func (ctrl Controller) GetUserById(c echo.Context) error {
 func (ctrl Controller) UpdateUser(c echo.Context) error {
 	var res response.RespMag
 	APIName := "updateUser"
+	loggers.LogStart(APIName)
+
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
@@ -128,6 +137,7 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 func (ctrl Controller) DeleteUser(c echo.Context) error {
 	var res response.RespMag
 	APIName := "deleteUser"
+	loggers.LogStart(APIName)
 
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
@@ -161,6 +171,8 @@ func (ctrl Controller) DeleteUser(c echo.Context) error {
 func (ctrl Controller) ChangePassword(c echo.Context) error {
 	var res response.RespMag
 	APIName := "changePassword"
+	loggers.LogStart(APIName)
+
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
 

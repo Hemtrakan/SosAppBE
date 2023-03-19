@@ -19,33 +19,41 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 		Error = err
 		return
 	}
+	Username := ""
+	UserRes := new(structure.UserRes)
 	for _, m1 := range resp {
-		URL := "http://127.0.0.1:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
-		//URL := "localhost:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
-		httpHeaderMap := map[string]string{}
-		httpHeaderMap["Authorization"] = Token
+		if pointer.GetStringValue(m1.UserNotiID) != "" {
+			UserNotiID := pointer.GetStringValue(m1.UserNotiID)
+			URL := "http://127.0.0.1:80/SosApp/accounts/user/" + UserNotiID
+			fmt.Printf("Url : %#v \n", URL)
+			httpHeaderMap := map[string]string{}
+			httpHeaderMap["Authorization"] = Token
 
-		HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
-		if err != nil {
-			Error = err
-			return
-		}
+			HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
+			if err != nil {
+				Error = err
+				fmt.Printf("Error : , %#v\n", Error)
+				return
+			}
 
-		if HttpResponse.HttpStatusCode != 200 {
-			Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v", HttpResponse.HttpStatusCode))
-			return
-		}
+			if HttpResponse.HttpStatusCode != 200 {
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v", HttpResponse.HttpStatusCode))
+				fmt.Printf("%#v\n", Error)
+				return
+			}
 
-		UserRes := new(structure.UserRes)
-		err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
-		if err != nil {
-			Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
-			return
-		}
-
-		Username := ""
-		if UserRes.FirstName != "" && UserRes.LastName != "" {
-			Username = UserRes.FirstName + " " + UserRes.LastName
+			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+			if err != nil {
+				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+				fmt.Printf("%#v\n", Error)
+				return
+			}
+			fmt.Println()
+			fmt.Printf("UserRes : %#v", UserRes)
+			fmt.Println()
+			if UserRes.FirstName != "" && UserRes.LastName != "" {
+				Username = UserRes.FirstName + " " + UserRes.LastName
+			}
 		}
 
 		mapData := inform.InformResponse{
@@ -62,12 +70,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 		}
 		res = append(res, mapData)
 	}
-	//ctrl.HttpProxy.GetUser()
-	//err = ctrl.Access.RDBMS.PostInform(newReqInform)
-	//if err != nil {
-	//	Error = err
-	//	return
-	//}
+
 	return
 }
 
