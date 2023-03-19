@@ -1,0 +1,109 @@
+pipeline {
+
+    agent {
+        label 'main'
+    }
+
+    environment {
+        image1 = "annabells/sosapp-accounts-service"
+        image2 = "annabells/sosapp-emergency-service"
+        image3 = "annabells/sosapp-hotline-service"
+        image4 = "annabells/sosapp-messenger-service"
+        registry = "docker.io"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Print Environment') {
+            steps {
+                sh('ls -al')
+                sh('printenv')
+            }
+        }
+
+        // stage('Ansible prepareations docker ') {
+        //     steps{
+        //         sh 'ANSIBLE_ROLES_PATH="$PWD/ansible-script/roles" ansible-playbook -vvv ./ansible-script/playbook/web-server/web-server.yml -i ./ansible-script/host -u root -e "state=prepareation tagnumber=${BUILD_NUMBER}"'
+        //     }
+        // }
+
+        stage('Build docker image1') {
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub') {
+                        def slackImage = docker.build("${env.image1}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Build docker image2') {
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub') {
+                        def slackImage = docker.build("${env.image2}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Build docker image3') {
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub') {
+                        def slackImage = docker.build("${env.image3}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Build docker image4') {
+                    steps {
+                        script {
+                            docker.withRegistry('', 'dockerhub') {
+                                def slackImage = docker.build("${env.image4}:${BUILD_NUMBER}")
+                                slackImage.push()
+                                slackImage.push('latest')
+                            }
+                        }
+                    }
+                }
+        stage('Deployment'){
+            steps {
+                sh "docker-compose up -d"
+            }
+
+        }
+
+        // stage('tag docker image') {
+        //     steps {
+        //        sh "docker tag ${env.image}:${BUILD_NUMBER} ${env.image}:latest"
+        //     }
+        // }
+
+        // stage('push docker image') {
+        //     steps {
+        //        sh "docker push ${env.image}:latest"
+        //     }
+        // }
+
+        // stage('Verify new docker image(s)') {
+        //     steps {
+        //         sh('docker images')
+        //     }
+        // }
+    }
+}
+
