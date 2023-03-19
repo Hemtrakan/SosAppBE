@@ -6,13 +6,16 @@ services:
     restart: always
     #   environment:
     #      JENKINS_JAVA_OPTIONS: "-Djava.awt.headless=true -Dmail.smtp.starttls.enable=true"
+    privileged: true
+    user: root
     ports:
       - 8888:8080
+    container_name: jenkins
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
       - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
-      - jenkins-volume:/var/jenkins_home
+      - /home/jenkins_compose/jenkins_configuration:/var/jenkins_home
       - /etc/timezone:/etc/timezone
     logging:
       driver: json-file
