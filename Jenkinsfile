@@ -23,34 +23,34 @@ pipeline {
         }
 
         stage('Print Environment') {
-             steps {
+            steps {
                 h('ls -al')
                 sh('printenv')
             }
         }
 
 		stage('Build docker image') {
-             steps {
-                  script {
-                        docker.withRegistry('', 'dockerhub') {
-                            def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
-                            slackImage.push()
-                            slackImage.push('latest')
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub') {
+                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
 
-                             def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
-                             slackImage.push()
-                             slackImage.push('latest')
+                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
 
-                             def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
-                             slackImage.push()
-                             slackImage.push('latest')
+                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
 
-                             def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
-                             slackImage.push()
-                             slackImage.push('latest')
-                       }
-                  }
-             }
+                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
+                        slackImage.push()
+                        slackImage.push('latest')
+                    }
+                }
+            }
         }
 
 		stage('Deployment'){
