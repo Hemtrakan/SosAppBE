@@ -24,70 +24,70 @@ pipeline {
 
 	stages {
 
-//         stage('Checkout') {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+//
+//         stage("verify tooling"){
 //             steps {
-//                 checkout scm
+//             sh '''
+//                 docker version
+//                 docker info
+//                 docker compose
+//                 curl --version
+//                 jq --version
+//             '''
 //             }
 //         }
 
-        stage("verify tooling"){
+        stage('Print Environment') {
             steps {
-            sh '''
-                docker version
-                docker info
-                docker compose
-                curl --version
-                jq --version
-            '''
+                sh('ls -al')
+                sh('printenv')
             }
         }
 
-//         stage('Print Environment') {
-//             steps {
-//                 sh('ls -al')
-//                 sh('printenv')
-//             }
-//         }
+		stage('Build docker image') {
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub') {
+                        dir("./${PROJECT_ACCOUNT}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
+                        }
 
-// 		stage('Build docker image') {
-//             steps {
-//                 script {
-//                     docker.withRegistry('', 'dockerhub') {
-//                         dir("./${PROJECT_ACCOUNT}"){
-//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-//                             sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
-//                         }
-//
-//                         dir("./${PROJECT_EMERGENCY}"){
-//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-//                             sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
-//                         }
-//
-//                         dir("./${PROJECT_HOTLINE}"){
-//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-//                             sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
-//                         }
-//
-//                         dir("./${PROJECT_MESSENGER}"){
-//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-//                             sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
-//                         }
-//
-//                         sh("docker push ${env.image1}:latest")
-//                         sh("docker push ${env.image2}:latest")
-//                         sh("docker push ${env.image3}:latest")
-//                         sh("docker push ${env.image4}:latest")
-//
-//                         sh('docker logout')
-//                     }
-//                 }
-//             }
-//         }
+                        dir("./${PROJECT_EMERGENCY}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
+                        }
 
-// 		stage('Deployment'){
-//             steps {
-//                 sh ("docker-compose up -d")
-//             }
-//         }
+                        dir("./${PROJECT_HOTLINE}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
+                        }
+
+                        dir("./${PROJECT_MESSENGER}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
+                        }
+
+                        sh("docker push ${env.image1}:latest")
+                        sh("docker push ${env.image2}:latest")
+                        sh("docker push ${env.image3}:latest")
+                        sh("docker push ${env.image4}:latest")
+
+                        sh('docker logout')
+                    }
+                }
+            }
+        }
+
+		stage('Deployment'){
+            steps {
+                sh ("docker-compose up -d")
+            }
+        }
 	}
 }
