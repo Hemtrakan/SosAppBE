@@ -30,17 +30,17 @@ pipeline {
             }
         }
 
-//         stage("verify tooling"){
-//             steps {
-//             sh '''
-//                 docker version
-//                 docker info
-//                 docker compose
-//                 curl --version
-//                 jq --version
-//             '''
-//             }
-//         }
+        stage("verify tooling"){
+            steps {
+            sh '''
+                docker version
+                docker info
+                docker compose
+                curl --version
+                jq --version
+            '''
+            }
+        }
 
         stage('Print Environment') {
             steps {
