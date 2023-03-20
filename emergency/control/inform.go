@@ -48,9 +48,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 				fmt.Printf("%#v\n", Error)
 				return
 			}
-			fmt.Println()
-			fmt.Printf("UserRes : %#v", UserRes)
-			fmt.Println()
+
 			if UserRes.FirstName != "" && UserRes.LastName != "" {
 				Username = UserRes.FirstName + " " + UserRes.LastName
 			}
