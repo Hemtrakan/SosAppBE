@@ -5,25 +5,14 @@ def ENVIRONMENT = 'dev'
 pipeline {
 	agent any
 
-	environment1 {
-            image = "annabells/sosapp-accounts-service"
-            registry = "docker.io"
+	environment {
+        image1 = "annabells/sosapp-accounts-service"
+        image2 = "annabells/sosapp-emergency-service"
+        image3 = "annabells/sosapp-hotline-service"
+        image4 = "annabells/sosapp-messenger-service"
+        registry = "docker.io"
     }
 
-    environment2 {
-            image = "annabells/sosapp-emergency-service"
-            registry = "docker.io"
-    }
-
-    environment3 {
-            image = "annabells/sosapp-hotline-service"
-            registry = "docker.io"
-    }
-
-   environment4 {
-            image = "annabells/sosapp-messenger-service"
-            registry = "docker.io"
-   }
 
 	stages {
 
