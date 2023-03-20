@@ -22,12 +22,12 @@ pipeline {
             }
         }
 
-        stage('Print Environment') {
-            steps {
-                h('ls -al')
-                sh('printenv')
-            }
-        }
+//         stage('Print Environment') {
+//             steps {
+//                 h('ls -al')
+//                 sh('printenv')
+//             }
+//         }
 
 		stage('Build docker image') {
             steps {
