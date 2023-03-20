@@ -79,6 +79,7 @@ pipeline {
                         sh("docker push ${env.image4}:latest")
 
                         sh('docker logout')
+                        sh("docker-compose up -d")
                     }
                 }
             }
@@ -86,7 +87,7 @@ pipeline {
 
 		stage('Deployment'){
             steps {
-                sh ("/usr/local/bin/docker-compose up -d")
+                sh ("docker-compose up -d")
             }
         }
 	}
