@@ -24,11 +24,11 @@ pipeline {
 
 	stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
 
         stage("verify tooling"){
             steps {
@@ -84,10 +84,10 @@ pipeline {
 //             }
 //         }
 
-		stage('Deployment'){
-            steps {
-                sh ("docker-compose up -d")
-            }
-        }
+// 		stage('Deployment'){
+//             steps {
+//                 sh ("docker-compose up -d")
+//             }
+//         }
 	}
 }
