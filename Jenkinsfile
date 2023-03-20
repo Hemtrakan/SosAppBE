@@ -30,12 +30,24 @@ pipeline {
             }
         }
 
-        stage('Print Environment') {
+        stage("verify tooling"){
             steps {
-                sh('ls -al')
-                sh('printenv')
+            sh '''
+                docker version
+                docker info
+                docker compose
+                curl --version
+                jq --version
+            '''
             }
         }
+
+//         stage('Print Environment') {
+//             steps {
+//                 sh('ls -al')
+//                 sh('printenv')
+//             }
+//         }
 
 // 		stage('Build docker image') {
 //             steps {
@@ -74,9 +86,6 @@ pipeline {
 
 		stage('Deployment'){
             steps {
-                sh ("ls -al")
-                sh ("pwd")
-                sh ("exit")
                 sh ("docker-compose up -d")
             }
         }
