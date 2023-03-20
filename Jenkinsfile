@@ -35,20 +35,20 @@ pipeline {
                     docker.withRegistry('', 'dockerhub') {
                         def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
                         echo(slackImage1)
-                        slackImage.push()
-                        slackImage.push('latest')
+                        slackImage1.push()
+                        slackImage1.push('latest')
 
                         def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
-                        slackImage.push()
-                        slackImage.push('latest')
+                        slackImage2.push()
+                        slackImage2.push('latest')
 
                         def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
-                        slackImage.push()
-                        slackImage.push('latest')
+                        slackImage3.push()
+                        slackImage3.push('latest')
 
                         def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
-                        slackImage.push()
-                        slackImage.push('latest')
+                        slackImage4.push()
+                        slackImage4.push('latest')
 
                         sh('docker logout')
                     }
