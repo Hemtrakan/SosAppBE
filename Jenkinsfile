@@ -37,45 +37,46 @@ pipeline {
             }
         }
 
-		stage('Build docker image') {
-            steps {
-                script {
-                    docker.withRegistry('', 'dockerhub') {
-                        dir("./${PROJECT_ACCOUNT}"){
-                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-                            sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
-                        }
-
-                        dir("./${PROJECT_EMERGENCY}"){
-                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-                            sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
-                        }
-
-                        dir("./${PROJECT_HOTLINE}"){
-                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-                            sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
-                        }
-
-                        dir("./${PROJECT_MESSENGER}"){
-                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
-                            sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
-                        }
-
-                        sh("docker push ${env.image1}:latest")
-                        sh("docker push ${env.image2}:latest")
-                        sh("docker push ${env.image3}:latest")
-                        sh("docker push ${env.image4}:latest")
-
-                        sh('docker logout')
-                    }
-                }
-            }
-        }
+// 		stage('Build docker image') {
+//             steps {
+//                 script {
+//                     docker.withRegistry('', 'dockerhub') {
+//                         dir("./${PROJECT_ACCOUNT}"){
+//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+//                             sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
+//                         }
+//
+//                         dir("./${PROJECT_EMERGENCY}"){
+//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+//                             sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
+//                         }
+//
+//                         dir("./${PROJECT_HOTLINE}"){
+//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+//                             sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
+//                         }
+//
+//                         dir("./${PROJECT_MESSENGER}"){
+//                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+//                             sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
+//                         }
+//
+//                         sh("docker push ${env.image1}:latest")
+//                         sh("docker push ${env.image2}:latest")
+//                         sh("docker push ${env.image3}:latest")
+//                         sh("docker push ${env.image4}:latest")
+//
+//                         sh('docker logout')
+//                     }
+//                 }
+//             }
+//         }
 
 		stage('Deployment'){
             steps {
                 sh ("ls -al")
                 sh ("pwd")
+                sh ("exit")
                 sh ("docker-compose up -d")
             }
         }
