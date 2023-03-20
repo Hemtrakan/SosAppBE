@@ -25,7 +25,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 		if pointer.GetStringValue(m1.UserNotiID) != "" {
 			UserNotiID := pointer.GetStringValue(m1.UserNotiID)
 			URL := "http://34.124.232.197:80/SosApp/accounts/user/" + UserNotiID
-			
+
 			httpHeaderMap := map[string]string{}
 			httpHeaderMap["Authorization"] = Token
 
@@ -83,7 +83,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 		Error = err
 		return
 	}
-	URL := "http://127.0.0.1:80/SosApp/accounts/user/" + pointer.GetStringValue(resp.UserNotiID)
+	URL := "http://34.124.232.197:80/SosApp/accounts/user/" + pointer.GetStringValue(resp.UserNotiID)
 	//URL := "localhost:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
 	httpHeaderMap := map[string]string{}
 	httpHeaderMap["Authorization"] = Token
