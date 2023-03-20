@@ -33,19 +33,19 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub') {
-                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER1}")
+                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER2}")
+                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER3}")
+                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER4}")
+                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
                         slackImage.push()
                         slackImage.push('latest')
                     }
