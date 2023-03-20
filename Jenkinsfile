@@ -2,6 +2,14 @@
 
 def ENVIRONMENT = 'dev'
 
+
+def PROJECT_ENV = 'dev'
+def PROJECT_DIR1 = 'accounts'
+def PROJECT_DIR2 = 'emergency'
+def PROJECT_DIR3 = 'hotline'
+def PROJECT_DIR4 = 'messenger'
+
+
 pipeline {
 	agent any
 
@@ -33,27 +41,44 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub') {
-                        echo('-')
-                        echo(docker.build("${env.image1}:${BUILD_NUMBER}"))
-                        echo('-')
-                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
+                        dir("./${PROJECT_DIR1}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
+                        }
 
 
+                        dir("./${PROJECT_DIR2}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
+                        }
 
-                        slackImage1.push()
-                        slackImage1.push('latest')
 
-                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
-                        slackImage2.push()
-                        slackImage2.push('latest')
+                        dir("./${PROJECT_DIR3}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
+                        }
 
-                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
-                        slackImage3.push()
-                        slackImage3.push('latest')
 
-                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
-                        slackImage4.push()
-                        slackImage4.push('latest')
+                        dir("./${PROJECT_DIR4}"){
+                            sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
+                            sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
+                        }
+
+//                         def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
+//                         slackImage1.push()
+//                         slackImage1.push('latest')
+//
+//                         def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
+//                         slackImage2.push()
+//                         slackImage2.push('latest')
+//
+//                         def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
+//                         slackImage3.push()
+//                         slackImage3.push('latest')
+//
+//                         def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
+//                         slackImage4.push()
+//                         slackImage4.push('latest')
 
                         sh('docker logout')
                     }
