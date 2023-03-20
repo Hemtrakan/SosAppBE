@@ -79,7 +79,6 @@ pipeline {
                         sh("docker push ${env.image4}:latest")
 
                         sh('docker logout')
-                        sh("docker-compose up -d")
                     }
                 }
             }
