@@ -74,7 +74,8 @@ pipeline {
 
 		stage('Deployment'){
             steps {
-                sh ("sudo docker-compose up -d")
+                sh ("cd /home/chirapon_job/SosAppBE")
+                sh ("docker-compose up -d")
             }
         }
 	}
