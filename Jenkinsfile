@@ -33,11 +33,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub') {
-
-                        echo("ls -al")
-                        echo("BUILD_NUMBER")
-
                         def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
+                        echo(slackImage1)
                         slackImage.push()
                         slackImage.push('latest')
 
