@@ -4,10 +4,10 @@ def ENVIRONMENT = 'dev'
 
 
 def PROJECT_ENV = 'dev'
-def PROJECT_DIR1 = 'accounts'
-def PROJECT_DIR2 = 'emergency'
-def PROJECT_DIR3 = 'hotline'
-def PROJECT_DIR4 = 'messenger'
+def PROJECT_ACCOUNT = 'accounts'
+def PROJECT_EMERGENCY = 'emergency'
+def PROJECT_HOTLINE = 'hotline'
+def PROJECT_MESSENGER = 'messenger'
 
 
 pipeline {
@@ -41,25 +41,22 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub') {
-                        dir("./${PROJECT_DIR1}"){
+                        dir("./${PROJECT_ACCOUNT}"){
                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
                             sh "docker build -t ${env.image1}:${BUILD_NUMBER} ."
                         }
 
-
-                        dir("./${PROJECT_DIR2}"){
+                        dir("./${PROJECT_EMERGENCY}"){
                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
                             sh "docker build -t ${env.image2}:${BUILD_NUMBER} ."
                         }
 
-
-                        dir("./${PROJECT_DIR3}"){
+                        dir("./${PROJECT_HOTLINE}"){
                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
                             sh "docker build -t ${env.image3}:${BUILD_NUMBER} ."
                         }
 
-
-                        dir("./${PROJECT_DIR4}"){
+                        dir("./${PROJECT_MESSENGER}"){
                             sh "sed -i 's/{ENV}/${PROJECT_ENV}/g' Dockerfile"
                             sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
                         }
