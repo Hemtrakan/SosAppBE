@@ -22,30 +22,30 @@ pipeline {
             }
         }
 
-//         stage('Print Environment') {
-//             steps {
-//                 h('ls -al')
-//                 sh('printenv')
-//             }
-//         }
+        stage('Print Environment') {
+            steps {
+                sh('ls -al')
+                sh('printenv')
+            }
+        }
 
 		stage('Build docker image') {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub') {
-                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
+                        def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER1}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
+                        def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER2}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
+                        def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER3}")
                         slackImage.push()
                         slackImage.push('latest')
 
-                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
+                        def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER4}")
                         slackImage.push()
                         slackImage.push('latest')
                     }
