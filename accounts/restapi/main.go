@@ -25,6 +25,9 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.Logger())
 
 	s := e.Group(config.GetString("service.endpoint"))
+	s.GET("/", func(c echo.Context) error {
+		return c.String(200, "Hello")
+	})
 	s.POST("/sendOTP", ctrl.SendOTP)
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)

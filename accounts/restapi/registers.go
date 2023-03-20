@@ -22,7 +22,6 @@ func (ctrl Controller) SendOTP(c echo.Context) error {
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
-
 	err = ValidateStruct(request)
 	if err != nil {
 		res.Code = constant.ErrorCode
