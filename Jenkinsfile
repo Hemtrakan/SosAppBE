@@ -64,21 +64,10 @@ pipeline {
                             sh "docker build -t ${env.image4}:${BUILD_NUMBER} ."
                         }
 
-//                         def slackImage1 = docker.build("${env.image1}:${BUILD_NUMBER}")
-//                         slackImage1.push()
-//                         slackImage1.push('latest')
-//
-//                         def slackImage2 = docker.build("${env.image2}:${BUILD_NUMBER}")
-//                         slackImage2.push()
-//                         slackImage2.push('latest')
-//
-//                         def slackImage3 = docker.build("${env.image3}:${BUILD_NUMBER}")
-//                         slackImage3.push()
-//                         slackImage3.push('latest')
-//
-//                         def slackImage4 = docker.build("${env.image4}:${BUILD_NUMBER}")
-//                         slackImage4.push()
-//                         slackImage4.push('latest')
+                        sh("docker push ${env.image1}:latest")
+                        sh("docker push ${env.image2}:latest")
+                        sh("docker push ${env.image3}:latest")
+                        sh("docker push ${env.image4}:latest")
 
                         sh('docker logout')
                     }
@@ -91,32 +80,5 @@ pipeline {
                 sh "docker-compose up -d"
             }
         }
-
-
-
-        stage('tag docker image') {
-            steps {
-                sh "docker tag ${env.image}:${BUILD_NUMBER} ${env.image1}:latest"
-                sh "docker tag ${env.image}:${BUILD_NUMBER} ${env.image2}:latest"
-                sh "docker tag ${env.image}:${BUILD_NUMBER} ${env.image3}:latest"
-                sh "docker tag ${env.image}:${BUILD_NUMBER} ${env.image4}:latest"
-            }
-        }
-
-        stage('push docker image') {
-            steps {
-                h "docker push ${env.image1}:latest"
-                h "docker push ${env.image2}:latest"
-                h "docker push ${env.image3}:latest"
-                h "docker push ${env.image4}:latest"
-            }
-        }
-
-//         stage('Verify new docker image(s)') {
-//             steps {
-//                 sh('docker images')
-//             }
-//         }
-
 	}
 }
