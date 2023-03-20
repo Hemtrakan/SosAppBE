@@ -75,6 +75,7 @@ pipeline {
 		stage('Deployment'){
             steps {
                 sh ("ls -al")
+                sh ("pwd")
                 sh ("docker-compose up -d")
             }
         }
