@@ -8,6 +8,7 @@ def PROJECT_ACCOUNT = 'accounts'
 def PROJECT_EMERGENCY = 'emergency'
 def PROJECT_HOTLINE = 'hotline'
 def PROJECT_MESSENGER = 'messenger'
+def DIR_PROJECT = '/home/chirapon_job/SosAppBE'
 
 
 pipeline {
@@ -74,8 +75,9 @@ pipeline {
 
 		stage('Deployment'){
             steps {
-                sh ("cd /home/chirapon_job/SosAppBE")
-                sh ("docker-compose up -d")
+                dir("./${DIR_PROJECT}"){
+                    sh "docker-compose up -d"
+                }
             }
         }
 	}
