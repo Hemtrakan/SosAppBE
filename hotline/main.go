@@ -16,7 +16,7 @@ func main() {
 
 	sign := make(chan os.Signal, 1)
 	signal.Notify(sign, os.Interrupt, os.Kill)
- 
+
 	go restapi.NewControllerMain(ctrl)
 	<-sign
 }
