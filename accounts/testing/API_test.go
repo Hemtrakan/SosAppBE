@@ -2,7 +2,6 @@ package testing
 
 import (
 	"accounts/httpclient"
-	config "github.com/spf13/viper"
 	"testing"
 )
 
@@ -13,8 +12,8 @@ var (
 )
 
 func TestGetAPI(t *testing.T) {
-	account := config.GetString("url.account")
-	URL := account + "user/14"
+
+	URL := "http://34.143.165.150:80/SosApp/accounts/user/14"
 	HttpResponse, Error = h.Get(URL, nil)
 	if Error != nil {
 		t.Error("err : ", Error)

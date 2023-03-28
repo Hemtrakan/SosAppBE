@@ -12,6 +12,6 @@ jwt:
 
 url:
   account: "http://34.143.165.150:80/SosApp/accounts/"
-  emergency: "http://34.143.165.150:81/SosApp/"
-  hotline: "http://34.143.165.150:82/SosApp/"
-  messenger: "http://34.143.165.150:83/SosApp/messenger"
+  emergency: "http://34.143.165.150:81/SosApp/emergency/"
+  hotline: "http://34.143.165.150:82/SosApp/hotline/"
+  messenger: "http://34.143.165.150:83/SosApp/messenger/"
