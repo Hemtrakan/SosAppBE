@@ -1,0 +1,17 @@
+service:
+  name: "SosApp"
+  port: 80
+  endpoint: "/SosApp/accounts"
+
+role:
+  user: "/user"
+  admin: "/admin"
+
+jwt:
+  secret: "SosApp"
+
+url:
+  account: "http://34.143.165.150:80/SosApp/accounts/"
+  emergency: "http://34.143.165.150:81/SosApp/emergency/"
+  hotline: "http://34.143.165.150:82/SosApp/hotline/"
+  messenger: "http://34.143.165.150:83/SosApp/messenger/"
