@@ -8,6 +8,7 @@ import (
 	"emergency/utility/pointer"
 	"errors"
 	"fmt"
+	config "github.com/spf13/viper"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
@@ -24,7 +25,8 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 	for _, m1 := range resp {
 		if pointer.GetStringValue(m1.UserNotiID) != "" {
 			UserNotiID := pointer.GetStringValue(m1.UserNotiID)
-			URL := "http://34.124.232.197:80/SosApp/accounts/user/" + UserNotiID
+			account := config.GetString("url.account")
+			URL := account + "user/" + UserNotiID
 
 			httpHeaderMap := map[string]string{}
 			httpHeaderMap["Authorization"] = Token
@@ -83,8 +85,8 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 		Error = err
 		return
 	}
-	URL := "http://34.124.232.197:80/SosApp/accounts/user/" + pointer.GetStringValue(resp.UserNotiID)
-	//URL := "localhost:80/SosApp/accounts/user/" + pointer.GetStringValue(m1.UserNotiID)
+	account := config.GetString("url.account")
+	URL := account + "user/" + pointer.GetStringValue(resp.UserNotiID)
 	httpHeaderMap := map[string]string{}
 	httpHeaderMap["Authorization"] = Token
 

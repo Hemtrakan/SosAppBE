@@ -1,12 +1,14 @@
 package restapi
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config "github.com/spf13/viper"
 	"github.com/tylerb/graceful"
+	"golang.org/x/net/websocket"
 	"messenger/constant"
 	"messenger/utility/response"
 	"messenger/utility/token"
@@ -30,7 +32,8 @@ func NewControllerMain(ctrl Controller) {
 	//
 
 	r := e.Group(config.GetString("service.endpoint"))
-
+	r.Static("/", "../public")
+	r.GET("/ws", hello)
 	r.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "Ok Service Messenger")
 	})
@@ -85,4 +88,26 @@ func AuthRoleAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 			return nil
 		}
 	}
+}
+
+func hello(c echo.Context) error {
+	websocket.Handler(func(ws *websocket.Conn) {
+		defer ws.Close()
+		for {
+			// Write
+			err := websocket.Message.Send(ws, "Hello, Client!")
+			if err != nil {
+				c.Logger().Error(err)
+			}
+
+			// Read
+			msg := ""
+			err = websocket.Message.Receive(ws, &msg)
+			if err != nil {
+				c.Logger().Error(err)
+			}
+			fmt.Printf("%s\n", msg)
+		}
+	}).ServeHTTP(c.Response(), c.Request())
+	return nil
 }
