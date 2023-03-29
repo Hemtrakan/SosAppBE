@@ -1,14 +1,16 @@
 package restapi
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config "github.com/spf13/viper"
 	"github.com/tylerb/graceful"
-	"golang.org/x/net/websocket"
+	"log"
+
+	//"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 	"messenger/constant"
 	"messenger/utility/response"
 	"messenger/utility/token"
@@ -34,7 +36,7 @@ func NewControllerMain(ctrl Controller) {
 	r := e.Group(config.GetString("service.endpoint"))
 	r.Static("/", "../public")
 	r.GET("/ws", hello)
-	r.GET("/", func(c echo.Context) error {
+	r.GET("", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "Ok Service Messenger")
 	})
 
@@ -90,24 +92,32 @@ func AuthRoleAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func hello(c echo.Context) error {
-	websocket.Handler(func(ws *websocket.Conn) {
-		defer ws.Close()
-		for {
-			// Write
-			err := websocket.Message.Send(ws, "Hello, Client!")
-			if err != nil {
-				c.Logger().Error(err)
-			}
+var (
+	upgrader = websocket.Upgrader{}
+)
 
-			// Read
-			msg := ""
-			err = websocket.Message.Receive(ws, &msg)
-			if err != nil {
-				c.Logger().Error(err)
-			}
-			fmt.Printf("%s\n", msg)
+func hello(c echo.Context) error {
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+	if err != nil {
+		return err
+	}
+	defer ws.Close()
+	var message = []byte{}
+
+	for {
+		_, message, err = ws.ReadMessage()
+		if err != nil {
+			c.Logger().Error(err)
 		}
-	}).ServeHTTP(c.Response(), c.Request())
-	return nil
+		log.Printf("Received message: %s", message)
+
+		err = ws.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			log.Println(err)
+			break
+		}
+		log.Printf("WriteMessage message: %s", message)
+	}
+
+	return err
 }
