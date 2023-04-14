@@ -44,6 +44,7 @@ func (ctrl Controller) GetUserList(c echo.Context) error {
 	}
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
+	res.Total = len(data)
 	res.Data = data
 	return response.EchoSucceed(c, res, APIName)
 }

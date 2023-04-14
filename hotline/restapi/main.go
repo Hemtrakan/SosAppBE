@@ -30,11 +30,6 @@ func NewControllerMain(ctrl Controller) {
 	//
 
 	r := e.Group(config.GetString("service.endpoint"))
-
-	//r.GET("/", func(c echo.Context) error {
-	//	return c.JSON(http.StatusOK, "Ok Service Hotline")
-	//})
-
 	r.GET("/", ctrl.GetHotLine)
 
 	a := r.Group(config.GetString("role.admin"))
