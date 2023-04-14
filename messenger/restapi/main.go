@@ -34,6 +34,14 @@ func NewControllerMain(ctrl Controller) {
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
+	// todo ทำ API สำหรับการค้นหาด้วยชื่อ เบอร์ Email หรือ อื่นๆ ที่สามารถทำได้ ที่ Account Service
+	// todo ทำในการของการต่อ Database ให้เสร็จ ก่อน วันที่ 16-04-23 ที่ Messenger Service RoomChat , JoinChat, GetChat, getChatList
+	u.POST("/createRoomChat", ctrl.RoomChat)
+	u.POST("/joinChat", ctrl.JoinChat)
+	u.POST("/searchUser", ctrl.SearchUser)
+	u.GET("/getChatList", ctrl.GetChat)
+	u.GET("/chat/:roomChatId", ctrl.GetChat)
+
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 
