@@ -35,7 +35,7 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	}
 
 	if token == "" {
-		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัส่ผ่านผิด").Error()
+		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัส่ผ่านไม่ถูกต้อง").Error()
 		res.Code = constant.ErrorCode
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}

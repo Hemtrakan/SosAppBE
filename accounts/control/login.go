@@ -5,6 +5,7 @@ import (
 	singin "accounts/restapi/model/singin/request"
 	"accounts/utility/token"
 	"accounts/utility/verify"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,11 @@ func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Tok
 	checkPass := verify.VerifyPassword(account.Password, request.Password)
 	if checkPass != nil {
 		Error = err
+		return
+	}
+
+	if account.IDCard.Verify == false {
+		Error = errors.New("บัญชีของท่านยังไม่ถูกยืนยันตัวตน กรุณาเข้าสู่ระบบอีกครั้งหลังจากยืนยันตัวตนสำเร็จ")
 		return
 	}
 

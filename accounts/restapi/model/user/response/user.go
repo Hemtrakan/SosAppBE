@@ -30,3 +30,6 @@ type Address struct {
 	PostalCode  string `json:"postalCode,omitempty"`
 	Country     string `json:"country,omitempty"`
 }
+
+type SearchUser struct {
+}

@@ -2,14 +2,37 @@ package db
 
 import (
 	"accounts/db/structure"
+)
+
+import (
 	"errors"
 
 	"gorm.io/gorm"
 )
 
+func (factory GORMFactory) SearchUser(value string) (response []*structure.Users, Error error) {
+	var data []*structure.Users
+	value = "%" + value + "%"
+	err := factory.client.Preload("Role").Preload("IDCard").Preload("Address").
+		Where("firstname LIKE ? OR lastname LIKE ? OR phone_number LIKE ? OR workplace LIKE ? ", value, value, value, value).
+		Where("role_id <> ?", 1).
+		Find(&data).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = gorm.ErrRecordNotFound
+			return
+		}
+	}
+	response = data
+	return
+}
+
 func (factory GORMFactory) GetUserByPhone(req structure.Users) (response *structure.Users, Error error) {
 	var data = new(structure.Users)
-	err := factory.client.Where("phone_number = ?", req.PhoneNumber).Find(&data).Error
+	err := factory.client.Preload("Role").Preload("IDCard").Preload("Address").Where("phone_number = ?", req.PhoneNumber).Find(&data).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

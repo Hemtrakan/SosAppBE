@@ -39,6 +39,7 @@ type FactoryInterface interface {
 	PutUser(user *structure.Users, address *structure.Address, idCard *structure.IDCard) (Error []error)
 	ChangePassword(req *structure.Users) (Error error)
 	DeleteUser(req structure.Users) (Error error)
+	SearchUser(value string) (response []*structure.Users, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -105,6 +106,7 @@ func gormInstance(env *Properties) GORMFactory {
 		IDCard := structure.IDCard{
 			TextIDCard: "13xxxxxxxx347",
 			PathImage:  "",
+			Verify:     true,
 			DeletedBy:  nil,
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&IDCard)

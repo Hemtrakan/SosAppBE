@@ -42,7 +42,7 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		IdCard: resUser.IdCard{
 			TextIDCard: data.IDCard.TextIDCard,
 			PathImage:  data.IDCard.PathImage,
-			Verify:     false,
+			Verify:     data.IDCard.Verify,
 		},
 		Address: resUser.Address{
 			Address:     data.Address.Address,
@@ -57,7 +57,6 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 }
 
 func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
-
 	data, err := ctrl.Access.RDBMS.GetUserList()
 	if err != nil {
 		Error = err
@@ -78,7 +77,46 @@ func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
 			IdCard: resUser.IdCard{
 				TextIDCard: user.IDCard.TextIDCard,
 				PathImage:  user.IDCard.PathImage,
-				Verify:     false,
+				Verify:     user.IDCard.Verify,
+			},
+			Address: resUser.Address{
+				Address:     user.Address.Address,
+				SubDistrict: user.Address.SubDistrict,
+				District:    user.Address.District,
+				Province:    user.Address.Province,
+				PostalCode:  user.Address.PostalCode,
+				Country:     user.Address.Country,
+			},
+		}
+
+		res = append(res, objectUser)
+	}
+
+	return
+}
+
+func (ctrl Controller) SearchUser(value string) (res []resUser.UserRes, Error error) {
+	data, err := ctrl.Access.RDBMS.SearchUser(value)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	for _, user := range data {
+		objectUser := resUser.UserRes{
+			ID:           strconv.Itoa(int(user.ID)),
+			PhoneNumber:  user.PhoneNumber,
+			FirstName:    user.Firstname,
+			LastName:     user.Lastname,
+			Email:        user.Email,
+			Birthday:     user.Birthday,
+			Gender:       user.Gender,
+			ImageProfile: pointer.GetStringValue(user.ImageProfile),
+			Workplace:    pointer.GetStringValue(user.Workplace),
+			IdCard: resUser.IdCard{
+				TextIDCard: user.IDCard.TextIDCard,
+				PathImage:  user.IDCard.PathImage,
+				Verify:     user.IDCard.Verify,
 			},
 			Address: resUser.Address{
 				Address:     user.Address.Address,
@@ -278,6 +316,38 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			PathImage:  req.IdCard.PathImage,
 			UpdateBy:   &userID,
 		}
+	}
+
+	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)
+	if err != nil {
+		Error = errArr
+		return
+	}
+	return
+}
+
+func (ctrl Controller) VerifyIDCard(userID uint) (Error []error) {
+	reqUserId := rdbmsstructure.Users{
+		Model: gorm.Model{
+			ID: userID,
+		},
+	}
+
+	data, err := ctrl.Access.RDBMS.GetUserByID(reqUserId)
+	if err != nil {
+		Error = append(Error, err)
+		return
+	}
+	var Users = new(rdbmsstructure.Users)
+	var Address = new(rdbmsstructure.Address)
+	var IDCard = new(rdbmsstructure.IDCard)
+
+	IDCard = &rdbmsstructure.IDCard{
+		Model: gorm.Model{
+			ID: data.IDCardID,
+		},
+		Verify:   true,
+		UpdateBy: &userID,
 	}
 
 	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)

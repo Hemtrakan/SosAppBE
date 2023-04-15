@@ -48,6 +48,9 @@ func NewControllerMain(ctrl Controller) {
 	u.PUT("/changePassword/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
 
+	// searchUser
+	u.GET("/:id/:value", ctrl.SearchUser)
+
 	// todo Verify ID Card API admin page
 	// todo admin
 	a := s.Group(config.GetString("role.admin"))
@@ -56,6 +59,7 @@ func NewControllerMain(ctrl Controller) {
 	a.GET("/user/:id", ctrl.GetUserById)
 	a.POST("/user", ctrl.CreateUser)
 	a.PUT("/user/:id", ctrl.UpdateUser)
+	a.PUT("/user/verifyIDCard/:id", ctrl.VerifyIDCard)
 	a.DELETE("/user/:id", ctrl.DeleteUser)
 
 	a.GET("/role", ctrl.GetRoleList)

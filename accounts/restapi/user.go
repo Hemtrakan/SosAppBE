@@ -12,6 +12,47 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func (ctrl Controller) SearchUser(c echo.Context) error {
+	var res response.RespMag
+	APIName := "searchUser"
+	loggers.LogStart(APIName)
+
+	values := token.GetValuesToken(c)
+	strID := c.Param("id")
+	value := c.Param("value")
+
+	if len(value) < 3 {
+		res.Code = constant.ErrorCode
+		res.Msg = "ตัวอักษรต้องไม่ต่ำกว่า 4 ตัวขึ้นไป"
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	if uint(id) != values.ID {
+		res.Code = constant.ErrorCode
+		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	data, err := ctrl.Ctx.SearchUser(value)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	res.Code = constant.SuccessCode
+	res.Msg = constant.SuccessMsg
+	res.Total = len(data)
+	res.Data = data
+	return response.EchoSucceed(c, res, APIName)
+}
+
 func (ctrl Controller) GetUserByToken(c echo.Context) error {
 	var res response.RespMag
 	APIName := "getUserByToken"
@@ -132,6 +173,36 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 	res.Code = constant.SuccessCode
 	res.Msg = constant.SuccessMsg
 	res.Data = "UpdateSuccess"
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) VerifyIDCard(c echo.Context) error {
+	var res response.RespMag
+	APIName := "VerifyIDCard"
+	loggers.LogStart(APIName)
+
+	strID := c.Param("id")
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	errArr := ctrl.Ctx.VerifyIDCard(uint(id))
+	if errArr != nil {
+		errRes := ""
+		for _, m1 := range errArr {
+			errRes = errRes + m1.Error() + " | "
+		}
+		res.Code = constant.ErrorCode
+		res.Msg = errRes
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Code = constant.SuccessCode
+	res.Msg = constant.SuccessMsg
+	res.Data = "VerifySuccess"
 	return response.EchoSucceed(c, res, APIName)
 }
 
