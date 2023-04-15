@@ -59,8 +59,9 @@ func NewControllerMain(ctrl Controller) {
 	a.GET("/user/:id", ctrl.GetUserById)
 	a.POST("/user", ctrl.CreateUser)
 	a.PUT("/user/:id", ctrl.UpdateUser)
-	a.PUT("/user/verifyIDCard/:id", ctrl.VerifyIDCard)
 	a.DELETE("/user/:id", ctrl.DeleteUser)
+	u.PUT("/user/changePassword/:id", ctrl.ChangePassword)
+	a.PUT("/user/verifyIDCard/:id", ctrl.VerifyIDCard)
 
 	a.GET("/role", ctrl.GetRoleList)
 	a.GET("/role/:id", ctrl.GetRoleById)

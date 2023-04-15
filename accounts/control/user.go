@@ -29,6 +29,11 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		Error = err
 		return
 	}
+	ImageProfile := ""
+	if data.ImageProfile != nil {
+		ImageProfile = *data.ImageProfile
+	}
+
 	res = &resUser.UserRes{
 		ID:           strconv.Itoa(int(id)),
 		PhoneNumber:  data.PhoneNumber,
@@ -37,7 +42,7 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		Email:        data.Email,
 		Birthday:     data.Birthday,
 		Gender:       data.Gender,
-		ImageProfile: *data.ImageProfile,
+		ImageProfile: ImageProfile,
 		Workplace:    pointer.GetStringValue(data.Workplace),
 		IdCard: resUser.IdCard{
 			TextIDCard: data.IDCard.TextIDCard,
@@ -134,7 +139,7 @@ func (ctrl Controller) SearchUser(value string) (res []resUser.UserRes, Error er
 	return
 }
 
-func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.Users, Error error) {
+func (ctrl Controller) PostUser(req *reqSingUp.SingUp, checkRole string) (resUsers rdbmsstructure.Users, Error error) {
 	checkUserData := rdbmsstructure.Users{
 		PhoneNumber: req.PhoneNumber,
 	}
@@ -190,16 +195,23 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		image = req.ImageProfile
 	}
 
-	otp := rdbmsstructure.OTP{
-		PhoneNumber: req.PhoneNumber,
-		Key:         req.Verify.OTP,
-		VerifyCode:  req.Verify.VerifyCode,
+	workplace := ""
+	if req.Workplace != "" {
+		workplace = req.Workplace
 	}
 
-	err = ctrl.Access.RDBMS.UpdateOTPDB(otp)
-	if err != nil {
-		Error = err
-		return
+	if checkRole == role.Name {
+		otp := rdbmsstructure.OTP{
+			PhoneNumber: req.PhoneNumber,
+			Key:         req.Verify.OTP,
+			VerifyCode:  req.Verify.VerifyCode,
+		}
+
+		err = ctrl.Access.RDBMS.UpdateOTPDB(otp)
+		if err != nil {
+			Error = err
+			return
+		}
 	}
 
 	newReq := rdbmsstructure.Users{
@@ -212,7 +224,7 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp) (resUsers rdbmsstructure.
 		Gender:       req.Gender,
 		ImageProfile: &image,
 		DeletedBy:    nil,
-		Workplace:    nil,
+		Workplace:    &workplace,
 		IDCard: rdbmsstructure.IDCard{
 			TextIDCard: req.IDCard.TextIDCard,
 			PathImage:  req.IDCard.PathImage,

@@ -7,6 +7,7 @@ import (
 	singup "accounts/restapi/model/singup/request"
 	"accounts/utility/loggers"
 	"accounts/utility/response"
+	"accounts/utility/token"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -80,6 +81,7 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 	var res response.RespMag
 	APIName := "createUser"
 	loggers.LogStart(APIName)
+	values := token.GetValuesToken(c)
 
 	err := c.Bind(request)
 	if err != nil {
@@ -95,7 +97,7 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	data, err := ctrl.Ctx.PostUser(request)
+	data, err := ctrl.Ctx.PostUser(request, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
