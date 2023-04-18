@@ -51,8 +51,8 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 				return
 			}
 
-			if UserRes.FirstName != "" && UserRes.LastName != "" {
-				Username = UserRes.FirstName + " " + UserRes.LastName
+			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
 		}
 
@@ -63,7 +63,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
 			UserName:            Username,
-			Workplace:           UserRes.Workplace,
+			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
 			Status:              pointer.GetStringValue(m1.Status),
@@ -109,8 +109,8 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 	}
 
 	Username := ""
-	if UserRes.FirstName != "" && UserRes.LastName != "" {
-		Username = UserRes.FirstName + " " + UserRes.LastName
+	if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+		Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 	}
 	var ImageInfoArr []inform.ImageInfo
 
@@ -130,7 +130,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 		Latitude:            pointer.GetStringValue(resp.Latitude),
 		Longitude:           pointer.GetStringValue(resp.Longitude),
 		UserName:            Username,
-		Workplace:           UserRes.Workplace,
+		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
 		Status:              pointer.GetStringValue(resp.Status),

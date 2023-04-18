@@ -1,7 +1,11 @@
 package control
 
-import "messenger/db"
+import (
+	"messenger/db"
+	"messenger/httpclient"
+)
 
 type Controller struct {
-	Access *db.Access
+	Access     *db.Access
+	HttpClient httpclient.HttpClient
 }

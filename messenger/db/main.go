@@ -14,6 +14,9 @@ var (
 )
 
 type FactoryInterface interface {
+	CheckRoomChatForUser(RoomChatID, UserID uint) (res structure.GroupChat, Error error)
+	RoomChat(groupChat structure.GroupChat) (res structure.GroupChat, Error error)
+	JoinChat(groupChat structure.GroupChat) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -45,9 +48,9 @@ func gormInstance(env *Properties) GORMFactory {
 
 	_ = db.AutoMigrate(
 		//chat
-		structure.RoomChat{},
-		structure.GroupChat{},
-		structure.Message{},
+		&structure.RoomChat{},
+		&structure.GroupChat{},
+		&structure.Message{},
 	)
 
 	return GORMFactory{env: env, client: db}

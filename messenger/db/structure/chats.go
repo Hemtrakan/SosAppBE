@@ -11,8 +11,9 @@ type GroupChat struct {
 
 type RoomChat struct {
 	gorm.Model
-	Name      string
-	DeletedBy uint
+	Name        string
+	UserOwnerId uint
+	DeletedBy   uint
 }
 
 type Message struct {
@@ -22,6 +23,6 @@ type Message struct {
 	Message      string
 	Image        string
 	SenderUserId uint
-	ReadingDate  bool
+	ReadingDate  int // todo นับจำนวนการอ่านข้อความ
 	DeletedBy    uint
 }

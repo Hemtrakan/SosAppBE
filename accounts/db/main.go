@@ -71,12 +71,12 @@ func gormInstance(env *Properties) GORMFactory {
 
 	_ = db.AutoMigrate(
 		// Account
-		structure.Users{},
-		structure.Role{},
-		structure.IDCard{},
-		structure.Address{},
-		structure.OTP{},
-		structure.LogLogin{},
+		&structure.Users{},
+		&structure.Role{},
+		&structure.IDCard{},
+		&structure.Address{},
+		&structure.OTP{},
+		&structure.LogLogin{},
 	)
 
 	var CheckRole []structure.Role

@@ -29,22 +29,29 @@ import (
 //}
 
 func (ctrl Controller) RoomChat(c echo.Context) error {
+	request := new(request.RoomChatReq)
 	var res response.RespMag
 	APIName := "RoomChat"
 	loggers.LogStart(APIName)
 
-	req := request.RoomChatReq{}
-
-	err := c.Bind(&req)
+	err := c.Bind(&request)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
+	err = ValidateStruct(request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	Token := token.GetAuthToken(c)
 	values := token.GetValuesToken(c)
 	userId := values.ID
-	err = ctrl.Ctx.RoomChat(userId, req)
+	err = ctrl.Ctx.RoomChat(userId, *request, Token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -61,7 +68,7 @@ func (ctrl Controller) JoinChat(c echo.Context) error {
 	APIName := "JoinChat"
 	loggers.LogStart(APIName)
 
-	var req []request.GroupChat
+	var req request.GroupChat
 
 	err := c.Bind(&req)
 	if err != nil {
@@ -69,15 +76,19 @@ func (ctrl Controller) JoinChat(c echo.Context) error {
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
-
-	values := token.GetValuesToken(c)
-	userId := values.ID
-
-	err = ctrl.Ctx.JoinChat(userId, req)
+	Token := token.GetAuthToken(c)
+	msg, err := ctrl.Ctx.JoinChat(req, Token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	if msg != "" {
+		res.Code = constant.SuccessCode
+		res.Msg = constant.SuccessMsg
+		res.Data = msg
+		return response.EchoSucceed(c, res, APIName)
 	}
 
 	res.Msg = constant.SuccessMsg

@@ -47,8 +47,8 @@ func gormInstance(env *Properties) GORMFactory {
 	_ = db.AutoMigrate(
 
 		// hotline.go
-		structure.HotlineNumber{},
-		structure.History{},
+		&structure.HotlineNumber{},
+		&structure.History{},
 	)
 
 	var CheckHotlineNumber []structure.HotlineNumber

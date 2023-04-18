@@ -3,17 +3,21 @@ package structure
 import "time"
 
 type UserRes struct {
-	ID           string    `json:"id,omitempty"`
-	PhoneNumber  string    `json:"phoneNumber,omitempty"`
-	FirstName    string    `json:"firstName,omitempty"`
-	LastName     string    `json:"lastName,omitempty"`
-	Email        string    `json:"email,omitempty"`
-	Birthday     time.Time `json:"birthday,omitempty"`
-	Gender       string    `json:"gender,omitempty"`
-	ImageProfile string    `json:"imageProfile,omitempty"`
-	Workplace    string    `json:"workplace,omitempty"`
-	IdCard       IdCard    `json:"idCard,omitempty"`
-	Address      Address   `json:"address,omitempty"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Data    struct {
+		ID           string    `json:"id"`
+		PhoneNumber  string    `json:"phoneNumber"`
+		FirstName    string    `json:"firstName"`
+		LastName     string    `json:"lastName"`
+		Email        string    `json:"email"`
+		Birthday     time.Time `json:"birthday"`
+		Gender       string    `json:"gender"`
+		ImageProfile string    `json:"imageProfile"`
+		Workplace    string    `json:"workplace,omitempty"`
+		IdCard       IdCard    `json:"idCard,omitempty"`
+		Address      Address   `json:"address,omitempty"`
+	} `json:"data"`
 }
 
 type IdCard struct {

@@ -49,11 +49,11 @@ func gormInstance(env *Properties) GORMFactory {
 	_ = db.AutoMigrate(
 
 		//Inform
-		structure.Type{},
-		structure.SubType{},
-		structure.Inform{},
-		structure.InformImage{},
-		structure.InformNotification{},
+		&structure.Type{},
+		&structure.SubType{},
+		&structure.Inform{},
+		&structure.InformImage{},
+		&structure.InformNotification{},
 	)
 
 	var typeStructureArr []structure.Type

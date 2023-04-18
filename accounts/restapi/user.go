@@ -95,19 +95,13 @@ func (ctrl Controller) GetUserById(c echo.Context) error {
 	APIName := "getUserById"
 	loggers.LogStart(APIName)
 
-	values := token.GetValuesToken(c)
+	//values := token.GetValuesToken(c)
 	strID := c.Param("id")
 
 	id, err := strconv.ParseUint(strID, 0, 0)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-	}
-
-	if uint(id) != values.ID {
-		res.Code = constant.ErrorCode
-		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 

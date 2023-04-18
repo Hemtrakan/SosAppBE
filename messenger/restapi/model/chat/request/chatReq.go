@@ -1,10 +1,11 @@
 package request
 
 type RoomChatReq struct {
-	RoomName  string      `json:"roomName,omitempty"`
-	GroupChat []GroupChat `json:"groupChat"`
+	RoomName  string    `json:"roomName" validate:"required"`
+	GroupChat GroupChat `json:"groupChat"`
 }
 
 type GroupChat struct {
-	UserID uint `json:"userID,omitempty"`
+	RoomChatID uint   `json:"roomChatID,omitempty"`
+	UserID     []uint `json:"userID,omitempty"`
 }

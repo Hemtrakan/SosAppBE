@@ -25,3 +25,7 @@ func GetValuesToken(c echo.Context) (res ValueKey) {
 	}
 	return
 }
+
+func GetAuthToken(c echo.Context) string {
+	return c.Request().Header.Get("Authorization")
+}

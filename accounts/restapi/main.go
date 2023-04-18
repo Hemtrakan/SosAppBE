@@ -44,6 +44,7 @@ func NewControllerMain(ctrl Controller) {
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
 	u.GET("/", ctrl.GetUserByToken)
+	u.GET("/:id", ctrl.GetUserById)
 	u.PUT("/:id", ctrl.UpdateUser)
 	u.PUT("/changePassword/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
