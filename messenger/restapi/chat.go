@@ -95,3 +95,24 @@ func (ctrl Controller) JoinChat(c echo.Context) error {
 	res.Code = constant.SuccessCode
 	return response.EchoSucceed(c, res, APIName)
 }
+
+func (ctrl Controller) GetChatList(c echo.Context) error {
+	var res response.RespMag
+	APIName := "GetChatList"
+	loggers.LogStart(APIName)
+
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	resp, err := ctrl.Ctx.GetChatList(userId)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}

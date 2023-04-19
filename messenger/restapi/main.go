@@ -37,7 +37,7 @@ func NewControllerMain(ctrl Controller) {
 	// todo ทำในการของการต่อ Database ให้เสร็จ ก่อน วันที่ 16-04-23 ที่ Messenger Service RoomChat , JoinChat, GetChat, getChatList
 	u.POST("/createRoomChat", ctrl.RoomChat)
 	u.POST("/joinChat", ctrl.JoinChat)
-	//u.GET("/getChatList", ctrl.GetChatList)
+	u.GET("/getChatList", ctrl.GetChatList)
 	//u.GET("/chat/:roomChatId", ctrl.GetChat)
 
 	a := r.Group(config.GetString("role.admin"))

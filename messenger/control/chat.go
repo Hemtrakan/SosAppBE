@@ -11,6 +11,29 @@ import (
 	"messenger/utility/encoding"
 )
 
+func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Error error) {
+	resDB, err := ctrl.Access.RDBMS.GetRoomChatListByUserId(userId)
+	if err != nil {
+		Error = err
+		return
+	}
+	var dataArr []chatRes.GetChatList
+	for _, m1 := range resDB {
+		data := chatRes.GetChatList{
+			RoomChatID: fmt.Sprintf("%v", m1.RoomChat.ID),
+			RoomName:   m1.RoomChat.Name,
+			OwnerId:    fmt.Sprintf("%v", m1.RoomChat.UserOwnerId),
+			CreatedAt:  m1.RoomChat.CreatedAt,
+			UpdatedAt:  m1.RoomChat.UpdatedAt,
+			DeletedAT:  m1.RoomChat.DeletedAt,
+			DeleteBy:   fmt.Sprintf("%v", m1.RoomChat.DeletedBy),
+		}
+		dataArr = append(dataArr, data)
+	}
+	res = dataArr
+	return
+}
+
 func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token string) (Error error) {
 	reqGroupChat := rdbmsstructure.GroupChat{
 		UserID: userId,
@@ -40,13 +63,20 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 }
 
 func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRes.JoinChatRes, Error error) {
+
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(req.RoomChatID)
+	if err != nil {
+		Error = errors.New("roomChat not found.")
+		return
+	}
+
 	checkAlready := false
 	var arrUser []uint
 	var UserAlready []string
 
 	UserRes := new(structure.UserRes)
 	for _, m1 := range req.UserID {
-		resDB, _ := ctrl.Access.RDBMS.CheckRoomChatForUser(req.RoomChatID, m1)
+		resDB, _ := ctrl.Access.RDBMS.CheckRoomChatUser(req.RoomChatID, m1)
 		if m1 != resDB.UserID {
 			arrUser = append(arrUser, m1)
 		} else {
@@ -90,7 +120,7 @@ func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRe
 	for _, userId := range arrUser {
 		reqGroupChat := rdbmsstructure.GroupChat{
 			UserID:     userId,
-			RoomChatID: req.RoomChatID,
+			RoomChatID: roomChat.ID,
 		}
 
 		err := ctrl.Access.RDBMS.JoinChat(reqGroupChat)
