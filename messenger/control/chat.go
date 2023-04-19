@@ -7,6 +7,7 @@ import (
 	"messenger/control/structure"
 	rdbmsstructure "messenger/db/structure"
 	"messenger/restapi/model/chat/request"
+	chatRes "messenger/restapi/model/chat/response"
 	"messenger/utility/encoding"
 )
 
@@ -38,14 +39,15 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 	return
 }
 
-func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (msg string, Error error) {
+func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRes.JoinChatRes, Error error) {
 	checkAlready := false
-	msg1 := ""
 	var arrUser []uint
+	var UserAlready []string
+
 	UserRes := new(structure.UserRes)
 	for _, m1 := range req.UserID {
-		res, _ := ctrl.Access.RDBMS.CheckRoomChatForUser(req.RoomChatID, m1)
-		if m1 != res.UserID {
+		resDB, _ := ctrl.Access.RDBMS.CheckRoomChatForUser(req.RoomChatID, m1)
+		if m1 != resDB.UserID {
 			arrUser = append(arrUser, m1)
 		} else {
 			checkAlready = true
@@ -76,14 +78,13 @@ func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (msg string
 				return
 			}
 
-			Username := UserRes.Data.FirstName + " " + UserRes.Data.LastName
-
-			msg1 = msg1 + fmt.Sprintf(" %v, ", Username)
+			UserAlready = append(UserAlready, UserRes.Data.FirstName+" "+UserRes.Data.LastName)
 		}
 	}
 
 	if checkAlready {
-		msg = fmt.Sprintf("User already exists in this chat in ( %v ) .", msg1)
+		res.Mag = fmt.Sprintf("User already exists in this chat in.")
+		res.Username = UserAlready
 	}
 
 	for _, userId := range arrUser {

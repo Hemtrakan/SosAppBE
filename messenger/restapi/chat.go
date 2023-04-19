@@ -77,17 +77,17 @@ func (ctrl Controller) JoinChat(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 	Token := token.GetAuthToken(c)
-	msg, err := ctrl.Ctx.JoinChat(req, Token)
+	resp, err := ctrl.Ctx.JoinChat(req, Token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	if msg != "" {
+	if resp.Mag != "" {
 		res.Code = constant.SuccessCode
 		res.Msg = constant.SuccessMsg
-		res.Data = msg
+		res.Data = resp
 		return response.EchoSucceed(c, res, APIName)
 	}
 
