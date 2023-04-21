@@ -20,3 +20,7 @@ const (
 	User  string = "user"
 	Admin string = "admin"
 )
+
+const (
+	ROOMCHAT_NOT_FOUND = "RoomChat not found."
+)

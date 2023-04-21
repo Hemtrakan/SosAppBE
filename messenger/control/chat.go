@@ -4,11 +4,14 @@ import (
 	"errors"
 	"fmt"
 	config "github.com/spf13/viper"
+	"gorm.io/gorm"
+	"messenger/constant"
 	"messenger/control/structure"
 	rdbmsstructure "messenger/db/structure"
 	"messenger/restapi/model/chat/request"
 	chatRes "messenger/restapi/model/chat/response"
 	"messenger/utility/encoding"
+	"strconv"
 )
 
 func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Error error) {
@@ -63,10 +66,9 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 }
 
 func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRes.JoinChatRes, Error error) {
-
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(req.RoomChatID)
 	if err != nil {
-		Error = errors.New("roomChat not found.")
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
 		return
 	}
 
@@ -127,6 +129,149 @@ func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRe
 		if err != nil {
 			Error = err
 			return
+		}
+	}
+
+	return
+}
+func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint) (res []chatRes.GetChat, Error error) {
+	resDB, err := ctrl.Access.RDBMS.GetMessage(roomChatID)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	var dataArr []chatRes.GetChat
+	for _, m1 := range resDB {
+		data := chatRes.GetChat{
+			ID:           m1.ID,
+			RoomChatID:   m1.RoomChatID,
+			Message:      m1.Message,
+			Image:        m1.Image,
+			SenderUserId: m1.SenderUserId,
+			ReadingDate:  m1.ReadingDate,
+			DeletedBy:    m1.DeletedBy,
+			CreatedAt:    m1.CreatedAt,
+			UpdatedAt:    m1.UpdatedAt,
+			DeletedAT:    m1.DeletedAt,
+		}
+		dataArr = append(dataArr, data)
+	}
+	res = dataArr
+	return
+}
+
+func (ctrl Controller) SendMessage(req request.SendMessage, userId uint) (Error error) {
+	roomChatId, err := strconv.ParseUint(req.RoomChatID, 0, 0)
+	if err != nil {
+		Error = err
+		return
+	}
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(uint(roomChatId))
+	if err != nil {
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
+		return
+	}
+
+	if roomChat.ID != 0 {
+		data := rdbmsstructure.Message{
+			RoomChatID:   roomChat.ID,
+			Message:      req.Message,
+			Image:        req.Image,
+			SenderUserId: userId,
+		}
+
+		err = ctrl.Access.RDBMS.PostChat(data)
+		if err != nil {
+			Error = err
+			return
+		}
+	}
+
+	return
+}
+
+func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId uint) (Error error) {
+	roomChatID, err := strconv.ParseUint(req.RoomChatID, 0, 0)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(uint(roomChatID))
+	if err != nil {
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
+		return
+	}
+	var check []chatRes.GetChat
+	checkMsg := false
+	if roomChat.ID != 0 {
+		check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
+		for _, m1 := range check {
+			if messageId == m1.ID && userId == m1.SenderUserId {
+				checkMsg = true
+				break
+			}
+		}
+
+		if checkMsg {
+			data := rdbmsstructure.Message{
+				Model: gorm.Model{
+					ID: messageId,
+				},
+				Message:      req.Message,
+				Image:        req.Image,
+				SenderUserId: userId,
+			}
+
+			err = ctrl.Access.RDBMS.PutChat(data)
+			if err != nil {
+				Error = err
+				return
+			}
+		} else {
+			Error = errors.New("ไม่สามารถแก้ไขข้อความผู้อื่นได้")
+		}
+	}
+
+	return
+}
+
+func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint) (Error error) {
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatID)
+	if err != nil {
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
+		return
+	}
+	var check []chatRes.GetChat
+	checkMsg := false
+	if roomChat.ID != 0 {
+		check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
+		for _, m1 := range check {
+			if messageId == m1.ID && userId == m1.SenderUserId {
+				checkMsg = true
+				break
+			}
+		}
+
+		if checkMsg {
+			data := rdbmsstructure.Message{
+				Model:     gorm.Model{ID: messageId},
+				DeletedBy: userId,
+			}
+
+			err = ctrl.Access.RDBMS.PutChat(data)
+			if err != nil {
+				Error = err
+			}
+
+			err = ctrl.Access.RDBMS.DeleteChat(messageId)
+			if err != nil {
+				Error = err
+				return
+			}
+		} else {
+			Error = errors.New("ไม่สามารถลบข้อความผู้อื่นได้")
 		}
 	}
 

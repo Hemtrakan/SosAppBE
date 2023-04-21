@@ -34,11 +34,13 @@ func NewControllerMain(ctrl Controller) {
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
-	// todo ทำในการของการต่อ Database ให้เสร็จ ก่อน วันที่ 16-04-23 ที่ Messenger Service RoomChat , JoinChat, GetChat, getChatList
 	u.POST("/createRoomChat", ctrl.RoomChat)
 	u.POST("/joinChat", ctrl.JoinChat)
 	u.GET("/getChatList", ctrl.GetChatList)
-	//u.GET("/chat/:roomChatId", ctrl.GetChat)
+	u.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)
+	u.POST("/chat/message", ctrl.SendMessage)
+	u.PUT("/chat/message/:messageId", ctrl.UpdateMessage)
+	u.DELETE("/chat/message/:messageId/:roomChatId", ctrl.DeleteMessage)
 
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)

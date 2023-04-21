@@ -14,6 +14,11 @@ var (
 )
 
 type FactoryInterface interface {
+	GetMessage(roomChatId uint) (res []structure.Message, Error error)
+	PostChat(message structure.Message) (Error error)
+	PutChat(message structure.Message) (Error error)
+	DeleteChat(messageId uint) (Error error)
+
 	GetRoomChatListByUserId(UserID uint) (res []structure.GroupChat, Error error)
 	GetRoomChatById(roomChatId uint) (res structure.RoomChat, Error error)
 

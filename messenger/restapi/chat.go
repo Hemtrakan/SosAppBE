@@ -8,25 +8,8 @@ import (
 	"messenger/utility/response"
 	"messenger/utility/token"
 	"net/http"
+	"strconv"
 )
-
-//func (ctrl Controller) GetChat(c echo.Context) error {
-//	var res response.RespMag
-//	APIName := "Chat"
-//	loggers.LogStart(APIName)
-//
-//	responses, err := ctrl.Ctx.Chat()
-//	if err != nil {
-//		res.Code = constant.ErrorCode
-//		res.Msg = err.Error()
-//		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-//	}
-//
-//	res.Msg = constant.SuccessMsg
-//	res.Code = constant.SuccessCode
-//	res.Data = responses
-//	return response.EchoSucceed(c, res, APIName)
-//}
 
 func (ctrl Controller) RoomChat(c echo.Context) error {
 	request := new(request.RoomChatReq)
@@ -111,8 +94,139 @@ func (ctrl Controller) GetChatList(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
+	if len(resp) > 0 {
+		res.Data = resp
+		res.Total = len(resp)
+	}
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
-	res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) GetMessageByRoomChatId(c echo.Context) error {
+	var res response.RespMag
+	APIName := "GetMessageByRoomChatId"
+	loggers.LogStart(APIName)
+
+	roomChatIdStr := c.Param("roomChatId")
+	roomChatId, err := strconv.ParseUint(roomChatIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	resp, err := ctrl.Ctx.GetMessageByRoomChatId(uint(roomChatId))
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	if len(resp) > 0 {
+		res.Data = resp
+		res.Total = len(resp)
+	}
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) SendMessage(c echo.Context) error {
+	var res response.RespMag
+	APIName := "SendMessage"
+	loggers.LogStart(APIName)
+
+	var req request.SendMessage
+
+	err := c.Bind(&req)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	err = ctrl.Ctx.SendMessage(req, userId)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) UpdateMessage(c echo.Context) error {
+	var res response.RespMag
+	APIName := "UpdateMessage"
+	loggers.LogStart(APIName)
+
+	var req request.SendMessage
+
+	err := c.Bind(&req)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	messageIdStr := c.Param("messageId")
+	messageId, err := strconv.ParseUint(messageIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ctrl.Ctx.UpdateMessage(req, uint(messageId), userId)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) DeleteMessage(c echo.Context) error {
+	var res response.RespMag
+	APIName := "DeleteMessage"
+	loggers.LogStart(APIName)
+
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	messageIdStr := c.Param("messageId")
+	messageId, err := strconv.ParseUint(messageIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	roomChatIDStr := c.Param("roomChatId")
+	roomChatID, err := strconv.ParseUint(roomChatIDStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ctrl.Ctx.DeleteMessage(uint(messageId), uint(roomChatID), userId)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
 	return response.EchoSucceed(c, res, APIName)
 }

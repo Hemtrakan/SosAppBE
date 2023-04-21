@@ -19,3 +19,16 @@ type GetChatList struct {
 	DeletedAT  gorm.DeletedAt `json:"deletedAT"`
 	DeleteBy   string         `json:"deleteBy,omitempty"`
 }
+
+type GetChat struct {
+	ID           uint           `json:"id,omitempty"`
+	RoomChatID   uint           `json:"roomChatID,omitempty"`
+	Message      string         `json:"message,omitempty"`
+	Image        string         `json:"image,omitempty"`
+	SenderUserId uint           `json:"senderUserId,omitempty"`
+	ReadingDate  int            `json:"readingDate,omitempty"` // todo นับจำนวนการอ่านข้อความ
+	DeletedBy    uint           `json:"deletedBy,omitempty"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	UpdatedAt    time.Time      `json:"updatedAt"`
+	DeletedAT    gorm.DeletedAt `json:"deletedAT"`
+}
