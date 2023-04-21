@@ -8,9 +8,10 @@ import (
 )
 
 type RespMag struct {
-	Code string      `json:"code"`
-	Msg  string      `json:"message"`
-	Data interface{} `json:"data,omitempty"`
+	Code  string      `json:"code"`
+	Msg   string      `json:"message"`
+	Total int         `json:"total,omitempty"`
+	Data  interface{} `json:"data,omitempty"`
 }
 
 func EchoSucceed(c echo.Context, msg interface{}, APIName string) error {
