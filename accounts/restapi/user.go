@@ -23,7 +23,7 @@ func (ctrl Controller) SearchUser(c echo.Context) error {
 
 	if len(value) < 3 {
 		res.Code = constant.ErrorCode
-		res.Msg = "ตัวอักษรต้องไม่ต่ำกว่า 4 ตัวขึ้นไป"
+		res.Msg = "ตัวอักษรต้องไม่ต่ำกว่า 3 ตัวขึ้นไป"
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
