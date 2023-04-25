@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js"
   },
-  "author": "abhidiwakar",
+  "author": "chirapon",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.15"
