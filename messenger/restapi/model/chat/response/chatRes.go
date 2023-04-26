@@ -1,7 +1,6 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -11,24 +10,24 @@ type JoinChatRes struct {
 }
 
 type GetChatList struct {
-	RoomChatID string         `json:"roomChatID,omitempty"`
-	RoomName   string         `json:"roomName,omitempty"`
-	OwnerId    string         `json:"ownerId,omitempty"`
-	CreatedAt  time.Time      `json:"createdAt"`
-	UpdatedAt  time.Time      `json:"updatedAt"`
-	DeletedAT  gorm.DeletedAt `json:"deletedAT"`
-	DeleteBy   string         `json:"deleteBy,omitempty"`
+	RoomChatID string    `json:"roomChatID,omitempty"`
+	RoomName   string    `json:"roomName,omitempty"`
+	OwnerId    string    `json:"ownerId,omitempty"`
+	CreatedAt  time.Time `json:"createdAt,omitempty"`
+	UpdatedAt  time.Time `json:"updatedAt,omitempty"`
+	//DeletedAT  time.Time `json:"deletedAT,omitempty"`
+	DeleteBy string `json:"deleteBy,omitempty"`
 }
 
 type GetChat struct {
-	ID           uint           `json:"id,omitempty"`
-	RoomChatID   uint           `json:"roomChatID,omitempty"`
-	Message      string         `json:"message,omitempty"`
-	Image        string         `json:"image,omitempty"`
-	SenderUserId uint           `json:"senderUserId,omitempty"`
-	ReadingDate  int            `json:"readingDate,omitempty"` // todo นับจำนวนการอ่านข้อความ
-	DeletedBy    uint           `json:"deletedBy,omitempty"`
-	CreatedAt    time.Time      `json:"createdAt"`
-	UpdatedAt    time.Time      `json:"updatedAt"`
-	DeletedAT    gorm.DeletedAt `json:"deletedAT"`
+	ID           uint      `json:"id,omitempty"`
+	RoomChatID   uint      `json:"roomChatID,omitempty"`
+	Message      string    `json:"message,omitempty"`
+	Image        string    `json:"image,omitempty"`
+	SenderUserId uint      `json:"senderUserId,omitempty"`
+	ReadingDate  int       `json:"readingDate,omitempty"` // todo นับจำนวนการอ่านข้อความ
+	CreatedAt    time.Time `json:"createdAt,omitempty"`
+	UpdatedAt    time.Time `json:"updatedAt,omitempty"`
+	//DeletedAT    time.Time `json:"deletedAT,omitempty"`
+	DeletedBy uint `json:"deletedBy,omitempty"`
 }

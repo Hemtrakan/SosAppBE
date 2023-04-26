@@ -28,8 +28,8 @@ func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Erro
 			OwnerId:    fmt.Sprintf("%v", m1.RoomChat.UserOwnerId),
 			CreatedAt:  m1.RoomChat.CreatedAt,
 			UpdatedAt:  m1.RoomChat.UpdatedAt,
-			DeletedAT:  m1.RoomChat.DeletedAt,
-			DeleteBy:   fmt.Sprintf("%v", m1.RoomChat.DeletedBy),
+			//DeletedAT:  m1.RoomChat.DeletedAt.Time,
+			DeleteBy: fmt.Sprintf("%v", m1.RoomChat.DeletedBy),
 		}
 		dataArr = append(dataArr, data)
 	}
@@ -143,6 +143,11 @@ func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint) (res []chatRes.Ge
 
 	var dataArr []chatRes.GetChat
 	for _, m1 := range resDB {
+		//time := time.Time{}
+		//if !m1.DeletedAt.Time.IsZero() {
+		//	time = m1.DeletedAt.Time
+		//}
+
 		data := chatRes.GetChat{
 			ID:           m1.ID,
 			RoomChatID:   m1.RoomChatID,
@@ -153,7 +158,7 @@ func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint) (res []chatRes.Ge
 			DeletedBy:    m1.DeletedBy,
 			CreatedAt:    m1.CreatedAt,
 			UpdatedAt:    m1.UpdatedAt,
-			DeletedAT:    m1.DeletedAt,
+			//DeletedAT:    time,
 		}
 		dataArr = append(dataArr, data)
 	}
