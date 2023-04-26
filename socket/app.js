@@ -7,23 +7,26 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const messages = [];
 
-let count = 0;
+// let count = 0;
 
 io.of(/^\/\d+$/).on("connection", (socket) => {
-  count++;
-  console.log(count);
+  // count++;
+  // console.log(count);
   const newNamespace = socket.nsp; 
   let roomChatId = socket.nsp.name.replace("/", '');
   socket.on("disconnect", () => {
+    console.log("----- disconnect --------");
     socket.disconnect();
   });
 
   const username = socket.handshake.query.username;
   console.log("----- Connect --------");
   console.log("username : ", username);
+  console.log("roomChatId :",roomChatId);
   console.log("----- Connect --------");
   socket.on(roomChatId, (data) => {
     const message = {
+      
       message: data.message,
       senderUsername: username,
       sentAt: Date.now(),
@@ -34,8 +37,6 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
     newNamespace.emit(roomChatId, message);
   });
 });
-
-
 
 server.listen(3000, () => {
   console.log("listening on *:3000");
