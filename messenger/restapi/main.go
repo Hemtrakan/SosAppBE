@@ -40,6 +40,7 @@ func NewControllerMain(ctrl Controller) {
 
 	u.POST("/joinChat", ctrl.JoinChat)
 	u.GET("/getChatList", ctrl.GetChatList)
+	u.GET("/getMembersRoomChat/:roomChatId", ctrl.GetMembersRoomChat)
 	u.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)
 	u.POST("/chat/message", ctrl.SendMessage)
 	u.PUT("/chat/message/:messageId", ctrl.UpdateMessage)

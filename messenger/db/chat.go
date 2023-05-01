@@ -39,6 +39,7 @@ func (factory GORMFactory) JoinChat(groupChat structure.GroupChat) (Error error)
 	}
 	return
 }
+
 func (factory GORMFactory) CheckRoomChatUser(RoomChatID, UserID uint) (res structure.GroupChat, Error error) {
 	err := factory.client.Where("room_chat_id = ? AND user_id = ?", RoomChatID, UserID).First(&res).Error
 	if err != nil {
@@ -115,6 +116,20 @@ func (factory GORMFactory) DeleteRoomChatById(roomChatId uint) (Error error) {
 
 func (factory GORMFactory) GetRoomChatListByUserId(UserID uint) (res []structure.GroupChat, Error error) {
 	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Order("created_at DESC").Find(&res).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+	return
+}
+
+func (factory GORMFactory) GetMembersRoomChat(RoomChatID uint) (res []structure.GroupChat, Error error) {
+	err := factory.client.Preload("RoomChat").Where("room_chat_id = ?", RoomChatID).Order("created_at DESC").Find(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

@@ -37,6 +37,31 @@ func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Erro
 	return
 }
 
+func (ctrl Controller) GetMembersRoomChat(RoomChatId uint) (res chatRes.GetMemberRoomChat, Error error) {
+	resDB, err := ctrl.Access.RDBMS.GetMembersRoomChat(RoomChatId)
+	if err != nil {
+		Error = err
+		return
+	}
+	var arr []chatRes.MemberRoomChat
+	for _, m1 := range resDB {
+		obj := chatRes.MemberRoomChat{
+			UserId: m1.UserID,
+		}
+		arr = append(arr, obj)
+	}
+
+	data := chatRes.GetMemberRoomChat{
+		RoomChatID:     fmt.Sprintf("%v", resDB[0].RoomChatID),
+		RoomName:       fmt.Sprintf("%v", resDB[0].RoomChat.Name),
+		OwnerId:        fmt.Sprintf("%v", resDB[0].RoomChat.UserOwnerId),
+		MemberRoomChat: arr,
+	}
+
+	res = data
+	return
+}
+
 func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token string) (Error error) {
 	reqGroupChat := rdbmsstructure.GroupChat{
 		UserID: userId,

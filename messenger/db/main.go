@@ -23,6 +23,7 @@ type FactoryInterface interface {
 	GetRoomChatById(roomChatId uint) (res structure.RoomChat, Error error)
 	GetMessengerByRoomChatId(roomChatId uint) (res []structure.Message, Error error)
 
+	GetMembersRoomChat(RoomChatID uint) (res []structure.GroupChat, Error error)
 	CheckRoomChatUser(RoomChatID, UserID uint) (res structure.GroupChat, Error error)
 	RoomChat(groupChat structure.GroupChat) (res structure.GroupChat, Error error)
 	JoinChat(groupChat structure.GroupChat) (Error error)

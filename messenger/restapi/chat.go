@@ -174,6 +174,32 @@ func (ctrl Controller) GetChatList(c echo.Context) error {
 	return response.EchoSucceed(c, res, APIName)
 }
 
+func (ctrl Controller) GetMembersRoomChat(c echo.Context) error {
+	var res response.RespMag
+	APIName := "GetMembersRoomChat"
+	loggers.LogStart(APIName)
+
+	roomChatIdStr := c.Param("roomChatId")
+	roomChatId, err := strconv.ParseUint(roomChatIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	resp, err := ctrl.Ctx.GetMembersRoomChat(uint(roomChatId))
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}
+
 func (ctrl Controller) GetMessageByRoomChatId(c echo.Context) error {
 	var res response.RespMag
 	APIName := "GetMessageByRoomChatId"

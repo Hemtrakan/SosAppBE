@@ -31,3 +31,14 @@ type GetChat struct {
 	//DeletedAT    time.Time `json:"deletedAT,omitempty"`
 	DeletedBy uint `json:"deletedBy,omitempty"`
 }
+
+type GetMemberRoomChat struct {
+	RoomChatID     string           `json:"roomChatID,omitempty"`
+	RoomName       string           `json:"roomName,omitempty"`
+	OwnerId        string           `json:"ownerId,omitempty"`
+	MemberRoomChat []MemberRoomChat `json:"memberRoomChat,omitempty"`
+}
+
+type MemberRoomChat struct {
+	UserId uint `json:"userId,omitempty"`
+}
