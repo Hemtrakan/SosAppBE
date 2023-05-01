@@ -35,6 +35,9 @@ func NewControllerMain(ctrl Controller) {
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
 	u.POST("/createRoomChat", ctrl.RoomChat)
+	u.PUT("/updateRoomChat/:roomId", ctrl.UpdateRoomChat)
+	u.DELETE("/deleteRoomChat/:roomId", ctrl.DeleteRoomChat)
+
 	u.POST("/joinChat", ctrl.JoinChat)
 	u.GET("/getChatList", ctrl.GetChatList)
 	u.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)

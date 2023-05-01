@@ -70,8 +70,51 @@ func (factory GORMFactory) GetRoomChatById(roomChatId uint) (res structure.RoomC
 	return
 }
 
+func (factory GORMFactory) PutRoomChat(groupChat structure.RoomChat) (Error error) {
+	if groupChat.ID != 0 {
+		err := factory.client.Model(&groupChat).Where("id = ?", groupChat.ID).Updates(
+			structure.RoomChat{
+				Name:      groupChat.Name,
+				DeletedBy: groupChat.DeletedBy,
+			}).Error
+
+		if err != nil {
+			Error = err
+		}
+	}
+
+	return
+}
+
+func (factory GORMFactory) DeleteRoomChatById(roomChatId uint) (Error error) {
+	var data structure.RoomChat
+	err := factory.client.Where("id = ? ", roomChatId).Delete(&data).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+	var data1 structure.GroupChat
+	err = factory.client.Where("room_chat_id = ? ", roomChatId).Delete(&data1).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+
+	return
+}
+
 func (factory GORMFactory) GetRoomChatListByUserId(UserID uint) (res []structure.GroupChat, Error error) {
-	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Find(&res).Error
+	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Order("created_at DESC").Find(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

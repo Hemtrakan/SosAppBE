@@ -46,6 +46,77 @@ func (ctrl Controller) RoomChat(c echo.Context) error {
 	return response.EchoSucceed(c, res, APIName)
 }
 
+func (ctrl Controller) UpdateRoomChat(c echo.Context) error {
+	request := new(request.RoomChatReq)
+	var res response.RespMag
+	APIName := "DeleteRoomChat"
+	loggers.LogStart(APIName)
+
+	err := c.Bind(&request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ValidateStruct(request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	roomChatIdStr := c.Param("roomId")
+	roomChatID, err := strconv.ParseUint(roomChatIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ctrl.Ctx.UpdateRoomChat(userId, uint(roomChatID), *request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) DeleteRoomChat(c echo.Context) error {
+	var res response.RespMag
+	APIName := "DeleteRoomChat"
+	loggers.LogStart(APIName)
+
+	values := token.GetValuesToken(c)
+	userId := values.ID
+
+	roomChatIdStr := c.Param("roomId")
+	roomChatID, err := strconv.ParseUint(roomChatIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ctrl.Ctx.DeleteRoomChat(userId, uint(roomChatID))
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
 func (ctrl Controller) JoinChat(c echo.Context) error {
 	var res response.RespMag
 	APIName := "JoinChat"

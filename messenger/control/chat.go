@@ -65,6 +65,70 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 	return
 }
 
+func (ctrl Controller) UpdateRoomChat(userId, roomChatId uint, req request.RoomChatReq) (Error error) {
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatId)
+	if err != nil {
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
+		return
+	}
+
+	if roomChat.ID != 0 {
+		if roomChat.UserOwnerId == userId {
+			data := rdbmsstructure.RoomChat{
+				Model: gorm.Model{
+					ID: roomChat.ID,
+				},
+				Name:      req.RoomName,
+				DeletedBy: userId,
+			}
+
+			err = ctrl.Access.RDBMS.PutRoomChat(data)
+			if err != nil {
+				Error = err
+			}
+
+		} else {
+			Error = errors.New("ไม่สามารถลบข้อความผู้อื่นได้")
+		}
+	}
+
+	return
+}
+
+func (ctrl Controller) DeleteRoomChat(userId, roomChatId uint) (Error error) {
+	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatId)
+	if err != nil {
+		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
+		return
+	}
+
+	if roomChat.ID != 0 {
+		if roomChat.UserOwnerId == userId {
+			data := rdbmsstructure.RoomChat{
+				Model: gorm.Model{
+					ID: roomChat.ID,
+				},
+				DeletedBy: userId,
+			}
+
+			err = ctrl.Access.RDBMS.PutRoomChat(data)
+			if err != nil {
+				Error = err
+			}
+
+			err = ctrl.Access.RDBMS.DeleteRoomChatById(roomChatId)
+			if err != nil {
+				Error = err
+				return
+			}
+		} else {
+			Error = errors.New("ไม่สามารถลบข้อความผู้อื่นได้")
+		}
+	}
+
+	return
+}
+
 func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRes.JoinChatRes, Error error) {
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(req.RoomChatID)
 	if err != nil {
