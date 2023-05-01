@@ -45,12 +45,13 @@ func NewControllerMain(ctrl Controller) {
 
 	u.GET("/", ctrl.GetUserByToken)
 	u.GET("/:id", ctrl.GetUserById)
+	u.GET("/image/:id", ctrl.GetImageById)
 	u.PUT("/:id", ctrl.UpdateUser)
 	u.PUT("/changePassword/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
 
 	// searchUser
-	u.GET("/:id/:value", ctrl.SearchUser)
+	u.GET("/searchUser/:value", ctrl.SearchUser)
 
 	// todo Verify ID Card API admin page
 	// todo admin

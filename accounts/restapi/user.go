@@ -18,7 +18,6 @@ func (ctrl Controller) SearchUser(c echo.Context) error {
 	loggers.LogStart(APIName)
 
 	values := token.GetValuesToken(c)
-	strID := c.Param("id")
 	value := c.Param("value")
 
 	if len(value) < 3 {
@@ -27,20 +26,9 @@ func (ctrl Controller) SearchUser(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	id, err := strconv.ParseUint(strID, 0, 0)
-	if err != nil {
-		res.Code = constant.ErrorCode
-		res.Msg = err.Error()
-		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-	}
+	id := values.ID
 
-	if uint(id) != values.ID {
-		res.Code = constant.ErrorCode
-		res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
-		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-	}
-
-	data, err := ctrl.Ctx.SearchUser(value)
+	data, err := ctrl.Ctx.SearchUser(value, id)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -106,6 +94,33 @@ func (ctrl Controller) GetUserById(c echo.Context) error {
 	}
 
 	data, err := ctrl.Ctx.GetUser(uint(id))
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	res.Code = constant.SuccessCode
+	res.Msg = constant.SuccessMsg
+	res.Data = data
+
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) GetImageById(c echo.Context) error {
+	var res response.RespMag
+	APIName := "getImageById"
+	loggers.LogStart(APIName)
+
+	strID := c.Param("id")
+
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	data, err := ctrl.Ctx.GetImage(uint(id))
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

@@ -30,3 +30,8 @@ type Address struct {
 	PostalCode  string `json:"postalCode,omitempty"`
 	Country     string `json:"country,omitempty"`
 }
+
+type ImageRes struct {
+	ID           string `json:"id,omitempty"`
+	ImageProfile string `json:"imageProfile,omitempty"`
+}

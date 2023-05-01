@@ -61,6 +61,30 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 	return
 }
 
+func (ctrl Controller) GetImage(id uint) (res *resUser.ImageRes, Error error) {
+	req := rdbmsstructure.Users{
+		Model: gorm.Model{
+			ID: id,
+		},
+	}
+
+	data, err := ctrl.Access.RDBMS.GetUserByID(req)
+	if err != nil {
+		Error = err
+		return
+	}
+	ImageProfile := ""
+	if data.ImageProfile != nil {
+		ImageProfile = *data.ImageProfile
+	}
+
+	res = &resUser.ImageRes{
+		ID:           strconv.Itoa(int(id)),
+		ImageProfile: ImageProfile,
+	}
+	return
+}
+
 func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
 	data, err := ctrl.Access.RDBMS.GetUserList()
 	if err != nil {
@@ -100,8 +124,8 @@ func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
 	return
 }
 
-func (ctrl Controller) SearchUser(value string) (res []resUser.UserRes, Error error) {
-	data, err := ctrl.Access.RDBMS.SearchUser(value)
+func (ctrl Controller) SearchUser(value string, id uint) (res []resUser.UserRes, Error error) {
+	data, err := ctrl.Access.RDBMS.SearchUser(value, id)
 	if err != nil {
 		Error = err
 		return

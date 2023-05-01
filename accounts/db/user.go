@@ -10,12 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func (factory GORMFactory) SearchUser(value string) (response []*structure.Users, Error error) {
+func (factory GORMFactory) SearchUser(value string, id uint) (response []*structure.Users, Error error) {
 	var data []*structure.Users
 	value = "%" + value + "%"
 	err := factory.client.Preload("Role").Preload("IDCard").Preload("Address").
 		Where("firstname LIKE ? OR lastname LIKE ? OR phone_number LIKE ? OR workplace LIKE ? ", value, value, value, value).
 		Where("role_id <> ?", 1).
+		Where("id <> ?", id).
 		Find(&data).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {

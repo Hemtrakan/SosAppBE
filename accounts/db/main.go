@@ -39,7 +39,7 @@ type FactoryInterface interface {
 	PutUser(user *structure.Users, address *structure.Address, idCard *structure.IDCard) (Error []error)
 	ChangePassword(req *structure.Users) (Error error)
 	DeleteUser(req structure.Users) (Error error)
-	SearchUser(value string) (response []*structure.Users, Error error)
+	SearchUser(value string, id uint) (response []*structure.Users, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

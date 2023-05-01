@@ -81,7 +81,10 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 	var res response.RespMag
 	APIName := "createUser"
 	loggers.LogStart(APIName)
-	values := token.GetValuesToken(c)
+	var values = token.ValueKey{}
+	if c.Request().Header.Get("Authorization") != "" {
+		values = token.GetValuesToken(c)
+	}
 
 	err := c.Bind(request)
 	if err != nil {
