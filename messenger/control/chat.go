@@ -182,20 +182,17 @@ func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRe
 			HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
 			if err != nil {
 				Error = err
-				fmt.Printf("Error : , %#v\n", Error)
 				return
 			}
 
 			if HttpResponse.HttpStatusCode != 200 {
-				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v", HttpResponse.HttpStatusCode))
-				fmt.Printf("%#v\n", Error)
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
 				return
 			}
 
 			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
 			if err != nil {
 				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
-				fmt.Printf("%#v\n", Error)
 				return
 			}
 

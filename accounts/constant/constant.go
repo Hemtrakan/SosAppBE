@@ -18,5 +18,6 @@ const (
 
 const (
 	User  string = "user"
+	Ops   string = "ops"
 	Admin string = "admin"
 )

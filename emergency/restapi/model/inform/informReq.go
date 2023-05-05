@@ -22,3 +22,15 @@ type InformRequest struct {
 	// SubTypeID ประเภทของการแจ้งเหตุ
 	SubTypeID uint `json:"subTypeID,omitempty"`
 }
+
+type UpdateInformRequest struct {
+	Description         string `json:"description,omitempty"`
+	PhoneNumberCallBack string `json:"phoneNumberCallBack,omitempty"`
+	Latitude            string `json:"latitude,omitempty"`
+	Longitude           string `json:"longitude,omitempty"`
+	UserID              uint   `json:"userID,omitempty"`
+	DeletedBy           uint   `json:"deletedBy,omitempty"`
+	SubTypeID           uint   `json:"subTypeID,omitempty"`
+	OpsID               uint   `json:"opsID,omitempty"`
+	Status              int    `json:"status,omitempty"`
+}

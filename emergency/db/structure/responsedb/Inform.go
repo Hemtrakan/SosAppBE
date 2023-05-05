@@ -12,11 +12,8 @@ type InformInfoList struct {
 	SubTypeName     *string
 	TypeID          *string
 	Type            *string
-	NotiID          *string
-	NotiCreatedAt   *string
 	// UserNotiID  ไอดีของผู้รับแจ้งเหตุ
 	UserNotiID *string
-	NotiDes    *string
 	Status     *string
 }
 
@@ -32,11 +29,8 @@ type InformInfoById struct {
 	SubTypeName     *string
 	TypeID          *string
 	Type            *string
-	NotiID          *string
-	NotiCreatedAt   *string
 	// UserNotiID  ไอดีของผู้รับแจ้งเหตุ
 	UserNotiID *string
-	NotiDes    *string
 	Status     *string
 	ImageInfo  []*ImageInfo
 }

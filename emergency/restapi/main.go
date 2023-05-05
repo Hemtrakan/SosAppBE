@@ -39,9 +39,21 @@ func NewControllerMain(ctrl Controller) {
 	//u.POST("/:id", ctrl.PutInform)
 	//u.POST("/:id", ctrl.DeleteInform)
 
+	o := r.Group(config.GetString("role.ops"))
+	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
+	o.GET("/", ctrl.GetInformOpsList)
+	o.GET("/:id", ctrl.GetInformOpsById)
+	o.PUT("/:id", ctrl.UpdateInform)
+	o.DELETE("/:id", ctrl.DeleteInform)
+
 	// admin
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	//a.GET("/")
+	//a.GET("/:id")
+	//a.POST("/")
+	//a.PUT("/:id")
+	//a.DELETE("/:id")
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
@@ -68,6 +80,21 @@ func AuthRoleUser(next echo.HandlerFunc) echo.HandlerFunc {
 		claims := user.Claims.(*token.JwtCustomClaims)
 		var userRole = claims.Role
 		role := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleOps(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+		role := strings.Replace(config.GetString("role.ops"), "/", "", 2)
 		if userRole == role {
 			return next(c)
 		} else {

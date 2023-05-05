@@ -13,6 +13,8 @@ type Inform struct {
 	UserID              uint
 	DeletedBy           uint
 	SubTypeID           uint
+	OpsID               uint
+	Status              string
 }
 
 type InformImage struct {
@@ -20,15 +22,4 @@ type InformImage struct {
 	InformID uint
 	Inform   Inform
 	Image    string
-}
-
-type InformNotification struct {
-	gorm.Model
-	InformID uint
-	Inform   Inform
-	// UserID คนที่รับแจ้งเหตุ
-	UserID      uint
-	Description string
-	Status      string
-	DeletedBy   uint
 }

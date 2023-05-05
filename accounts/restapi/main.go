@@ -53,6 +53,10 @@ func NewControllerMain(ctrl Controller) {
 	// searchUser
 	u.GET("/searchUser/:value", ctrl.SearchUser)
 
+	o := s.Group(config.GetString("role.ops"))
+	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
+	o.GET("/", ctrl.GetUserByToken)
+
 	// todo Verify ID Card API admin page
 	// todo admin
 	a := s.Group(config.GetString("role.admin"))
@@ -96,6 +100,21 @@ func AuthRoleUser(next echo.HandlerFunc) echo.HandlerFunc {
 		claims := user.Claims.(*token.JwtCustomClaims)
 		var userRole = claims.Role
 		role := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleOps(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+		role := strings.Replace(config.GetString("role.ops"), "/", "", 2)
 		if userRole == role {
 			return next(c)
 		} else {

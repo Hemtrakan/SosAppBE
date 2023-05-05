@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const getInformInfo = `SELECT i.id   AS ID
+const getInformInfo = `SELECT i.id AS ID
      , i.created_at             AS InformCreatedAt
      , i.user_id                AS UserInformID
      , i.description            AS Description
@@ -18,13 +18,9 @@ const getInformInfo = `SELECT i.id   AS ID
      , st.name                  AS SubTypeName
      , t.id                     AS TypeID
      , t.name                   AS Type
-     , inf.id                   AS NotiID
-     , inf.created_at           AS NotiCreatedAt
-     , inf.user_id              AS UserNotiID
-     , inf.description          AS NotiDes
-     , inf.status               as Status
+     , i.ops_id                 AS UserNotiID
+     , i.status                 as Status
 FROM informs AS i
-         LEFT JOIN inform_notifications inf ON i.id = inf.inform_id
          INNER JOIN sub_types st ON st.id = i.sub_type_id
          INNER JOIN types t ON t.id = st.type_id
 `
@@ -59,10 +55,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 			&data.SubTypeName,
 			&data.TypeID,
 			&data.Type,
-			&data.NotiID,
-			&data.NotiCreatedAt,
 			&data.UserNotiID,
-			&data.NotiDes,
 			&data.Status,
 		)
 		dataArr = append(dataArr, data)
@@ -95,10 +88,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 			&data.SubTypeName,
 			&data.TypeID,
 			&data.Type,
-			&data.NotiID,
-			&data.NotiCreatedAt,
 			&data.UserNotiID,
-			&data.NotiDes,
 			&data.Status,
 		)
 
@@ -117,6 +107,40 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 	}
 
 	response = data
+	return
+}
+
+func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error) {
+	sql := getInformInfo + "WHERE i.ops_id = ? "
+	rows, err := factory.client.Raw(sql, OpsId).Rows()
+	if err != nil {
+		Error = err
+		return
+	}
+	defer rows.Close()
+
+	var dataArr []*responsedb.InformInfoList
+	for rows.Next() {
+		var data = new(responsedb.InformInfoList)
+		rows.Scan(
+			&data.ID,
+			&data.InformCreatedAt,
+			&data.UserInformID,
+			&data.Description,
+			&data.CALLBack,
+			&data.Latitude,
+			&data.Longitude,
+			&data.SubTypeId,
+			&data.SubTypeName,
+			&data.TypeID,
+			&data.Type,
+			&data.UserNotiID,
+			&data.Status,
+		)
+		dataArr = append(dataArr, data)
+	}
+
+	response = dataArr
 	return
 }
 
@@ -153,5 +177,32 @@ func (factory GORMFactory) PostInform(imageArr []structure.InformImage, inform s
 		}
 	}
 
+	return
+}
+
+func (factory GORMFactory) PutInform(informID structure.Inform) (Error error) {
+	err := factory.client.Model(&informID).Where("id = ?", informID.ID).Updates(
+		structure.Inform{
+			Description:         informID.Description,
+			PhoneNumberCallBack: informID.PhoneNumberCallBack,
+			Latitude:            informID.Latitude,
+			Longitude:           informID.Longitude,
+			DeletedBy:           informID.DeletedBy,
+			SubTypeID:           informID.SubTypeID,
+			OpsID:               informID.OpsID,
+			Status:              informID.Status,
+		}).Error
+
+	if err != nil {
+		Error = err
+	}
+	return
+}
+
+func (factory GORMFactory) DeleteInform(informID uint) (Error error) {
+	err := factory.client.Where("id = ?", informID).Delete(&informID).Error
+	if err != nil {
+		Error = err
+	}
 	return
 }

@@ -88,8 +88,12 @@ func gormInstance(env *Properties) GORMFactory {
 		dataUser := structure.Role{
 			Name: "user",
 		}
+		dataOps := structure.Role{
+			Name: "ops",
+		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&dataAdmin)
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&dataUser)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&dataOps)
 
 		role := structure.Role{}
 		address := structure.Address{
