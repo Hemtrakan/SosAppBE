@@ -46,6 +46,9 @@ func NewControllerMain(ctrl Controller) {
 	u.PUT("/chat/message/:messageId", ctrl.UpdateMessage)
 	u.DELETE("/chat/message/:messageId/:roomChatId", ctrl.DeleteMessage)
 
+	o := r.Group(config.GetString("role.ops"))
+	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
+
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 
@@ -74,6 +77,21 @@ func AuthRoleUser(next echo.HandlerFunc) echo.HandlerFunc {
 		claims := user.Claims.(*token.JwtCustomClaims)
 		var userRole = claims.Role
 		role := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleOps(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+		role := strings.Replace(config.GetString("role.ops"), "/", "", 2)
 		if userRole == role {
 			return next(c)
 		} else {
