@@ -4,6 +4,7 @@ import (
 	"accounts/constant"
 	"accounts/utility/response"
 	"accounts/utility/token"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -25,9 +26,7 @@ func NewControllerMain(ctrl Controller) {
 	e.Use(middleware.Logger())
 
 	s := e.Group(config.GetString("service.endpoint"))
-	s.GET("/", func(c echo.Context) error {
-		return c.String(200, "Hello")
-	})
+
 	s.POST("/sendOTP", ctrl.SendOTP)
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
@@ -38,20 +37,23 @@ func NewControllerMain(ctrl Controller) {
 		SigningKey:    []byte(config.GetString("jwt.secret")),
 		NewClaimsFunc: NewClaimsFunc,
 	}
-	//
 
+	// All User
+	s.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
+	s.GET("/", ctrl.GetUserByToken)
+	s.GET("/searchUser/:value", ctrl.SearchUser)
+	s.GET("/image/:id", ctrl.GetImageById)
+
+	// User
 	u := s.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
 
-	u.GET("/", ctrl.GetUserByToken)
 	u.GET("/:id", ctrl.GetUserById)
-	u.GET("/image/:id", ctrl.GetImageById)
 	u.PUT("/:id", ctrl.UpdateUser)
 	u.PUT("/changePassword/:id", ctrl.ChangePassword)
 	u.DELETE("/:id", ctrl.DeleteUser)
 
 	// searchUser
-	u.GET("/searchUser/:value", ctrl.SearchUser)
 
 	o := s.Group(config.GetString("role.ops"))
 	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
@@ -66,7 +68,7 @@ func NewControllerMain(ctrl Controller) {
 	a.POST("/user", ctrl.CreateUser)
 	a.PUT("/user/:id", ctrl.UpdateUser)
 	a.DELETE("/user/:id", ctrl.DeleteUser)
-	u.PUT("/user/changePassword/:id", ctrl.ChangePassword)
+	a.PUT("/user/changePassword/:id", ctrl.ChangePassword)
 	a.PUT("/user/verifyIDCard/:id", ctrl.VerifyIDCard)
 
 	a.GET("/role", ctrl.GetRoleList)
@@ -101,6 +103,25 @@ func AuthRoleUser(next echo.HandlerFunc) echo.HandlerFunc {
 		var userRole = claims.Role
 		role := strings.Replace(config.GetString("role.user"), "/", "", 2)
 		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleAllUser(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+
+		fmt.Println(userRole)
+		roleUser := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		roleOps := strings.Replace(config.GetString("role.ops"), "/", "", 2)
+		roleAdmin := strings.Replace(config.GetString("role.admin"), "/", "", 2)
+		if (userRole == roleUser) || (userRole == roleOps) || (userRole == roleAdmin) {
 			return next(c)
 		} else {
 			c.Error(echo.ErrUnauthorized)

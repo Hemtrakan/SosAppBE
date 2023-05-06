@@ -8,6 +8,7 @@ import (
 	resUser "accounts/restapi/model/user/response"
 	"accounts/utility/pointer"
 	"accounts/utility/verify"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -56,6 +57,10 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 			Province:    data.Address.Province,
 			PostalCode:  data.Address.PostalCode,
 			Country:     data.Address.Country,
+		},
+		UserRole: resUser.UserRole{
+			ID:   fmt.Sprintf("%v", data.Role.ID),
+			Name: data.Role.Name,
 		},
 	}
 	return

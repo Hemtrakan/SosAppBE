@@ -1,6 +1,7 @@
 package restapi
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -32,7 +33,9 @@ func NewControllerMain(ctrl Controller) {
 
 	r := e.Group(config.GetString("service.endpoint"))
 	u := r.Group(config.GetString("role.user"))
-	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
+	u.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
+
+	//r.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
 
 	u.POST("/createRoomChat", ctrl.RoomChat)
 	u.PUT("/updateRoomChat/:roomId", ctrl.UpdateRoomChat)
@@ -93,6 +96,25 @@ func AuthRoleOps(next echo.HandlerFunc) echo.HandlerFunc {
 		var userRole = claims.Role
 		role := strings.Replace(config.GetString("role.ops"), "/", "", 2)
 		if userRole == role {
+			return next(c)
+		} else {
+			c.Error(echo.ErrUnauthorized)
+			return nil
+		}
+	}
+}
+
+func AuthRoleAllUser(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*token.JwtCustomClaims)
+		var userRole = claims.Role
+
+		fmt.Println(userRole)
+		roleUser := strings.Replace(config.GetString("role.user"), "/", "", 2)
+		roleOps := strings.Replace(config.GetString("role.ops"), "/", "", 2)
+		roleAdmin := strings.Replace(config.GetString("role.admin"), "/", "", 2)
+		if (userRole == roleUser) || (userRole == roleOps) || (userRole == roleAdmin) {
 			return next(c)
 		} else {
 			c.Error(echo.ErrUnauthorized)

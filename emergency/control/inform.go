@@ -410,7 +410,7 @@ func (ctrl Controller) DeleteInform(token string, informId uint) (Error error) {
 	UserRes := new(structure.UserRes)
 	if informId == 0 {
 		account := config.GetString("url.account")
-		URL := account + "user/"
+		URL := account + "/"
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = token
 
