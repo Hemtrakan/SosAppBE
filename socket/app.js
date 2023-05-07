@@ -11,8 +11,12 @@ const messages = [];
 
 io.of(/^\/\d+$/).on("connection", (socket) => {
   // count++;
-  // console.log(count);
   const newNamespace = socket.nsp; 
+
+  // let emergency = socket.nsp.name.replace("/", '');
+  
+  console.log(newNamespace.name);
+
   let roomChatId = socket.nsp.name.replace("/", '');
   socket.on("disconnect", () => {
     console.log("----- disconnect --------");
@@ -35,6 +39,29 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
     console.log("message : ", message);
     console.log("roomChatId :",roomChatId);
     newNamespace.emit(roomChatId, message);
+  });
+});
+
+io.on("connection", (socket) => {
+
+  socket.on("disconnect", () => {
+    console.log("----- disconnect --------");
+    socket.disconnect();
+  });
+
+  const username = socket.handshake.query.username;
+  console.log("----- Connect emergency --------");
+  console.log("username : ", username);
+  console.log("----- Connect emergency --------");
+  socket.on('emergency', (data) => {
+    const message = {
+      message: data.message,
+      senderUsername: username,
+      sentAt: Date.now(),
+    };
+    messages.push(message);
+    console.log("message : ", message);
+    socket.emit('emergency', message);
   });
 });
 

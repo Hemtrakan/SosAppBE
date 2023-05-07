@@ -38,16 +38,12 @@ func NewControllerMain(ctrl Controller) {
 		NewClaimsFunc: NewClaimsFunc,
 	}
 
-	// All User
-	s.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
-	s.GET("/", ctrl.GetUserByToken)
-	s.GET("/searchUser/:value", ctrl.SearchUser)
-	s.GET("/image/:id", ctrl.GetImageById)
-
 	// User
 	u := s.Group(config.GetString("role.user"))
-	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
-
+	u.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
+	u.GET("/", ctrl.GetUserByToken)
+	u.GET("/searchUser/:value", ctrl.SearchUser)
+	u.GET("/image/:id", ctrl.GetImageById)
 	u.GET("/:id", ctrl.GetUserById)
 	u.PUT("/:id", ctrl.UpdateUser)
 	u.PUT("/changePassword/:id", ctrl.ChangePassword)
@@ -120,8 +116,7 @@ func AuthRoleAllUser(next echo.HandlerFunc) echo.HandlerFunc {
 		fmt.Println(userRole)
 		roleUser := strings.Replace(config.GetString("role.user"), "/", "", 2)
 		roleOps := strings.Replace(config.GetString("role.ops"), "/", "", 2)
-		roleAdmin := strings.Replace(config.GetString("role.admin"), "/", "", 2)
-		if (userRole == roleUser) || (userRole == roleOps) || (userRole == roleAdmin) {
+		if (userRole == roleUser) || (userRole == roleOps) {
 			return next(c)
 		} else {
 			c.Error(echo.ErrUnauthorized)
