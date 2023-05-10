@@ -139,15 +139,14 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
-	var id uint
-	if values.Role != "admin" {
-		id, err := strconv.ParseUint(strID, 0, 0)
-		if err != nil {
-			res.Code = constant.ErrorCode
-			res.Msg = err.Error()
-			return response.EchoError(c, http.StatusBadRequest, res, APIName)
-		}
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
 
+	if values.Role != "admin" {
 		if uint(id) != values.ID {
 			res.Code = constant.ErrorCode
 			res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
@@ -156,7 +155,7 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 	}
 
 	var req = new(userReq.UserReq)
-	err := c.Bind(&req)
+	err = c.Bind(&req)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -170,7 +169,7 @@ func (ctrl Controller) UpdateUser(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	errArr := ctrl.Ctx.PutUser(req, id)
+	errArr := ctrl.Ctx.PutUser(req, uint(id))
 	if errArr != nil {
 		errRes := ""
 		for _, m1 := range errArr {
@@ -224,22 +223,20 @@ func (ctrl Controller) DeleteUser(c echo.Context) error {
 
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
-	var id uint
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
 	if values.Role != "admin" {
-		id, err := strconv.ParseUint(strID, 0, 0)
-		if err != nil {
-			res.Code = constant.ErrorCode
-			res.Msg = err.Error()
-			return response.EchoError(c, http.StatusBadRequest, res, APIName)
-		}
-
 		if uint(id) != values.ID {
 			res.Code = constant.ErrorCode
 			res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
 			return response.EchoError(c, http.StatusBadRequest, res, APIName)
 		}
 	}
-	err := ctrl.Ctx.DeleteUser(uint(id))
+	err = ctrl.Ctx.DeleteUser(uint(id))
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -259,15 +256,13 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 
 	values := token.GetValuesToken(c)
 	strID := c.Param("id")
-	var id uint
-	if values.Role != "admin" {
-		id, err := strconv.ParseUint(strID, 0, 0)
-		if err != nil {
-			res.Code = constant.ErrorCode
-			res.Msg = err.Error()
-			return response.EchoError(c, http.StatusBadRequest, res, APIName)
-		}
-
+	id, err := strconv.ParseUint(strID, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+	if values.Role != constant.Admin {
 		if uint(id) != values.ID {
 			res.Code = constant.ErrorCode
 			res.Msg = "ไม่สามารถทำรายการได้ กรุณาติดต่อผู้ดูแลระบบ"
@@ -276,7 +271,7 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 	}
 
 	var req = new(userReq.ChangePassword)
-	err := c.Bind(&req)
+	err = c.Bind(&req)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -290,7 +285,7 @@ func (ctrl Controller) ChangePassword(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.ChangePassword(req, uint(id))
+	err = ctrl.Ctx.ChangePassword(req, uint(id), values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

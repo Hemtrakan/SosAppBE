@@ -2,6 +2,7 @@ package control
 
 import (
 	_image "accounts/assets/image"
+	"accounts/constant"
 	rdbmsstructure "accounts/db/structure"
 	reqSingUp "accounts/restapi/model/singup/request"
 	"accounts/restapi/model/user/request"
@@ -413,28 +414,30 @@ func (ctrl Controller) DeleteUser(UserID uint) (Error error) {
 	return
 }
 
-func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint) (Error error) {
-	if req.NewPassword != req.ConfirmPassword {
-		Error = errors.New("รหัสผ่านไม่ตรงกัน")
-		return
-	}
+func (ctrl Controller) ChangePassword(req *request.ChangePassword, userID uint, role string) (Error error) {
+	if role != constant.Admin {
+		if req.NewPassword != req.ConfirmPassword {
+			Error = errors.New("รหัสผ่านไม่ตรงกัน")
+			return
+		}
 
-	mapData := rdbmsstructure.Users{
-		Model: gorm.Model{
-			ID: userID,
-		},
-	}
+		mapData := rdbmsstructure.Users{
+			Model: gorm.Model{
+				ID: userID,
+			},
+		}
 
-	userData, err := ctrl.Access.RDBMS.GetUserByID(mapData)
-	if err != nil {
-		Error = err
-		return
-	}
+		userData, err := ctrl.Access.RDBMS.GetUserByID(mapData)
+		if err != nil {
+			Error = err
+			return
+		}
 
-	checkPass := verify.VerifyPassword(userData.Password, req.OldPassword)
-	if checkPass != nil {
-		Error = errors.New("รหัสผ่านไม่ถูกต้อง")
-		return
+		checkPass := verify.VerifyPassword(userData.Password, req.OldPassword)
+		if checkPass != nil {
+			Error = errors.New("รหัสผ่านไม่ถูกต้อง")
+			return
+		}
 	}
 
 	hashPass, err := verify.Hash(req.NewPassword)
