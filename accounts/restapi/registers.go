@@ -2,8 +2,6 @@ package restapi
 
 import (
 	"accounts/constant"
-	singin "accounts/restapi/model/singin/request"
-	singinResp "accounts/restapi/model/singin/response"
 	singup "accounts/restapi/model/singup/request"
 	"accounts/utility/loggers"
 	"accounts/utility/response"
@@ -100,31 +98,30 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	data, err := ctrl.Ctx.PostUser(request, values.Role)
+	_, err = ctrl.Ctx.PostUser(request, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
-	var requestToken = new(singin.Login)
-	ip := c.RealIP()
-	system := c.Request().Header.Get("User-Agent")
-	requestToken.Username = data.PhoneNumber
-	requestToken.Password = data.Password
+	//var requestToken = new(singin.Login)
+	//ip := c.RealIP()
+	//system := c.Request().Header.Get("User-Agent")
+	//requestToken.Username = data.PhoneNumber
+	//requestToken.Password = data.Password
 
-	token, err := ctrl.Ctx.LoginLogic(requestToken, ip, system)
-	if err != nil {
-		res.Msg = err.Error()
-		res.Code = constant.ErrorCode
-		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-
-	}
-
-	resp := singinResp.TokenRes{
-		Token: token,
-	}
+	//token, err := ctrl.Ctx.LoginLogic(requestToken, ip, system)
+	//if err != nil {
+	//	res.Msg = err.Error()
+	//	res.Code = constant.ErrorCode
+	//	return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	//}
+	//
+	//resp := singinResp.TokenRes{
+	//	Token: token,
+	//}
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
-	res.Data = resp
+	//res.Data = resp
 	return response.EchoSucceed(c, res, APIName)
 }
