@@ -101,7 +101,7 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 	return
 }
 
-func (ctrl Controller) UpdateRoomChat(userId, roomChatId uint, req request.RoomChatReq) (Error error) {
+func (ctrl Controller) UpdateRoomChat(userId, roomChatId uint, req request.RoomChatReq, role string) (Error error) {
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatId)
 	if err != nil {
 		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
@@ -109,13 +109,12 @@ func (ctrl Controller) UpdateRoomChat(userId, roomChatId uint, req request.RoomC
 	}
 
 	if roomChat.ID != 0 {
-		if roomChat.UserOwnerId == userId {
+		if roomChat.UserOwnerId == userId || role == constant.Admin {
 			data := rdbmsstructure.RoomChat{
 				Model: gorm.Model{
 					ID: roomChat.ID,
 				},
-				Name:      req.RoomName,
-				DeletedBy: userId,
+				Name: req.RoomName,
 			}
 
 			err = ctrl.Access.RDBMS.PutRoomChat(data)
@@ -124,14 +123,14 @@ func (ctrl Controller) UpdateRoomChat(userId, roomChatId uint, req request.RoomC
 			}
 
 		} else {
-			Error = errors.New("ไม่สามารถลบข้อความผู้อื่นได้")
+			Error = errors.New("ไม่สามารถแก้ไขข้อความผู้อื่นได้")
 		}
 	}
 
 	return
 }
 
-func (ctrl Controller) DeleteRoomChat(userId, roomChatId uint) (Error error) {
+func (ctrl Controller) DeleteRoomChat(userId, roomChatId uint, role string) (Error error) {
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatId)
 	if err != nil {
 		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
@@ -139,7 +138,7 @@ func (ctrl Controller) DeleteRoomChat(userId, roomChatId uint) (Error error) {
 	}
 
 	if roomChat.ID != 0 {
-		if roomChat.UserOwnerId == userId {
+		if roomChat.UserOwnerId == userId || role == constant.Admin {
 			data := rdbmsstructure.RoomChat{
 				Model: gorm.Model{
 					ID: roomChat.ID,
@@ -308,7 +307,9 @@ func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId 
 	var check []chatRes.GetChat
 	checkMsg := false
 	if roomChat.ID != 0 {
-		if role != constant.Admin {
+		if role == constant.Admin {
+			checkMsg = true
+		} else {
 			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
 			for _, m1 := range check {
 				if messageId == m1.ID && userId == m1.SenderUserId {
@@ -350,7 +351,9 @@ func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint, role st
 	var check []chatRes.GetChat
 	checkMsg := false
 	if roomChat.ID != 0 {
-		if role != constant.Admin {
+		if role == constant.Admin {
+			checkMsg = true
+		} else {
 			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
 			for _, m1 := range check {
 				if messageId == m1.ID && userId == m1.SenderUserId {

@@ -115,7 +115,10 @@ func (factory GORMFactory) DeleteRoomChatById(roomChatId uint) (Error error) {
 }
 
 func (factory GORMFactory) GetRoomChatListByUserId(UserID uint) (res []structure.GroupChat, Error error) {
-	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Distinct().Pluck("Name", &res).Order("created_at DESC").Find(&res).Error
+	err := factory.client.Preload("RoomChat").
+		Where("user_id = ?", UserID).
+		Order("created_at DESC").
+		Find(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err
@@ -218,7 +221,11 @@ func (factory GORMFactory) DeleteChat(messageId uint) (Error error) {
 
 // GetAllForAdminChatList todo admin
 func (factory GORMFactory) GetAllForAdminChatList() (res []structure.GroupChat, Error error) {
-	err := factory.client.Preload("RoomChat").Order("created_at DESC").Find(&res).Error
+	err := factory.client.Preload("RoomChat").
+		Distinct().Pluck("room_chat_id", &res).
+		Group("room_chat_id").
+		Order("room_chat_id DESC").
+		Find(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

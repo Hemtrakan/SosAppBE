@@ -77,7 +77,7 @@ func (ctrl Controller) UpdateRoomChat(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.UpdateRoomChat(userId, uint(roomChatID), *request)
+	err = ctrl.Ctx.UpdateRoomChat(userId, uint(roomChatID), *request, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -105,7 +105,7 @@ func (ctrl Controller) DeleteRoomChat(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.DeleteRoomChat(userId, uint(roomChatID))
+	err = ctrl.Ctx.DeleteRoomChat(userId, uint(roomChatID), values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
