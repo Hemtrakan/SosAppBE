@@ -18,7 +18,7 @@ func (ctrl Controller) GetInformList(c echo.Context) error {
 	values := token.GetValuesToken(c)
 	authToken := token.GetAuthToken(c)
 
-	resp, err := ctrl.Ctx.GetInform(values.ID, authToken)
+	resp, err := ctrl.Ctx.GetInform(values.ID, authToken, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -36,10 +36,11 @@ func (ctrl Controller) GetInformById(c echo.Context) error {
 	APIName := "getInformById"
 	loggers.LogStart(APIName)
 
+	values := token.GetValuesToken(c)
 	authToken := token.GetAuthToken(c)
 	id := c.Param("id")
 
-	responses, err := ctrl.Ctx.GetInformById(id, authToken)
+	responses, err := ctrl.Ctx.GetInformById(id, authToken, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

@@ -4,6 +4,7 @@ import (
 	"emergency/constant"
 	"emergency/control/structure"
 	rdbmsstructure "emergency/db/structure"
+	"emergency/db/structure/responsedb"
 	"emergency/restapi/model/inform"
 	"emergency/utility/encoding"
 	"emergency/utility/pointer"
@@ -15,12 +16,24 @@ import (
 	"time"
 )
 
-func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.InformResponse, Error error) {
-	resp, err := ctrl.Access.RDBMS.GetInformList(UserId)
-	if err != nil {
-		Error = err
-		return
+func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.InformResponse, Error error) {
+	var resp []*responsedb.InformInfoList
+	var err error
+
+	if role == constant.Admin {
+		resp, err = ctrl.Access.RDBMS.GetAllInformListForAdmin()
+		if err != nil {
+			Error = err
+			return
+		}
+	} else {
+		resp, err = ctrl.Access.RDBMS.GetInformList(UserId)
+		if err != nil {
+			Error = err
+			return
+		}
 	}
+
 	Username := ""
 	UserRes := new(structure.UserRes)
 
@@ -32,7 +45,13 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 
 		if UserNotiID != "" {
 			account := config.GetString("url.account")
-			URL := account + "user/" + UserNotiID
+			URL := ""
+
+			if role == constant.Admin {
+				URL = account + "admin/user/" + UserNotiID
+			} else {
+				URL = account + "user/" + UserNotiID
+			}
 
 			httpHeaderMap := map[string]string{}
 			httpHeaderMap["Authorization"] = Token
@@ -83,7 +102,7 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 	return
 }
 
-func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res inform.InformResponse, Error error) {
 	InformId, err := strconv.Atoi(ReqInformId)
 	if err != nil {
 		Error = err
@@ -102,7 +121,12 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 	UserRes := new(structure.UserRes)
 	if UserNotiID != "" {
 		account := config.GetString("url.account")
-		URL := account + "user/" + UserNotiID
+		URL := ""
+		if role == constant.Admin {
+			URL = account + "admin/user/" + UserNotiID
+		} else {
+			URL = account + "user/" + UserNotiID
+		}
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = Token
 
@@ -230,7 +254,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 	return
 }
 
-func (ctrl Controller) GetInformOps(OpsId uint, Token string) (res []inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []inform.InformResponse, Error error) {
 	resp, err := ctrl.Access.RDBMS.GetInformListByOpsId(OpsId)
 	if err != nil {
 		Error = err
@@ -247,7 +271,12 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token string) (res []inform.Info
 
 		if UserInformID != "" {
 			account := config.GetString("url.account")
-			URL := account + "user/" + UserInformID
+			URL := ""
+			if role == constant.Admin {
+				URL = account + "admin/user/" + UserInformID
+			} else {
+				URL = account + "user/" + UserInformID
+			}
 
 			httpHeaderMap := map[string]string{}
 			httpHeaderMap["Authorization"] = Token
@@ -297,7 +326,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token string) (res []inform.Info
 	return
 }
 
-func (ctrl Controller) GetInformOpsById(ReqInformId, Token string) (res inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res inform.InformResponse, Error error) {
 	InformId, err := strconv.Atoi(ReqInformId)
 	if err != nil {
 		Error = err
@@ -316,7 +345,13 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token string) (res inform.I
 	UserRes := new(structure.UserRes)
 	if UserID != "" {
 		account := config.GetString("url.account")
-		URL := account + "user/" + UserID
+		URL := ""
+		if role == constant.Admin {
+			URL = account + "admin/user/" + UserID
+		} else {
+			URL = account + "user/" + UserID
+		}
+
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = Token
 

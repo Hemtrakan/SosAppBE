@@ -27,6 +27,9 @@ type FactoryInterface interface {
 	//Ops
 	GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error)
 	GetAllInformList() (response []*responsedb.InformInfoList, Error error)
+
+	// Admin
+	GetAllInformListForAdmin() (response []*responsedb.InformInfoList, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

@@ -59,6 +59,7 @@ func NewControllerMain(ctrl Controller) {
 	// todo admin
 	a := s.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	a.GET("/", ctrl.GetUserByToken)
 	a.GET("/user", ctrl.GetUserList)
 	a.GET("/user/:id", ctrl.GetUserById)
 	a.POST("/user", ctrl.CreateUser)
