@@ -47,9 +47,6 @@ func NewControllerMain(ctrl Controller) {
 	u.PUT("/chat/message/:messageId", ctrl.UpdateMessage)
 	u.DELETE("/chat/message/:messageId/:roomChatId", ctrl.DeleteMessage)
 
-	o := r.Group(config.GetString("role.ops"))
-	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
-
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
 

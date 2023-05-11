@@ -115,7 +115,7 @@ func (factory GORMFactory) DeleteRoomChatById(roomChatId uint) (Error error) {
 }
 
 func (factory GORMFactory) GetRoomChatListByUserId(UserID uint) (res []structure.GroupChat, Error error) {
-	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Order("created_at DESC").Find(&res).Error
+	err := factory.client.Preload("RoomChat").Where("user_id = ?", UserID).Distinct().Pluck("Name", &res).Order("created_at DESC").Find(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err
