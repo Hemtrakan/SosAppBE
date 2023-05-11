@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (ctrl Controller) AddRole(req *request.AddRole) (Error error) {
+func (ctrl Controller) AddRole(req *request.Role) (Error error) {
 	var newReq rdbmsstructure.Role
 	newReq.Name = strings.ToLower(req.Name)
 
@@ -75,5 +75,41 @@ func (ctrl Controller) GetRoleById(roleID string) (res response.ResponseMain, Er
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
 	res.GetRoleList = resp
+	return
+}
+
+func (ctrl Controller) PutRole(req *request.Role, roleId, userId uint) (Error error) {
+	data := rdbmsstructure.Role{
+		Model: gorm.Model{
+			ID: roleId,
+		},
+		Name:     req.Name,
+		UpdateBy: &userId,
+	}
+
+	err := ctrl.Access.RDBMS.PutRole(data)
+	if err != nil {
+		Error = err
+		return
+	}
+	return
+}
+
+func (ctrl Controller) DeleteRole(roleId, userId uint) (Error error) {
+	data := rdbmsstructure.Role{
+		Model: gorm.Model{
+			ID: roleId,
+		},
+		UpdateBy:  &userId,
+		DeletedBy: &userId,
+	}
+
+	err := ctrl.Access.RDBMS.PutRole(data)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	err = ctrl.Access.RDBMS.DeleteRole(data)
 	return
 }

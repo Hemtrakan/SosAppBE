@@ -1,5 +1,5 @@
 package request
 
-type AddRole struct {
+type Role struct {
 	Name string `json:"name" validate:"required"`
 }

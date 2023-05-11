@@ -1,6 +1,7 @@
 package control
 
 import (
+	"accounts/constant"
 	"accounts/db/structure"
 	singin "accounts/restapi/model/singin/request"
 	"accounts/utility/token"
@@ -43,6 +44,21 @@ func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Tok
 		Error = err
 		return
 	}
+
+	log := structure.LogLogin{
+		UserID:      account.ID,
+		System:      system,
+		IP:          ip,
+		Status:      constant.SuccessMsg,
+		Description: "Role Login : " + roleId.Name,
+	}
+
+	err = ctrl.Access.RDBMS.LogLogin(log)
+	if err != nil {
+		Error = err
+		return
+	}
+
 	tokenRes, err := token.CreateToken(account.ID, roleId.Name)
 	if err != nil {
 		Error = err

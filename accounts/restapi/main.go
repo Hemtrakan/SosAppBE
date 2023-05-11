@@ -70,8 +70,8 @@ func NewControllerMain(ctrl Controller) {
 	a.GET("/role", ctrl.GetRoleList)
 	a.GET("/role/:id", ctrl.GetRoleById)
 	a.POST("/role", ctrl.AddRole)
-	a.PUT("/role/:id", ctrl.UpdateRole)    // todo ยังไม่เสร็จ
-	a.DELETE("/role/:id", ctrl.DeleteRole) // todo ยังไม่เสร็จ
+	a.PUT("/role/:id", ctrl.UpdateRole)
+	a.DELETE("/role/:id", ctrl.DeleteRole)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
