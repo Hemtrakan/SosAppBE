@@ -25,8 +25,8 @@ type FactoryInterface interface {
 	DeleteInform(informID uint) (Error error)
 
 	//Ops
-
 	GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error)
+	GetAllInformList() (response []*responsedb.InformInfoList, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

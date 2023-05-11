@@ -110,6 +110,40 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 	return
 }
 
+func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfoList, Error error) {
+	sql := getInformInfo + "WHERE i.ops_id = 0"
+	rows, err := factory.client.Raw(sql).Rows()
+	if err != nil {
+		Error = err
+		return
+	}
+	defer rows.Close()
+
+	var dataArr []*responsedb.InformInfoList
+	for rows.Next() {
+		var data = new(responsedb.InformInfoList)
+		rows.Scan(
+			&data.ID,
+			&data.InformCreatedAt,
+			&data.UserInformID,
+			&data.Description,
+			&data.CALLBack,
+			&data.Latitude,
+			&data.Longitude,
+			&data.SubTypeId,
+			&data.SubTypeName,
+			&data.TypeID,
+			&data.Type,
+			&data.UserNotiID,
+			&data.Status,
+		)
+		dataArr = append(dataArr, data)
+	}
+
+	response = dataArr
+	return
+}
+
 func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error) {
 	sql := getInformInfo + "WHERE i.ops_id = ? "
 	rows, err := factory.client.Raw(sql, OpsId).Rows()

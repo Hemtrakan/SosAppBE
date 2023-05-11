@@ -41,16 +41,16 @@ var StatusData = []Status{
 func (status Status) Status() (result *string, Errors error) {
 	switch status {
 	case StatusStep1:
-		fullName := "แจ้งเหตุเรียบร้อย"
+		fullName := "แจ้งเหตุ"
 		result = &fullName
 	case StatusStep2:
 		fullName := "รับเรื่องการแจ้งเหตุแล้ว"
 		result = &fullName
 	case StatusStep3:
-		fullName := "กำลังดำเนินงาน"
+		fullName := "กำลังดำเนินการ"
 		result = &fullName
 	case StatusStep4:
-		fullName := "ได้รับการแก้ไขเรียบร้อนแล้ว"
+		fullName := "ดำเนินการเสร็จสิ้น"
 		result = &fullName
 	default:
 		fullName := "ยังไม่ได้รับการดำเนินการ"

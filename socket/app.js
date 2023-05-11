@@ -11,13 +11,13 @@ const messages = [];
 
 io.of(/^\/\d+$/).on("connection", (socket) => {
   // count++;
-  const newNamespace = socket.nsp; 
+  const newNamespace = socket.nsp;
 
   // let emergency = socket.nsp.name.replace("/", '');
-  
+
   console.log(newNamespace.name);
 
-  let roomChatId = socket.nsp.name.replace("/", '');
+  let roomChatId = socket.nsp.name.replace("/", "");
   socket.on("disconnect", () => {
     console.log("----- disconnect --------");
     socket.disconnect();
@@ -26,35 +26,34 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
   const username = socket.handshake.query.username;
   console.log("----- Connect --------");
   console.log("username : ", username);
-  console.log("roomChatId :",roomChatId);
+  console.log("roomChatId :", roomChatId);
   console.log("----- Connect --------");
   socket.on(roomChatId, (data) => {
     const message = {
-      
       message: data.message,
       senderUsername: username,
       sentAt: Date.now(),
     };
     messages.push(message);
     console.log("message : ", message);
-    console.log("roomChatId :",roomChatId);
+    console.log("roomChatId :", roomChatId);
     newNamespace.emit(roomChatId, message);
   });
 });
 
 io.on("connection", (socket) => {
   const username = socket.handshake.query.username;
+  const eme = "emergency";
 
   socket.on("disconnect", () => {
-    console.log("----- disconnect --------");
-  console.log("username : ", username);
-    console.log("----- disconnect --------");
+    console.log("----- disconnect " + eme + "--------");
+    console.log("username : ", username);
+    console.log("----- disconnect " + eme + "--------");
     socket.disconnect();
   });
-const eme = 'emergency';
-  console.log("----- Connect "+ eme+ " --------");
+  console.log("----- Connect " + eme + " --------");
   console.log("username : ", username);
-  console.log("----- Connect "+ eme+ " --------");
+  console.log("----- Connect " + eme + " --------");
 
   socket.on(eme, (data) => {
     const message = {
@@ -65,12 +64,11 @@ const eme = 'emergency';
     messages.push(message);
     console.log("message : ", message);
     socket.emit(eme, message);
+    console.log("--------" + eme + " --------");
+
   });
 });
 
 server.listen(3000, () => {
   console.log("listening on *:3000");
 });
-
-
-

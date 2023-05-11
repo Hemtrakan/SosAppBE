@@ -42,6 +42,7 @@ func NewControllerMain(ctrl Controller) {
 	o := r.Group(config.GetString("role.ops"))
 	o.Use(echojwt.WithConfig(configs), AuthRoleOps)
 	o.GET("/", ctrl.GetInformOpsList)
+	o.GET("/all", ctrl.GetAllInformList)
 	o.GET("/:id", ctrl.GetInformOpsById)
 	o.PUT("/:id", ctrl.UpdateInform)
 	o.DELETE("/:id", ctrl.DeleteInform)

@@ -59,15 +59,11 @@ func (ctrl Controller) GetInform(UserId uint, Token string) (res []inform.Inform
 			}
 		}
 
-		statusInt, err := strconv.Atoi(pointer.GetStringValue(m1.Status))
-		if err != nil {
-
+		var status, _ = constant.Status(constant.StatusStep1).Status()
+		if pointer.GetStringValue(m1.Status) != "" {
+			s, _ := strconv.ParseInt(pointer.GetStringValue(m1.Status), 0, 0)
+			status, _ = constant.Status(s).Status()
 		}
-
-		var status, _ = constant.Status(statusInt).Status()
-		//if pointer.GetStringValue(m1.Status) != "" {
-		//	status = m1.Status
-		//}
 
 		mapData := inform.InformResponse{
 			ID:                  pointer.GetStringValue(m1.ID),
@@ -145,7 +141,8 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 
 	var status, _ = constant.Status(constant.StatusStep1).Status()
 	if pointer.GetStringValue(resp.Status) != "" {
-		status = resp.Status
+		s, _ := strconv.ParseInt(pointer.GetStringValue(resp.Status), 0, 0)
+		status, _ = constant.Status(s).Status()
 	}
 
 	mapData := inform.InformResponse{
@@ -163,6 +160,73 @@ func (ctrl Controller) GetInformById(ReqInformId, Token string) (res inform.Info
 	}
 	res = mapData
 
+	return
+}
+
+func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformResponse, Error error) {
+	resp, err := ctrl.Access.RDBMS.GetAllInformList()
+	if err != nil {
+		Error = err
+		return
+	}
+	Username := ""
+	UserRes := new(structure.UserRes)
+
+	for _, m1 := range resp {
+		UserInformID := ""
+		if pointer.GetStringValue(m1.UserInformID) != "0" {
+			UserInformID = pointer.GetStringValue(m1.UserInformID)
+		}
+
+		if UserInformID != "" {
+			account := config.GetString("url.account")
+			URL := account + "user/" + UserInformID
+
+			httpHeaderMap := map[string]string{}
+			httpHeaderMap["Authorization"] = Token
+
+			HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
+			if err != nil {
+				Error = err
+				return
+			}
+
+			if HttpResponse.HttpStatusCode != 200 {
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
+				return
+			}
+
+			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+			if err != nil {
+				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+				return
+			}
+
+			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+			}
+		}
+
+		var status, _ = constant.Status(constant.StatusStep1).Status()
+		if pointer.GetStringValue(m1.Status) != "" {
+			s, _ := strconv.ParseInt(pointer.GetStringValue(m1.Status), 0, 0)
+			status, _ = constant.Status(s).Status()
+		}
+
+		mapData := inform.InformResponse{
+			ID:                  pointer.GetStringValue(m1.ID),
+			Description:         pointer.GetStringValue(m1.Description),
+			PhoneNumberCallBack: UserRes.Data.PhoneNumber,
+			Latitude:            pointer.GetStringValue(m1.Latitude),
+			Longitude:           pointer.GetStringValue(m1.Longitude),
+			UserName:            Username,
+			Workplace:           UserRes.Data.Workplace,
+			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
+			Date:                pointer.GetStringValue(m1.InformCreatedAt),
+			Status:              pointer.GetStringValue(status),
+		}
+		res = append(res, mapData)
+	}
 	return
 }
 
@@ -212,7 +276,8 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token string) (res []inform.Info
 
 		var status, _ = constant.Status(constant.StatusStep1).Status()
 		if pointer.GetStringValue(m1.Status) != "" {
-			status = m1.Status
+			s, _ := strconv.ParseInt(pointer.GetStringValue(m1.Status), 0, 0)
+			status, _ = constant.Status(s).Status()
 		}
 
 		mapData := inform.InformResponse{
@@ -290,7 +355,8 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token string) (res inform.I
 
 	var status, _ = constant.Status(constant.StatusStep1).Status()
 	if pointer.GetStringValue(resp.Status) != "" {
-		status = resp.Status
+		s, _ := strconv.ParseInt(pointer.GetStringValue(resp.Status), 0, 0)
+		status, _ = constant.Status(s).Status()
 	}
 
 	mapData := inform.InformResponse{

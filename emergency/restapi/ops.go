@@ -32,6 +32,26 @@ func (ctrl Controller) GetInformOpsList(c echo.Context) error {
 	return response.EchoSucceed(c, res, APIName)
 }
 
+func (ctrl Controller) GetAllInformList(c echo.Context) error {
+	var res response.RespMag
+	APIName := "GetAllInformList"
+	loggers.LogStart(APIName)
+
+	authToken := token.GetAuthToken(c)
+
+	resp, err := ctrl.Ctx.GetAllInformOps(authToken)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}
+
 func (ctrl Controller) GetInformOpsById(c echo.Context) error {
 	var res response.RespMag
 	APIName := "GetInformOpsById"
