@@ -43,17 +43,20 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
 });
 
 io.on("connection", (socket) => {
+  const username = socket.handshake.query.username;
 
   socket.on("disconnect", () => {
     console.log("----- disconnect --------");
+  console.log("username : ", username);
+    console.log("----- disconnect --------");
     socket.disconnect();
   });
-
-  const username = socket.handshake.query.username;
-  console.log("----- Connect emergency --------");
+const eme = 'emergency';
+  console.log("----- Connect "+ eme+ " --------");
   console.log("username : ", username);
-  console.log("----- Connect emergency --------");
-  socket.on('emergency', (data) => {
+  console.log("----- Connect "+ eme+ " --------");
+
+  socket.on(eme, (data) => {
     const message = {
       message: data.message,
       senderUsername: username,
@@ -61,7 +64,7 @@ io.on("connection", (socket) => {
     };
     messages.push(message);
     console.log("message : ", message);
-    socket.emit('emergency', message);
+    socket.emit(eme, message);
   });
 });
 
