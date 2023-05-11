@@ -215,3 +215,18 @@ func (factory GORMFactory) DeleteChat(messageId uint) (Error error) {
 	}
 	return
 }
+
+// GetAllForAdminChatList todo admin
+func (factory GORMFactory) GetAllForAdminChatList() (res []structure.GroupChat, Error error) {
+	err := factory.client.Preload("RoomChat").Order("created_at DESC").Find(&res).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+	return
+}

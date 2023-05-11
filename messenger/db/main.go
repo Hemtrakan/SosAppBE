@@ -29,6 +29,8 @@ type FactoryInterface interface {
 	JoinChat(groupChat structure.GroupChat) (Error error)
 	PutRoomChat(groupChat structure.RoomChat) (Error error)
 	DeleteRoomChatById(roomChatId uint) (Error error)
+
+	GetAllForAdminChatList() (res []structure.GroupChat, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

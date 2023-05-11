@@ -35,8 +35,6 @@ func NewControllerMain(ctrl Controller) {
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
 
-	//r.Use(echojwt.WithConfig(configs), AuthRoleAllUser)
-
 	u.POST("/createRoomChat", ctrl.RoomChat)
 	u.PUT("/updateRoomChat/:roomId", ctrl.UpdateRoomChat)
 	u.DELETE("/deleteRoomChat/:roomId", ctrl.DeleteRoomChat)
@@ -54,6 +52,19 @@ func NewControllerMain(ctrl Controller) {
 
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+
+	a.POST("/createRoomChat", ctrl.RoomChat)
+	a.PUT("/updateRoomChat/:roomId", ctrl.UpdateRoomChat)
+	a.DELETE("/deleteRoomChat/:roomId", ctrl.DeleteRoomChat)
+
+	a.POST("/joinChat", ctrl.JoinChat)
+	a.GET("/getChatList", ctrl.GetChatList)
+	a.GET("/getMembersRoomChat/:roomChatId", ctrl.GetMembersRoomChat)
+	a.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)
+	a.POST("/chat/message", ctrl.SendMessage)
+
+	a.PUT("/chat/message/:messageId", ctrl.UpdateMessage)
+	a.DELETE("/chat/message/:messageId/:roomChatId", ctrl.DeleteMessage)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
@@ -113,8 +124,7 @@ func AuthRoleAllUser(next echo.HandlerFunc) echo.HandlerFunc {
 		fmt.Println(userRole)
 		roleUser := strings.Replace(config.GetString("role.user"), "/", "", 2)
 		roleOps := strings.Replace(config.GetString("role.ops"), "/", "", 2)
-		roleAdmin := strings.Replace(config.GetString("role.admin"), "/", "", 2)
-		if (userRole == roleUser) || (userRole == roleOps) || (userRole == roleAdmin) {
+		if (userRole == roleUser) || (userRole == roleOps) {
 			return next(c)
 		} else {
 			c.Error(echo.ErrUnauthorized)

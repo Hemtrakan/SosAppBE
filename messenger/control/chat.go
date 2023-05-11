@@ -14,12 +14,23 @@ import (
 	"strconv"
 )
 
-func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Error error) {
-	resDB, err := ctrl.Access.RDBMS.GetRoomChatListByUserId(userId)
-	if err != nil {
-		Error = err
-		return
+func (ctrl Controller) GetChatList(userId uint, role string) (res []chatRes.GetChatList, Error error) {
+	var resDB []rdbmsstructure.GroupChat
+	var err error
+	if role == constant.Admin {
+		resDB, err = ctrl.Access.RDBMS.GetAllForAdminChatList()
+		if err != nil {
+			Error = err
+			return
+		}
+	} else {
+		resDB, err = ctrl.Access.RDBMS.GetRoomChatListByUserId(userId)
+		if err != nil {
+			Error = err
+			return
+		}
 	}
+
 	var dataArr []chatRes.GetChatList
 	for _, m1 := range resDB {
 		data := chatRes.GetChatList{
@@ -28,8 +39,8 @@ func (ctrl Controller) GetChatList(userId uint) (res []chatRes.GetChatList, Erro
 			OwnerId:    fmt.Sprintf("%v", m1.RoomChat.UserOwnerId),
 			CreatedAt:  m1.RoomChat.CreatedAt,
 			UpdatedAt:  m1.RoomChat.UpdatedAt,
-			//DeletedAT:  m1.RoomChat.DeletedAt.Time,
-			DeleteBy: fmt.Sprintf("%v", m1.RoomChat.DeletedBy),
+			DeletedAT:  m1.RoomChat.DeletedAt.Time,
+			DeleteBy:   fmt.Sprintf("%v", m1.RoomChat.DeletedBy),
 		}
 		dataArr = append(dataArr, data)
 	}
@@ -282,7 +293,7 @@ func (ctrl Controller) SendMessage(req request.SendMessage, userId uint) (Error 
 	return
 }
 
-func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId uint) (Error error) {
+func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId uint, role string) (Error error) {
 	roomChatID, err := strconv.ParseUint(req.RoomChatID, 0, 0)
 	if err != nil {
 		Error = err
@@ -297,11 +308,13 @@ func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId 
 	var check []chatRes.GetChat
 	checkMsg := false
 	if roomChat.ID != 0 {
-		check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
-		for _, m1 := range check {
-			if messageId == m1.ID && userId == m1.SenderUserId {
-				checkMsg = true
-				break
+		if role != constant.Admin {
+			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
+			for _, m1 := range check {
+				if messageId == m1.ID && userId == m1.SenderUserId {
+					checkMsg = true
+					break
+				}
 			}
 		}
 
@@ -328,7 +341,7 @@ func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId 
 	return
 }
 
-func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint) (Error error) {
+func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint, role string) (Error error) {
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatID)
 	if err != nil {
 		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
@@ -337,11 +350,13 @@ func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint) (Error 
 	var check []chatRes.GetChat
 	checkMsg := false
 	if roomChat.ID != 0 {
-		check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
-		for _, m1 := range check {
-			if messageId == m1.ID && userId == m1.SenderUserId {
-				checkMsg = true
-				break
+		if role != constant.Admin {
+			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID)
+			for _, m1 := range check {
+				if messageId == m1.ID && userId == m1.SenderUserId {
+					checkMsg = true
+					break
+				}
 			}
 		}
 

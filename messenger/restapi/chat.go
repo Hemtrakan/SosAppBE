@@ -49,7 +49,7 @@ func (ctrl Controller) RoomChat(c echo.Context) error {
 func (ctrl Controller) UpdateRoomChat(c echo.Context) error {
 	request := new(request.RoomChatReq)
 	var res response.RespMag
-	APIName := "DeleteRoomChat"
+	APIName := "UpdateRoomChat"
 	loggers.LogStart(APIName)
 
 	err := c.Bind(&request)
@@ -158,7 +158,7 @@ func (ctrl Controller) GetChatList(c echo.Context) error {
 	values := token.GetValuesToken(c)
 	userId := values.ID
 
-	resp, err := ctrl.Ctx.GetChatList(userId)
+	resp, err := ctrl.Ctx.GetChatList(userId, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -280,7 +280,7 @@ func (ctrl Controller) UpdateMessage(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.UpdateMessage(req, uint(messageId), userId)
+	err = ctrl.Ctx.UpdateMessage(req, uint(messageId), userId, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -316,7 +316,7 @@ func (ctrl Controller) DeleteMessage(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.DeleteMessage(uint(messageId), uint(roomChatID), userId)
+	err = ctrl.Ctx.DeleteMessage(uint(messageId), uint(roomChatID), userId, values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

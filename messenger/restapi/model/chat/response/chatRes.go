@@ -15,8 +15,8 @@ type GetChatList struct {
 	OwnerId    string    `json:"ownerId,omitempty"`
 	CreatedAt  time.Time `json:"createdAt,omitempty"`
 	UpdatedAt  time.Time `json:"updatedAt,omitempty"`
-	//DeletedAT  time.Time `json:"deletedAT,omitempty"`
-	DeleteBy string `json:"deleteBy,omitempty"`
+	DeletedAT  time.Time `json:"deletedAT,omitempty"`
+	DeleteBy   string    `json:"deleteBy,omitempty"`
 }
 
 type GetChat struct {
@@ -28,8 +28,8 @@ type GetChat struct {
 	ReadingDate  int       `json:"readingDate,omitempty"` // todo นับจำนวนการอ่านข้อความ
 	CreatedAt    time.Time `json:"createdAt,omitempty"`
 	UpdatedAt    time.Time `json:"updatedAt,omitempty"`
-	//DeletedAT    time.Time `json:"deletedAT,omitempty"`
-	DeletedBy uint `json:"deletedBy,omitempty"`
+	DeletedAT    time.Time `json:"deletedAT,omitempty"`
+	DeletedBy    uint      `json:"deletedBy,omitempty"`
 }
 
 type GetMemberRoomChat struct {
