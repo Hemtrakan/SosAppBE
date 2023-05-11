@@ -31,9 +31,14 @@ func NewControllerMain(ctrl Controller) {
 
 	r := e.Group(config.GetString("service.endpoint"))
 	r.GET("/", ctrl.GetHotLine)
+	r.POST("/", ctrl.PostHistory)
 
 	a := r.Group(config.GetString("role.admin"))
 	a.Use(echojwt.WithConfig(configs), AuthRoleAdmin)
+	a.GET("/:id", ctrl.GetHotLineById)
+	a.POST("/", ctrl.PostHotLine)
+	a.PUT("/:id", ctrl.PutHotLine)
+	a.DELETE("/:id", ctrl.DeleteHotLine)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)

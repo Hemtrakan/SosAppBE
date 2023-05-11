@@ -15,6 +15,12 @@ var (
 
 type FactoryInterface interface {
 	GetHotLine() (response []structure.HotlineNumber, Error error)
+	GetHotLineById(id uint) (response structure.HotlineNumber, Error error)
+	PostHotLine(req structure.HotlineNumber) (Error error)
+	PutHotLine(req structure.HotlineNumber) (Error error)
+	DeleteHotLine(req structure.HotlineNumber) (Error error)
+
+	PostHistory(req structure.History) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
