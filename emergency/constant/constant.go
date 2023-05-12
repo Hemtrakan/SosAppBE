@@ -47,10 +47,10 @@ func (status Status) Status() (result *string, Errors error) {
 		fullName := "รับเรื่องการแจ้งเหตุแล้ว"
 		result = &fullName
 	case StatusStep3:
-		fullName := "กำลังดำเนินการ"
+		fullName := "กำลังดำเนินงาน"
 		result = &fullName
 	case StatusStep4:
-		fullName := "ดำเนินการเสร็จสิ้น"
+		fullName := "ดำเนินงานเสร็จสิ้น"
 		result = &fullName
 	default:
 		fullName := "ยังไม่ได้รับการดำเนินการ"
