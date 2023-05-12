@@ -107,10 +107,10 @@ func (ctrl Controller) UpdateInform(c echo.Context) error {
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
-
+	values := token.GetValuesToken(c)
 	authToken := token.GetAuthToken(c)
 
-	err = ctrl.Ctx.UpdateInform(request, authToken, uint(informId))
+	err = ctrl.Ctx.UpdateInform(request, authToken, uint(informId), values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -136,9 +136,9 @@ func (ctrl Controller) DeleteInform(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	authToken := token.GetAuthToken(c)
+	values := token.GetValuesToken(c)
 
-	err = ctrl.Ctx.DeleteInform(authToken, uint(informId))
+	err = ctrl.Ctx.DeleteInform(values.ID, uint(informId))
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

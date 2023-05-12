@@ -23,6 +23,7 @@ const getInformInfo = `SELECT i.id AS ID
 FROM informs AS i
          INNER JOIN sub_types st ON st.id = i.sub_type_id
          INNER JOIN types t ON t.id = st.type_id
+Where i.deleted_at is null 
 `
 
 const getInformImage = `SELECT ii.id
@@ -32,7 +33,7 @@ FROM inform_images ii
 WHERE  ii.inform_id =  ?`
 
 func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + "WHERE i.user_id = ? "
+	sql := getInformInfo + " AND i.user_id = ? "
 	rows, err := factory.client.Raw(sql, UserId).Rows()
 	if err != nil {
 		Error = err
@@ -66,7 +67,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 }
 
 func (factory GORMFactory) GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error) {
-	sql := getInformInfo + "WHERE i.id = ? "
+	sql := getInformInfo + " AND i.id = ? "
 	rows, err := factory.client.Raw(sql, informId).Rows()
 	if err != nil {
 		Error = err
@@ -145,7 +146,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.In
 }
 
 func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + "WHERE i.ops_id = 0"
+	sql := getInformInfo + " AND i.ops_id = 0"
 
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
@@ -180,7 +181,7 @@ func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfo
 }
 
 func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + "WHERE i.ops_id = ? "
+	sql := getInformInfo + " AND i.ops_id = ? "
 	rows, err := factory.client.Raw(sql, OpsId).Rows()
 	if err != nil {
 		Error = err
@@ -268,10 +269,18 @@ func (factory GORMFactory) PutInform(informID structure.Inform) (Error error) {
 	return
 }
 
-func (factory GORMFactory) DeleteInform(informID uint) (Error error) {
-	err := factory.client.Where("id = ?", informID).Delete(&informID).Error
+func (factory GORMFactory) DeleteInform(inform structure.Inform) (Error error) {
+	var data structure.Inform
+	err := factory.client.Where("id = ?", inform.ID).Delete(&data).Error
 	if err != nil {
-		Error = err
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+		return
 	}
+
 	return
 }

@@ -453,12 +453,17 @@ func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
 	return
 }
 
-func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token string, informId uint) (Error error) {
-
+func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token string, informId uint, role string) (Error error) {
 	UserRes := new(structure.UserRes)
 	if informId != 0 {
 		account := config.GetString("url.account")
-		URL := account + "ops/"
+		URL := ""
+		if role == constant.Admin {
+			URL = account + "admin/"
+		} else {
+			URL = account + "ops/"
+		}
+
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = token
 
@@ -507,39 +512,25 @@ func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token strin
 	return
 }
 
-func (ctrl Controller) DeleteInform(token string, informId uint) (Error error) {
-	UserRes := new(structure.UserRes)
-	if informId == 0 {
-		account := config.GetString("url.account")
-		URL := account + "/"
-		httpHeaderMap := map[string]string{}
-		httpHeaderMap["Authorization"] = token
+func (ctrl Controller) DeleteInform(userId, informId uint) (Error error) {
 
-		HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
-		if err != nil {
-			Error = err
-			return
-		}
-
-		if HttpResponse.HttpStatusCode != 200 {
-			Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
-			return
-		}
-
-		err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
-		if err != nil {
-			Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
-			return
-		}
+	data := rdbmsstructure.Inform{
+		Model: gorm.Model{
+			ID: informId,
+		},
+		DeletedBy: userId,
 	}
 
-	if UserRes.Code == constant.SuccessCode {
-		userId, err := strconv.ParseUint(UserRes.Data.ID, 0, 0)
-		err = ctrl.Access.RDBMS.DeleteInform(uint(userId))
-		if err != nil {
-			Error = err
-			return
-		}
+	err := ctrl.Access.RDBMS.PutInform(data)
+	if err != nil {
+		Error = err
+		return
+	}
+
+	err = ctrl.Access.RDBMS.DeleteInform(data)
+	if err != nil {
+		Error = err
+		return
 	}
 
 	return

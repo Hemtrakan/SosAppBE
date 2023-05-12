@@ -17,12 +17,11 @@ var (
 type FactoryInterface interface {
 
 	// User
-
 	GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error)
 	GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error)
 	PostInform(imageArr []structure.InformImage, inform structure.Inform) (Error error)
 	PutInform(informID structure.Inform) (Error error)
-	DeleteInform(informID uint) (Error error)
+	DeleteInform(informID structure.Inform) (Error error)
 
 	//Ops
 	GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error)
