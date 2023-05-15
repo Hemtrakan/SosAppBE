@@ -12,6 +12,6 @@ type HotlineReq struct {
 }
 
 type HistoryReq struct {
-	HotlineNumberID int   `json:"hotlineNumberID,omitempty"`
-	UserId          *uint `json:"userId,omitempty"`
+	HotlineID int   `json:"hotlineId,omitempty"`
+	UserId    *uint `json:"userId,omitempty"`
 }

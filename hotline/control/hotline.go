@@ -9,9 +9,9 @@ import (
 
 func (ctrl Controller) PostHistory(req *model.HistoryReq) (Error error) {
 	data := rdbmstructure.History{
-		HotlineNumberID: req.HotlineNumberID,
+		HotlineNumberID: req.HotlineID,
 		UserID:          *req.UserId,
-		Time:            time.Now().Local(),
+		Time:            time.Now().Add(time.Hour * 720),
 	}
 
 	err := ctrl.Access.RDBMS.PostHistory(data)
@@ -19,7 +19,16 @@ func (ctrl Controller) PostHistory(req *model.HistoryReq) (Error error) {
 		Error = err
 		return
 	}
+	return
+}
 
+func (ctrl Controller) GetHistory() (res []rdbmstructure.History, Error error) {
+	data, err := ctrl.Access.RDBMS.GetHistory()
+	if err != nil {
+		Error = err
+		return
+	}
+	res = data
 	return
 }
 

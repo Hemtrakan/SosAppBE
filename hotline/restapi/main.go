@@ -40,6 +40,8 @@ func NewControllerMain(ctrl Controller) {
 	a.PUT("/:id", ctrl.PutHotLine)
 	a.DELETE("/:id", ctrl.DeleteHotLine)
 
+	a.GET("/history", ctrl.GetHistory)
+
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
 

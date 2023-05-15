@@ -21,6 +21,7 @@ type FactoryInterface interface {
 	DeleteHotLine(req structure.HotlineNumber) (Error error)
 
 	PostHistory(req structure.History) (Error error)
+	GetHistory() (res []structure.History, Error error)
 }
 
 func Create(env *Properties) FactoryInterface {

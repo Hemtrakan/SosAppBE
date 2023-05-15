@@ -18,6 +18,4 @@ type HotlineNumber struct {
 	Description      string
 	DeletedBy        *uint
 	UserIDLogUpdated uint
-	History          History
-	HistoryID        uint
 }

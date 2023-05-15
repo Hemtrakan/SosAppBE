@@ -81,6 +81,22 @@ func (factory GORMFactory) DeleteHotLine(req structure.HotlineNumber) (Error err
 	return
 }
 
+func (factory GORMFactory) GetHistory() (response []structure.History, Error error) {
+	var data []structure.History
+	err := factory.client.Find(&data).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+	response = data
+	return
+}
+
 func (factory GORMFactory) PostHistory(req structure.History) (Error error) {
 	err := factory.client.Session(&gorm.Session{FullSaveAssociations: true}).Save(&req).Error
 	if err != nil {
