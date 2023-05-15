@@ -17,58 +17,77 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
 
   console.log(newNamespace.name);
 
-  let roomChatId = socket.nsp.name.replace("/", "");
+  let channelId = socket.nsp.name.replace("/", "");
   socket.on("disconnect", () => {
     console.log("----- disconnect --------");
     socket.disconnect();
   });
 
   const username = socket.handshake.query.username;
-  console.log("----- Connect --------");
-  console.log("username : ", username);
-  console.log("roomChatId :", roomChatId);
-  console.log("----- Connect --------");
-  socket.on(roomChatId, (data) => {
-    const message = {
-      message: data.message,
-      senderUsername: username,
-      sentAt: Date.now(),
-    };
-    messages.push(message);
-    console.log("message : ", message);
-    console.log("roomChatId :", roomChatId);
-    newNamespace.emit(roomChatId, message);
-  });
-});
-
-io.on("connection", (socket) => {
-  const username = socket.handshake.query.username;
-  const eme = "emergency";
-
-  socket.on("disconnect", () => {
-    console.log("----- disconnect " + eme + "--------");
+  if (channelId != 0) {
+    console.log("----- Connect --------");
     console.log("username : ", username);
-    console.log("----- disconnect " + eme + "--------");
-    socket.disconnect();
-  });
-  console.log("----- Connect " + eme + " --------");
-  console.log("username : ", username);
-  console.log("----- Connect " + eme + " --------");
-
-  socket.on(eme, (data) => {
-    const message = {
-      message: data.message,
-      senderUsername: username,
-      sentAt: Date.now(),
-    };
-    messages.push(message);
-    console.log("message : ", message);
-    socket.emit(eme, message);
-    console.log("--------" + eme + " --------");
-
-  });
+    console.log("channelId :", channelId);
+    console.log("----- Connect --------");
+    socket.on(channelId, (data) => {
+      const message = {
+        message: data.message,
+        senderUsername: username,
+        sentAt: Date.now(),
+      };
+      messages.push(message);
+      console.log("message : ", message);
+      console.log("channelId :", channelId);
+      newNamespace.emit(channelId, message);
+    });
+  } else {
+    console.log("----- Connect --------");
+    console.log("username : ", username);
+    console.log("channelId :", channelId);
+    console.log("----- Connect --------");
+    socket.on(channelId, (data) => {
+      const message = {
+        description: data.description,
+        phoneNumberCallBack: data.phoneNumberCallBack,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        username: username,
+        type: data.type,
+      };
+      messages.push(message);
+      console.log("message : ", message);
+      console.log("channelId :", channelId);
+      newNamespace.emit(channelId, message);
+    });
+  }
 });
 
 server.listen(84, () => {
   console.log("listening on *:84");
 });
+
+function getDistanceBetweenPoints(
+  latitude1,
+  longitude1,
+  latitude2,
+  longitude2,
+  unit = "miles"
+) {
+  let theta = longitude1 - longitude2;
+  let distance =
+    60 *
+    1.1515 *
+    (180 / Math.PI) *
+    Math.acos(
+      Math.sin(latitude1 * (Math.PI / 180)) *
+        Math.sin(latitude2 * (Math.PI / 180)) +
+        Math.cos(latitude1 * (Math.PI / 180)) *
+          Math.cos(latitude2 * (Math.PI / 180)) *
+          Math.cos(theta * (Math.PI / 180))
+    );
+  if (unit == "miles") {
+    return Math.round(distance, 2);
+  } else if (unit == "kilometers") {
+    return Math.round(distance * 1.609344, 2);
+  }
+}
