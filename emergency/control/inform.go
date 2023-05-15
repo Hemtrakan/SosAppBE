@@ -94,6 +94,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
 			Status:              pointer.GetStringValue(status),
 		}
 		res = append(res, mapData)
@@ -180,6 +181,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
+		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
 		Status:              pointer.GetStringValue(status),
 	}
 	res = mapData
@@ -247,6 +249,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
 			Status:              pointer.GetStringValue(status),
 		}
 		res = append(res, mapData)
@@ -319,6 +322,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
 			Status:              pointer.GetStringValue(status),
 		}
 		res = append(res, mapData)
@@ -405,6 +409,7 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
+		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
 		Status:              pointer.GetStringValue(status),
 	}
 	res = mapData
@@ -491,7 +496,8 @@ func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token strin
 
 		newReqInform := rdbmsstructure.Inform{
 			Model: gorm.Model{
-				ID: informId,
+				ID:        informId,
+				UpdatedAt: time.Now().Add(time.Hour * 7),
 			},
 			Description:         req.Description,
 			PhoneNumberCallBack: req.PhoneNumberCallBack,
@@ -513,10 +519,10 @@ func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token strin
 }
 
 func (ctrl Controller) DeleteInform(userId, informId uint) (Error error) {
-
 	data := rdbmsstructure.Inform{
 		Model: gorm.Model{
-			ID: informId,
+			ID:        informId,
+			UpdatedAt: time.Now().Add(time.Hour * 7),
 		},
 		DeletedBy: userId,
 	}

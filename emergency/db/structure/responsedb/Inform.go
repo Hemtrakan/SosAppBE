@@ -3,6 +3,7 @@ package responsedb
 type InformInfoList struct {
 	ID              *string
 	InformCreatedAt *string
+	InformUpdateAt  *string
 	UserInformID    *string
 	Description     *string
 	CALLBack        *string
@@ -20,6 +21,7 @@ type InformInfoList struct {
 type InformInfoById struct {
 	ID              *string
 	InformCreatedAt *string
+	InformUpdateAt  *string
 	UserInformID    *string
 	Description     *string
 	CALLBack        *string

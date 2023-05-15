@@ -8,18 +8,19 @@ import (
 )
 
 const getInformInfo = `SELECT i.id AS ID
-     , i.created_at             AS InformCreatedAt
-     , i.user_id                AS UserInformID
-     , i.description            AS Description
-     , i.phone_number_call_back AS CALLBack
-     , i.latitude               as Latitude
-     , i.longitude              as longitude
-     , st.id                    AS SubTypeId
-     , st.name                  AS SubTypeName
-     , t.id                     AS TypeID
-     , t.name                   AS Type
-     , i.ops_id                 AS UserNotiID
-     , i.status                 as Status
+     , i.created_at             			AS InformCreatedAt
+     , i.updated_at + interval '7 hours'	AS InformUpdateAt
+     , i.user_id                			AS UserInformID
+     , i.description            			AS Description
+     , i.phone_number_call_back 			AS CALLBack
+     , i.latitude               			AS Latitude
+     , i.longitude              			AS longitude
+     , st.id                    			AS SubTypeId
+     , st.name                  			AS SubTypeName
+     , t.id                     			AS TypeID
+     , t.name                   			AS Type
+     , i.ops_id                 			AS UserNotiID
+     , i.status                 			AS Status
 FROM informs AS i
          INNER JOIN sub_types st ON st.id = i.sub_type_id
          INNER JOIN types t ON t.id = st.type_id
@@ -33,7 +34,7 @@ FROM inform_images ii
 WHERE  ii.inform_id =  ?`
 
 func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.user_id = ? "
+	sql := getInformInfo + " AND i.user_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, UserId).Rows()
 	if err != nil {
 		Error = err
@@ -47,6 +48,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
+			&data.InformUpdateAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -67,7 +69,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 }
 
 func (factory GORMFactory) GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error) {
-	sql := getInformInfo + " AND i.id = ? "
+	sql := getInformInfo + " AND i.id = ? order by i.created_at desc "
 	rows, err := factory.client.Raw(sql, informId).Rows()
 	if err != nil {
 		Error = err
@@ -80,6 +82,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
+			&data.InformUpdateAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -112,7 +115,8 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 }
 
 func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo
+	sql := getInformInfo + "order by i.created_at desc"
+
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
 		Error = err
@@ -126,6 +130,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.In
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
+			data.InformUpdateAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -146,7 +151,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.In
 }
 
 func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.ops_id = 0"
+	sql := getInformInfo + " AND i.ops_id = 0 order by i.created_at desc"
 
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
@@ -161,6 +166,7 @@ func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfo
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
+			&data.InformUpdateAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -181,7 +187,7 @@ func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfo
 }
 
 func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.ops_id = ? "
+	sql := getInformInfo + " AND i.ops_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, OpsId).Rows()
 	if err != nil {
 		Error = err
@@ -195,6 +201,7 @@ func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*respons
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
+			&data.InformUpdateAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -251,17 +258,20 @@ func (factory GORMFactory) PostInform(imageArr []structure.InformImage, inform s
 }
 
 func (factory GORMFactory) PutInform(informID structure.Inform) (Error error) {
-	err := factory.client.Model(&informID).Where("id = ?", informID.ID).Updates(
-		structure.Inform{
-			Description:         informID.Description,
-			PhoneNumberCallBack: informID.PhoneNumberCallBack,
-			Latitude:            informID.Latitude,
-			Longitude:           informID.Longitude,
-			DeletedBy:           informID.DeletedBy,
-			SubTypeID:           informID.SubTypeID,
-			OpsID:               informID.OpsID,
-			Status:              informID.Status,
-		}).Error
+	err := factory.client.Model(&informID).Where("id = ?", informID.ID).Updates(&informID).Error
+	//structure.Inform{
+	//	Model: gorm.Model{
+	//		UpdatedAt: time.Now().Add(time.Hour * 7),
+	//	},
+	//	Description:         informID.Description,
+	//	PhoneNumberCallBack: informID.PhoneNumberCallBack,
+	//	Latitude:            informID.Latitude,
+	//	Longitude:           informID.Longitude,
+	//	DeletedBy:           informID.DeletedBy,
+	//	SubTypeID:           informID.SubTypeID,
+	//	OpsID:               informID.OpsID,
+	//	Status:              informID.Status,
+	//}).Error
 
 	if err != nil {
 		Error = err

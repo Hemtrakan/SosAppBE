@@ -23,6 +23,9 @@ type InformResponse struct {
 	// Date วันเวลาที่แจ้ง
 	Date string `json:"date,omitempty"`
 
+	// UpdateDate วันเวลาที่อัพเดท
+	UpdateDate string `json:"updateDate,omitempty"`
+
 	// Status สถานะการแจ้งเหตู
 	Status string `json:"status,omitempty"`
 }
