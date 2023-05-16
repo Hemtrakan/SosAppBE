@@ -98,6 +98,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
 			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
 			Status:              pointer.GetStringValue(status),
+			StatusChat:          pointer.GetBooleanValue(m1.StatusChat),
 		}
 		res = append(res, mapData)
 	}
@@ -187,6 +188,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
 		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
 		Status:              pointer.GetStringValue(status),
+		StatusChat:          pointer.GetBooleanValue(resp.StatusChat),
 	}
 	res = mapData
 
@@ -258,6 +260,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 			Date:        pointer.GetStringValue(m1.InformCreatedAt),
 			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
 			Status:      pointer.GetStringValue(status),
+			StatusChat:  pointer.GetBooleanValue(m1.StatusChat),
 		}
 		res = append(res, mapData)
 	}
@@ -335,6 +338,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 			Date:        pointer.GetStringValue(m1.InformCreatedAt),
 			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
 			Status:      pointer.GetStringValue(status),
+			StatusChat:  pointer.GetBooleanValue(m1.StatusChat),
 		}
 		res = append(res, mapData)
 	}
@@ -418,6 +422,7 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 		PhoneNumberCallBack: UserRes.Data.PhoneNumber,
 		Latitude:            pointer.GetStringValue(resp.Latitude),
 		Longitude:           pointer.GetStringValue(resp.Longitude),
+		UserId:              UserID,
 		UserName:            Username,
 		//PhoneNumber:         PhoneNumber,
 		Workplace:   UserRes.Data.Workplace,
@@ -425,6 +430,7 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 		Date:        pointer.GetStringValue(resp.InformCreatedAt),
 		UpdateDate:  pointer.GetStringValue(resp.InformUpdateAt),
 		Status:      pointer.GetStringValue(status),
+		StatusChat:  pointer.GetBooleanValue(resp.StatusChat),
 	}
 	res = mapData
 
@@ -450,6 +456,8 @@ func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
 		Longitude:           req.Longitude,
 		UserID:              uint(userId),
 		SubTypeID:           req.SubTypeID,
+		Status:              strconv.Itoa(constant.StatusStep1),
+		StatusChat:          false,
 	}
 
 	var newReqImageArr []rdbmsstructure.InformImage
@@ -513,13 +521,14 @@ func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token strin
 				ID:        informId,
 				UpdatedAt: time.Now().Add(time.Hour * 7),
 			},
-			Description:         req.Description,
-			PhoneNumberCallBack: req.PhoneNumberCallBack,
-			Latitude:            req.Latitude,
-			Longitude:           req.Longitude,
-			SubTypeID:           req.SubTypeID,
+			Description:         pointer.GetStringValue(req.Description),
+			PhoneNumberCallBack: pointer.GetStringValue(req.PhoneNumberCallBack),
+			Latitude:            pointer.GetStringValue(req.Latitude),
+			Longitude:           pointer.GetStringValue(req.Longitude),
+			SubTypeID:           pointer.GetUintValue(req.SubTypeID),
 			OpsID:               uint(OpsId),
-			Status:              strconv.Itoa(req.Status),
+			Status:              strconv.Itoa(pointer.GetIntValue(req.Status)),
+			StatusChat:          pointer.GetBooleanValue(req.StatusChat),
 		}
 
 		err = ctrl.Access.RDBMS.PutInform(newReqInform)

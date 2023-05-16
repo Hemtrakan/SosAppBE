@@ -14,6 +14,7 @@ type RoomChat struct {
 	Name        string
 	UserOwnerId uint
 	DeletedBy   uint
+	InformId    uint
 }
 
 type Message struct {

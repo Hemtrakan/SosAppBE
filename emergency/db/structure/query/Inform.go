@@ -13,9 +13,10 @@ type InformInfoList struct {
 	SubTypeName     *string
 	TypeID          *string
 	Type            *string
+	Status          *string
+	StatusChat      *bool
 	// UserNotiID  ไอดีของผู้รับแจ้งเหตุ
 	UserNotiID *string
-	Status     *string
 }
 
 type InformInfoById struct {
@@ -31,10 +32,11 @@ type InformInfoById struct {
 	SubTypeName     *string
 	TypeID          *string
 	Type            *string
+	StatusChat      *bool
+	Status          *string
+	ImageInfo       []*ImageInfo
 	// UserNotiID  ไอดีของผู้รับแจ้งเหตุ
 	UserNotiID *string
-	Status     *string
-	ImageInfo  []*ImageInfo
 }
 
 type ImageInfo struct {

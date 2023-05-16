@@ -13,6 +13,9 @@ type InformResponse struct {
 	// Longitude
 	Longitude string `json:"longitude,omitempty"`
 
+	// UserId
+	UserId string `json:"userId,omitempty"`
+
 	// UserName
 	UserName string `json:"username,omitempty"`
 
@@ -31,6 +34,9 @@ type InformResponse struct {
 
 	// Status สถานะการแจ้งเหตู
 	Status string `json:"status,omitempty"`
+
+	// StatusChat สถานะการสร้างห้องแชท
+	StatusChat bool `json:"statusChat"`
 }
 
 type ImageInfo struct {

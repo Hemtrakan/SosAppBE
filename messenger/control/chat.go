@@ -79,6 +79,7 @@ func (ctrl Controller) RoomChat(userId uint, req request.RoomChatReq, Token stri
 		RoomChat: rdbmsstructure.RoomChat{
 			Name:        req.RoomName,
 			UserOwnerId: userId,
+			InformId:    req.InformId,
 		},
 	}
 

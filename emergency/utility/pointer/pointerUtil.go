@@ -116,6 +116,20 @@ func GetIntValue(i *int) int {
 	return val
 }
 
+func NewUint(i uint) *uint {
+	return &i
+}
+
+func GetUintValue(i *uint) uint {
+	var val uint
+
+	if i != nil {
+		val = *i
+	}
+
+	return val
+}
+
 func NewBoolean(b bool) *bool {
 	return &b
 }

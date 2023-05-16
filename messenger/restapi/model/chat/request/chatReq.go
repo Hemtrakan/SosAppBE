@@ -2,6 +2,7 @@ package request
 
 type RoomChatReq struct {
 	RoomName  string    `json:"roomName" validate:"required"`
+	InformId  uint      `json:"informId,omitempty"`
 	GroupChat GroupChat `json:"groupChat"`
 }
 

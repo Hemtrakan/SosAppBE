@@ -4,6 +4,7 @@ import (
 	"emergency/constant"
 	"emergency/restapi/model/inform"
 	"emergency/utility/loggers"
+	"emergency/utility/pointer"
 	"emergency/utility/response"
 	"emergency/utility/token"
 	"github.com/labstack/echo/v4"
@@ -94,7 +95,7 @@ func (ctrl Controller) UpdateInform(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	if request.Status > 4 {
+	if pointer.GetIntValue(request.Status) > 4 {
 		res.Code = constant.ErrorCode
 		res.Msg = "invalid status"
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)

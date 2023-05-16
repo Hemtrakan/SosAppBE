@@ -15,6 +15,7 @@ type Inform struct {
 	SubTypeID           uint
 	OpsID               uint
 	Status              string
+	StatusChat          bool
 }
 
 type InformImage struct {

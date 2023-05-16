@@ -21,6 +21,7 @@ const getInformInfo = `SELECT i.id AS ID
      , t.name                   			AS Type
      , i.ops_id                 			AS UserNotiID
      , i.status                 			AS Status
+     , i.status_chat                     	AS StatusChat
 FROM informs AS i
          INNER JOIN sub_types st ON st.id = i.sub_type_id
          INNER JOIN types t ON t.id = st.type_id
@@ -60,6 +61,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*query.InformI
 			&data.Type,
 			&data.UserNotiID,
 			&data.Status,
+			&data.StatusChat,
 		)
 		dataArr = append(dataArr, data)
 	}
@@ -94,6 +96,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *query.In
 			&data.Type,
 			&data.UserNotiID,
 			&data.Status,
+			&data.StatusChat,
 		)
 
 		var imageInfoArr []*query.ImageInfo
@@ -142,6 +145,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*query.InformI
 			&data.Type,
 			&data.UserNotiID,
 			&data.Status,
+			&data.StatusChat,
 		)
 		dataArr = append(dataArr, data)
 	}
@@ -178,6 +182,7 @@ func (factory GORMFactory) GetAllInformList() (response []*query.InformInfoList,
 			&data.Type,
 			&data.UserNotiID,
 			&data.Status,
+			&data.StatusChat,
 		)
 		dataArr = append(dataArr, data)
 	}
@@ -213,6 +218,7 @@ func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*query.I
 			&data.Type,
 			&data.UserNotiID,
 			&data.Status,
+			&data.StatusChat,
 		)
 		dataArr = append(dataArr, data)
 	}
@@ -259,20 +265,6 @@ func (factory GORMFactory) PostInform(imageArr []structure.InformImage, inform s
 
 func (factory GORMFactory) PutInform(informID structure.Inform) (Error error) {
 	err := factory.client.Model(&informID).Where("id = ?", informID.ID).Updates(&informID).Error
-	//structure.Inform{
-	//	Model: gorm.Model{
-	//		UpdatedAt: time.Now().Add(time.Hour * 7),
-	//	},
-	//	Description:         informID.Description,
-	//	PhoneNumberCallBack: informID.PhoneNumberCallBack,
-	//	Latitude:            informID.Latitude,
-	//	Longitude:           informID.Longitude,
-	//	DeletedBy:           informID.DeletedBy,
-	//	SubTypeID:           informID.SubTypeID,
-	//	OpsID:               informID.OpsID,
-	//	Status:              informID.Status,
-	//}).Error
-
 	if err != nil {
 		Error = err
 	}
