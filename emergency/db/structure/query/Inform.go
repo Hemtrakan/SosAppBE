@@ -1,4 +1,4 @@
-package responsedb
+package query
 
 type InformInfoList struct {
 	ID              *string

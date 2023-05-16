@@ -179,7 +179,7 @@ func (ctrl Controller) PostUser(req *reqSingUp.SingUp, checkRole string) (resUse
 		return
 	}
 	if checkUser.PhoneNumber == req.PhoneNumber {
-		Error = errors.New("This phone number has already been register.")
+		Error = errors.New("เบอร์โทรศัพท์นี้มีผู้ใช้งานแล้ว")
 		return
 	}
 

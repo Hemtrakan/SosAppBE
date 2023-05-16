@@ -56,6 +56,25 @@ func NewControllerMain(ctrl Controller) {
 	a.PUT("/:id", ctrl.UpdateInform)
 	a.DELETE("/:id", ctrl.DeleteInform)
 
+	// type
+	t := a.Group("/type")
+	t.GET("/", func(c echo.Context) error {
+		return c.JSON(200, "Type")
+	})
+	//t.GET("/:id")
+	//t.POST("/")
+	//t.PUT("/:id")
+	//t.DELETE("/:id")
+
+	ts := a.Group("/subType")
+	ts.GET("/", func(c echo.Context) error {
+		return c.JSON(200, "subType")
+	})
+	//ts.GET("/:id")
+	//ts.POST("/")
+	//ts.PUT("/:id")
+	//ts.DELETE("/:id")
+
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
 

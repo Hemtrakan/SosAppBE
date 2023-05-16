@@ -4,7 +4,7 @@ import (
 	"emergency/constant"
 	"emergency/control/structure"
 	rdbmsstructure "emergency/db/structure"
-	"emergency/db/structure/responsedb"
+	"emergency/db/structure/query"
 	"emergency/restapi/model/inform"
 	"emergency/utility/encoding"
 	"emergency/utility/pointer"
@@ -17,7 +17,7 @@ import (
 )
 
 func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.InformResponse, Error error) {
-	var resp []*responsedb.InformInfoList
+	var resp []*query.InformInfoList
 	var err error
 
 	if role == constant.Admin {
@@ -34,11 +34,11 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 		}
 	}
 
-	Username := ""
-	UserRes := new(structure.UserRes)
-
 	for _, m1 := range resp {
+		UserRes := new(structure.UserRes)
 		UserNotiID := ""
+		Username := ""
+		PhoneNumber := ""
 		if pointer.GetStringValue(m1.UserNotiID) != "0" {
 			UserNotiID = pointer.GetStringValue(m1.UserNotiID)
 		}
@@ -76,6 +76,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
+			PhoneNumber = UserRes.Data.PhoneNumber
 		}
 
 		var status, _ = constant.Status(constant.StatusStep1).Status()
@@ -91,6 +92,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
 			UserName:            Username,
+			PhoneNumber:         PhoneNumber,
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
@@ -154,6 +156,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 	if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 		Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 	}
+	var PhoneNumber = UserRes.Data.PhoneNumber
 	var ImageInfoArr []inform.ImageInfo
 
 	for _, image := range resp.ImageInfo {
@@ -178,6 +181,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 		Latitude:            pointer.GetStringValue(resp.Latitude),
 		Longitude:           pointer.GetStringValue(resp.Longitude),
 		UserName:            Username,
+		PhoneNumber:         PhoneNumber,
 		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
@@ -195,11 +199,12 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 		Error = err
 		return
 	}
-	Username := ""
-	UserRes := new(structure.UserRes)
 
 	for _, m1 := range resp {
+		Username := ""
+		UserRes := new(structure.UserRes)
 		UserInformID := ""
+		//PhoneNumber := ""
 		if pointer.GetStringValue(m1.UserInformID) != "0" {
 			UserInformID = pointer.GetStringValue(m1.UserInformID)
 		}
@@ -231,6 +236,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
+			//PhoneNumber = UserRes.Data.PhoneNumber
 		}
 
 		var status, _ = constant.Status(constant.StatusStep1).Status()
@@ -246,11 +252,12 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
 			UserName:            Username,
-			Workplace:           UserRes.Data.Workplace,
-			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
-			Date:                pointer.GetStringValue(m1.InformCreatedAt),
-			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
-			Status:              pointer.GetStringValue(status),
+			//PhoneNumber:         PhoneNumber,
+			Workplace:   UserRes.Data.Workplace,
+			SubTypeName: pointer.GetStringValue(m1.SubTypeName),
+			Date:        pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
+			Status:      pointer.GetStringValue(status),
 		}
 		res = append(res, mapData)
 	}
@@ -263,11 +270,12 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 		Error = err
 		return
 	}
-	Username := ""
-	UserRes := new(structure.UserRes)
 
 	for _, m1 := range resp {
 		UserInformID := ""
+		Username := ""
+		//PhoneNumber := ""
+		UserRes := new(structure.UserRes)
 		if pointer.GetStringValue(m1.UserInformID) != "0" {
 			UserInformID = pointer.GetStringValue(m1.UserInformID)
 		}
@@ -304,6 +312,8 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
+			//PhoneNumber = UserRes.Data.PhoneNumber
+
 		}
 
 		var status, _ = constant.Status(constant.StatusStep1).Status()
@@ -320,10 +330,11 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 			Longitude:           pointer.GetStringValue(m1.Longitude),
 			UserName:            Username,
 			Workplace:           UserRes.Data.Workplace,
-			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
-			Date:                pointer.GetStringValue(m1.InformCreatedAt),
-			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
-			Status:              pointer.GetStringValue(status),
+			//PhoneNumber:         PhoneNumber,
+			SubTypeName: pointer.GetStringValue(m1.SubTypeName),
+			Date:        pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
+			Status:      pointer.GetStringValue(status),
 		}
 		res = append(res, mapData)
 	}
@@ -382,6 +393,8 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 	if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 		Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 	}
+	//var PhoneNumber = UserRes.Data.PhoneNumber
+
 	var ImageInfoArr []inform.ImageInfo
 
 	for _, image := range resp.ImageInfo {
@@ -406,11 +419,12 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 		Latitude:            pointer.GetStringValue(resp.Latitude),
 		Longitude:           pointer.GetStringValue(resp.Longitude),
 		UserName:            Username,
-		Workplace:           UserRes.Data.Workplace,
-		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
-		Date:                pointer.GetStringValue(resp.InformCreatedAt),
-		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
-		Status:              pointer.GetStringValue(status),
+		//PhoneNumber:         PhoneNumber,
+		Workplace:   UserRes.Data.Workplace,
+		SubTypeName: pointer.GetStringValue(resp.SubTypeName),
+		Date:        pointer.GetStringValue(resp.InformCreatedAt),
+		UpdateDate:  pointer.GetStringValue(resp.InformUpdateAt),
+		Status:      pointer.GetStringValue(status),
 	}
 	res = mapData
 

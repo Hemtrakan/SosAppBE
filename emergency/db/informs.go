@@ -2,7 +2,7 @@ package db
 
 import (
 	"emergency/db/structure"
-	"emergency/db/structure/responsedb"
+	"emergency/db/structure/query"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -33,7 +33,7 @@ FROM inform_images ii
     INNER JOIN informs i ON i.id = ii.inform_id
 WHERE  ii.inform_id =  ?`
 
-func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error) {
+func (factory GORMFactory) GetInformList(UserId uint) (response []*query.InformInfoList, Error error) {
 	sql := getInformInfo + " AND i.user_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, UserId).Rows()
 	if err != nil {
@@ -42,9 +42,9 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 	}
 	defer rows.Close()
 
-	var dataArr []*responsedb.InformInfoList
+	var dataArr []*query.InformInfoList
 	for rows.Next() {
-		var data = new(responsedb.InformInfoList)
+		var data = new(query.InformInfoList)
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
@@ -68,7 +68,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*responsedb.In
 	return
 }
 
-func (factory GORMFactory) GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error) {
+func (factory GORMFactory) GetImageByInformId(informId uint) (response *query.InformInfoById, Error error) {
 	sql := getInformInfo + " AND i.id = ? order by i.created_at desc "
 	rows, err := factory.client.Raw(sql, informId).Rows()
 	if err != nil {
@@ -77,7 +77,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 	}
 	defer rows.Close()
 
-	var data = new(responsedb.InformInfoById)
+	var data = new(query.InformInfoById)
 	for rows.Next() {
 		rows.Scan(
 			&data.ID,
@@ -96,11 +96,11 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 			&data.Status,
 		)
 
-		var imageInfoArr []*responsedb.ImageInfo
+		var imageInfoArr []*query.ImageInfo
 		getInformImageRow, _ := factory.client.Raw(getInformImage, data.ID).Rows()
 
 		for getInformImageRow.Next() {
-			var imageInfo = new(responsedb.ImageInfo)
+			var imageInfo = new(query.ImageInfo)
 			getInformImageRow.Scan(
 				&imageInfo.ImageId,
 				&imageInfo.Image,
@@ -114,8 +114,8 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *response
 	return
 }
 
-func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + "order by i.created_at desc"
+func (factory GORMFactory) GetAllInformListForAdmin() (response []*query.InformInfoList, Error error) {
+	sql := getInformInfo + " order by i.created_at desc"
 
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
@@ -124,45 +124,9 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*responsedb.In
 	}
 	defer rows.Close()
 
-	var dataArr []*responsedb.InformInfoList
+	var dataArr []*query.InformInfoList
 	for rows.Next() {
-		var data = new(responsedb.InformInfoList)
-		rows.Scan(
-			&data.ID,
-			&data.InformCreatedAt,
-			data.InformUpdateAt,
-			&data.UserInformID,
-			&data.Description,
-			&data.CALLBack,
-			&data.Latitude,
-			&data.Longitude,
-			&data.SubTypeId,
-			&data.SubTypeName,
-			&data.TypeID,
-			&data.Type,
-			&data.UserNotiID,
-			&data.Status,
-		)
-		dataArr = append(dataArr, data)
-	}
-
-	response = dataArr
-	return
-}
-
-func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.ops_id = 0 order by i.created_at desc"
-
-	rows, err := factory.client.Raw(sql).Rows()
-	if err != nil {
-		Error = err
-		return
-	}
-	defer rows.Close()
-
-	var dataArr []*responsedb.InformInfoList
-	for rows.Next() {
-		var data = new(responsedb.InformInfoList)
+		var data = new(query.InformInfoList)
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,
@@ -186,7 +150,43 @@ func (factory GORMFactory) GetAllInformList() (response []*responsedb.InformInfo
 	return
 }
 
-func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error) {
+func (factory GORMFactory) GetAllInformList() (response []*query.InformInfoList, Error error) {
+	sql := getInformInfo + " AND i.ops_id = 0 order by i.created_at desc"
+
+	rows, err := factory.client.Raw(sql).Rows()
+	if err != nil {
+		Error = err
+		return
+	}
+	defer rows.Close()
+
+	var dataArr []*query.InformInfoList
+	for rows.Next() {
+		var data = new(query.InformInfoList)
+		rows.Scan(
+			&data.ID,
+			&data.InformCreatedAt,
+			&data.InformUpdateAt,
+			&data.UserInformID,
+			&data.Description,
+			&data.CALLBack,
+			&data.Latitude,
+			&data.Longitude,
+			&data.SubTypeId,
+			&data.SubTypeName,
+			&data.TypeID,
+			&data.Type,
+			&data.UserNotiID,
+			&data.Status,
+		)
+		dataArr = append(dataArr, data)
+	}
+
+	response = dataArr
+	return
+}
+
+func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*query.InformInfoList, Error error) {
 	sql := getInformInfo + " AND i.ops_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, OpsId).Rows()
 	if err != nil {
@@ -195,9 +195,9 @@ func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*respons
 	}
 	defer rows.Close()
 
-	var dataArr []*responsedb.InformInfoList
+	var dataArr []*query.InformInfoList
 	for rows.Next() {
-		var data = new(responsedb.InformInfoList)
+		var data = new(query.InformInfoList)
 		rows.Scan(
 			&data.ID,
 			&data.InformCreatedAt,

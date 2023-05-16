@@ -15,6 +15,9 @@ type InformResponse struct {
 
 	// UserName
 	UserName string `json:"username,omitempty"`
+
+	//// PhoneNumber
+	PhoneNumber string `json:"phoneNumber,omitempty"`
 	// Workplace
 	Workplace string `json:"workplace,omitempty"`
 

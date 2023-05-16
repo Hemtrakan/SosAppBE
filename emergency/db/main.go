@@ -2,7 +2,7 @@ package db
 
 import (
 	"emergency/db/structure"
-	"emergency/db/structure/responsedb"
+	"emergency/db/structure/query"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,18 +17,33 @@ var (
 type FactoryInterface interface {
 
 	// User
-	GetImageByInformId(informId uint) (response *responsedb.InformInfoById, Error error)
-	GetInformList(UserId uint) (response []*responsedb.InformInfoList, Error error)
+	GetImageByInformId(informId uint) (response *query.InformInfoById, Error error)
+	GetInformList(UserId uint) (response []*query.InformInfoList, Error error)
 	PostInform(imageArr []structure.InformImage, inform structure.Inform) (Error error)
 	PutInform(informID structure.Inform) (Error error)
 	DeleteInform(informID structure.Inform) (Error error)
 
 	//Ops
-	GetInformListByOpsId(OpsId uint) (response []*responsedb.InformInfoList, Error error)
-	GetAllInformList() (response []*responsedb.InformInfoList, Error error)
+	GetInformListByOpsId(OpsId uint) (response []*query.InformInfoList, Error error)
+	GetAllInformList() (response []*query.InformInfoList, Error error)
 
 	// Admin
-	GetAllInformListForAdmin() (response []*responsedb.InformInfoList, Error error)
+	GetAllInformListForAdmin() (response []*query.InformInfoList, Error error)
+
+	// Type
+	GetType() (res []structure.Type, Error error)
+	GetTypeById(id uint) (res structure.Type, Error error)
+	PostType(types structure.Type) (Error error)
+	PutType(types structure.Type) (Error error)
+	DeleteType(id uint) (Error error)
+
+	// SubType
+
+	GetSubTypeByTypeId(id uint) (res []structure.SubType, Error error)
+	GetSubTypeById(id uint) (res structure.SubType, Error error)
+	PostSubType(SubTypes structure.SubType) (Error error)
+	PutSubType(SubTypes structure.SubType) (Error error)
+	DeleteSubType(id uint) (Error error)
 }
 
 func Create(env *Properties) FactoryInterface {
@@ -70,54 +85,46 @@ func gormInstance(env *Properties) GORMFactory {
 	db.Find(&typeStructureArr)
 	if len(typeStructureArr) == 0 {
 		Type1 := structure.Type{
-			Name:      "โรงพยาบาล",
-			DeletedBy: 0,
+			Name: "โรงพยาบาล",
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type1)
 
 		Type2 := structure.Type{
-			Name:      "ปอเต็กตึ๊ง",
-			DeletedBy: 0,
+			Name: "ปอเต็กตึ๊ง",
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type2)
 
 		Type3 := structure.Type{
-			Name:      "สถานีดับเพลิง",
-			DeletedBy: 0,
+			Name: "สถานีดับเพลิง",
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type3)
 
 		Type4 := structure.Type{
-			Name:      "สถานีตำรวจ",
-			DeletedBy: 0,
+			Name: "สถานีตำรวจ",
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type4)
 
 		subType1 := structure.SubType{
-			Name:      "เจ็บป่วย",
-			TypeID:    Type1.ID,
-			DeletedBy: 0,
+			Name:   "เจ็บป่วย",
+			TypeID: Type1.ID,
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType1)
 
 		subType2 := structure.SubType{
-			Name:      "อุบัติเหตุ",
-			TypeID:    Type2.ID,
-			DeletedBy: 0,
+			Name:   "อุบัติเหตุ",
+			TypeID: Type2.ID,
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType2)
 
 		subType3 := structure.SubType{
-			Name:      "อาคาร/สถานที่",
-			TypeID:    Type3.ID,
-			DeletedBy: 0,
+			Name:   "อาคาร/สถานที่",
+			TypeID: Type3.ID,
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType3)
 
 		subType4 := structure.SubType{
-			Name:      "อื่น",
-			TypeID:    Type4.ID,
-			DeletedBy: 0,
+			Name:   "อื่น",
+			TypeID: Type4.ID,
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType4)
 
