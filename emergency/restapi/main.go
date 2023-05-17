@@ -29,7 +29,10 @@ func NewControllerMain(ctrl Controller) {
 	}
 
 	r := e.Group(config.GetString("service.endpoint"))
-
+	r.GET("/type", ctrl.GetType)
+	r.GET("/type/:id", ctrl.GetTypeById)
+	//r.GET("/subType/")
+	//r.GET("/subType/:id")
 	// user
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
@@ -58,19 +61,11 @@ func NewControllerMain(ctrl Controller) {
 
 	// type
 	t := a.Group("/type")
-	t.GET("/", func(c echo.Context) error {
-		return c.JSON(200, "Type")
-	})
-	//t.GET("/:id")
-	//t.POST("/")
-	//t.PUT("/:id")
-	//t.DELETE("/:id")
+	t.POST("/", ctrl.PostType)
+	t.PUT("/:id", ctrl.PutType)
+	t.DELETE("/:id", ctrl.DeleteType)
 
-	ts := a.Group("/subType")
-	ts.GET("/", func(c echo.Context) error {
-		return c.JSON(200, "subType")
-	})
-	//ts.GET("/:id")
+	//ts := a.Group("/subType")
 	//ts.POST("/")
 	//ts.PUT("/:id")
 	//ts.DELETE("/:id")

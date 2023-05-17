@@ -1,4 +1,4 @@
-package inform
+package model
 
 type InformRequest struct {
 	// Description คำอธิบายเพิ่มเต็ม

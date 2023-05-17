@@ -5,7 +5,7 @@ import (
 	"emergency/control/structure"
 	rdbmsstructure "emergency/db/structure"
 	"emergency/db/structure/query"
-	"emergency/restapi/model/inform"
+	"emergency/restapi/model"
 	"emergency/utility/encoding"
 	"emergency/utility/pointer"
 	"errors"
@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.InformResponse, Error error) {
+func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.InformResponse, Error error) {
 	var resp []*query.InformInfoList
 	var err error
 
@@ -85,7 +85,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 			status, _ = constant.Status(s).Status()
 		}
 
-		mapData := inform.InformResponse{
+		mapData := model.InformResponse{
 			ID:                  pointer.GetStringValue(m1.ID),
 			Description:         pointer.GetStringValue(m1.Description),
 			PhoneNumberCallBack: pointer.GetStringValue(m1.CALLBack),
@@ -106,7 +106,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []inform.
 	return
 }
 
-func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model.InformResponse, Error error) {
 	InformId, err := strconv.Atoi(ReqInformId)
 	if err != nil {
 		Error = err
@@ -158,10 +158,10 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 		Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 	}
 	var PhoneNumber = UserRes.Data.PhoneNumber
-	var ImageInfoArr []inform.ImageInfo
+	var ImageInfoArr []model.ImageInfo
 
 	for _, image := range resp.ImageInfo {
-		ImageInfo := inform.ImageInfo{
+		ImageInfo := model.ImageInfo{
 			ImageId: pointer.GetStringValue(image.ImageId),
 			Image:   pointer.GetStringValue(image.Image),
 		}
@@ -174,7 +174,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 		status, _ = constant.Status(s).Status()
 	}
 
-	mapData := inform.InformResponse{
+	mapData := model.InformResponse{
 		ID:                  pointer.GetStringValue(resp.ID),
 		Description:         pointer.GetStringValue(resp.Description),
 		Image:               ImageInfoArr,
@@ -195,7 +195,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res infor
 	return
 }
 
-func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformResponse, Error error) {
+func (ctrl Controller) GetAllInformOps(Token string) (res []model.InformResponse, Error error) {
 	resp, err := ctrl.Access.RDBMS.GetAllInformList()
 	if err != nil {
 		Error = err
@@ -247,7 +247,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 			status, _ = constant.Status(s).Status()
 		}
 
-		mapData := inform.InformResponse{
+		mapData := model.InformResponse{
 			ID:                  pointer.GetStringValue(m1.ID),
 			Description:         pointer.GetStringValue(m1.Description),
 			PhoneNumberCallBack: UserRes.Data.PhoneNumber,
@@ -267,7 +267,7 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []inform.InformRespons
 	return
 }
 
-func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []model.InformResponse, Error error) {
 	resp, err := ctrl.Access.RDBMS.GetInformListByOpsId(OpsId)
 	if err != nil {
 		Error = err
@@ -325,7 +325,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 			status, _ = constant.Status(s).Status()
 		}
 
-		mapData := inform.InformResponse{
+		mapData := model.InformResponse{
 			ID:                  pointer.GetStringValue(m1.ID),
 			Description:         pointer.GetStringValue(m1.Description),
 			PhoneNumberCallBack: UserRes.Data.PhoneNumber,
@@ -345,7 +345,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []infor
 	return
 }
 
-func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res inform.InformResponse, Error error) {
+func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res model.InformResponse, Error error) {
 	InformId, err := strconv.Atoi(ReqInformId)
 	if err != nil {
 		Error = err
@@ -399,10 +399,10 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 	}
 	//var PhoneNumber = UserRes.Data.PhoneNumber
 
-	var ImageInfoArr []inform.ImageInfo
+	var ImageInfoArr []model.ImageInfo
 
 	for _, image := range resp.ImageInfo {
-		ImageInfo := inform.ImageInfo{
+		ImageInfo := model.ImageInfo{
 			ImageId: pointer.GetStringValue(image.ImageId),
 			Image:   pointer.GetStringValue(image.Image),
 		}
@@ -415,7 +415,7 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 		status, _ = constant.Status(s).Status()
 	}
 
-	mapData := inform.InformResponse{
+	mapData := model.InformResponse{
 		ID:                  pointer.GetStringValue(resp.ID),
 		Description:         pointer.GetStringValue(resp.Description),
 		Image:               ImageInfoArr,
@@ -437,7 +437,7 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res in
 	return
 }
 
-func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
+func (ctrl Controller) PostInform(req *model.InformRequest) (Error error) {
 
 	userId, err := strconv.ParseUint(req.UserID, 10, 32)
 	if err != nil {
@@ -480,7 +480,7 @@ func (ctrl Controller) PostInform(req *inform.InformRequest) (Error error) {
 	return
 }
 
-func (ctrl Controller) UpdateInform(req *inform.UpdateInformRequest, token string, informId uint, role string) (Error error) {
+func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string, informId uint, role string) (Error error) {
 	UserRes := new(structure.UserRes)
 	if informId != 0 {
 		account := config.GetString("url.account")

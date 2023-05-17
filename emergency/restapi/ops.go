@@ -2,7 +2,7 @@ package restapi
 
 import (
 	"emergency/constant"
-	"emergency/restapi/model/inform"
+	"emergency/restapi/model"
 	"emergency/utility/loggers"
 	"emergency/utility/pointer"
 	"emergency/utility/response"
@@ -79,7 +79,7 @@ func (ctrl Controller) UpdateInform(c echo.Context) error {
 	var res response.RespMag
 	APIName := "UpdateInform"
 	loggers.LogStart(APIName)
-	var request = new(inform.UpdateInformRequest)
+	var request = new(model.UpdateInformRequest)
 
 	err := c.Bind(request)
 	if err != nil {

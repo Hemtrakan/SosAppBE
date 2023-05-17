@@ -1,4 +1,4 @@
-package inform
+package model
 
 type InformResponse struct {
 	ID string `json:"id,omitempty"`
