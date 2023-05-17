@@ -15,5 +15,5 @@ type SubTypeRes struct {
 	NameSubType  string    `json:"nameSubType,omitempty"`
 	ImageSubType string    `json:"imageSubType,omitempty"`
 	DeletedBy    string    `json:"deletedBy,omitempty"`
-	TypeRes      *TypeRes  `json:"type,omitempty"`
+	TypeId       string    `json:"typeId,omitempty"`
 }

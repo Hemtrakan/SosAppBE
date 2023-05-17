@@ -23,14 +23,7 @@ func (ctrl Controller) GetSubType() (res []structuer.SubTypeRes, Error error) {
 			NameSubType:  m1.Name,
 			ImageSubType: m1.ImageSubType,
 			DeletedBy:    fmt.Sprintf("%v", m1.DeletedBy),
-			TypeRes: &structuer.TypeRes{
-				ID:        fmt.Sprintf("%v", types.ID),
-				CreatedAt: types.CreatedAt,
-				UpdatedAt: types.UpdatedAt,
-				NameType:  types.Name,
-				ImageType: types.ImageType,
-				DeletedBy: fmt.Sprintf("%v", types.DeletedBy),
-			},
+			TypeId:       fmt.Sprintf("%v", types.ID),
 		}
 
 		res = append(res, obj)
@@ -53,14 +46,7 @@ func (ctrl Controller) GetSubTypeById(id uint) (res structuer.SubTypeRes, Error 
 		NameSubType:  subTypes.Name,
 		ImageSubType: subTypes.ImageSubType,
 		DeletedBy:    fmt.Sprintf("%v", subTypes.DeletedBy),
-		TypeRes: &structuer.TypeRes{
-			ID:        fmt.Sprintf("%v", types.ID),
-			CreatedAt: types.CreatedAt,
-			UpdatedAt: types.UpdatedAt,
-			NameType:  types.Name,
-			ImageType: types.ImageType,
-			DeletedBy: fmt.Sprintf("%v", types.DeletedBy),
-		},
+		TypeId:       fmt.Sprintf("%v", types.ID),
 	}
 
 	return
