@@ -1,6 +1,7 @@
 package db
 
 import (
+	"emergency/assets"
 	"emergency/db/structure"
 	"emergency/db/structure/query"
 	"fmt"
@@ -84,47 +85,56 @@ func gormInstance(env *Properties) GORMFactory {
 	var typeStructureArr []structure.Type
 	db.Find(&typeStructureArr)
 	if len(typeStructureArr) == 0 {
+
 		Type1 := structure.Type{
-			Name: "โรงพยาบาล",
+			Name:      "โรงพยาบาล",
+			ImageType: assets.ImageToBase64("./assets/image/hospital.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type1)
 
 		Type2 := structure.Type{
-			Name: "ปอเต็กตึ๊ง",
+			Name:      "ปอเต็กตึ๊ง",
+			ImageType: assets.ImageToBase64("./assets/image/emg.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type2)
 
 		Type3 := structure.Type{
-			Name: "สถานีดับเพลิง",
+			Name:      "สถานีดับเพลิง",
+			ImageType: assets.ImageToBase64("./assets/image/other.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type3)
 
 		Type4 := structure.Type{
-			Name: "สถานีตำรวจ",
+			Name:      "สถานีตำรวจ",
+			ImageType: assets.ImageToBase64("./assets/image/fire.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&Type4)
 
 		subType1 := structure.SubType{
-			Name:   "เจ็บป่วย",
-			TypeID: Type1.ID,
+			Name:         "เจ็บป่วย",
+			TypeID:       Type1.ID,
+			ImageSubType: assets.ImageToBase64("./assets/image/sick.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType1)
 
 		subType2 := structure.SubType{
-			Name:   "อุบัติเหตุ",
-			TypeID: Type2.ID,
+			Name:         "อุบัติเหตุ",
+			TypeID:       Type2.ID,
+			ImageSubType: assets.ImageToBase64("./assets/image/accident.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType2)
 
 		subType3 := structure.SubType{
-			Name:   "อาคาร/สถานที่",
-			TypeID: Type3.ID,
+			Name:         "อาคาร/สถานที่",
+			TypeID:       Type3.ID,
+			ImageSubType: assets.ImageToBase64("./assets/image/building.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType3)
 
 		subType4 := structure.SubType{
-			Name:   "อื่น",
-			TypeID: Type4.ID,
+			Name:         "อื่น",
+			TypeID:       Type4.ID,
+			ImageSubType: assets.ImageToBase64("./assets/image/others.png"),
 		}
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&subType4)
 

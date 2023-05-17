@@ -1,7 +1,7 @@
 package control
 
 import (
-	_image "accounts/assets/image"
+	_image "accounts/assets"
 	"accounts/constant"
 	rdbmsstructure "accounts/db/structure"
 	reqSingUp "accounts/restapi/model/singup/request"
