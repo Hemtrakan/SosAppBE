@@ -122,6 +122,10 @@ func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
 				PostalCode:  user.Address.PostalCode,
 				Country:     user.Address.Country,
 			},
+			UserRole: resUser.UserRole{
+				ID:   strconv.Itoa(int(user.Role.ID)),
+				Name: user.Role.Name,
+			},
 		}
 
 		res = append(res, objectUser)

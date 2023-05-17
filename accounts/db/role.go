@@ -76,7 +76,6 @@ func (factory GORMFactory) PutRole(req structure.Role) (Error error) {
 	if err != nil {
 		Error = err
 	}
-
 	return
 }
 
