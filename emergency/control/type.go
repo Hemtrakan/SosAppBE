@@ -32,12 +32,11 @@ func (ctrl Controller) GetTypeById(id uint) (res structuer.TypeRes, Error error)
 	if err != nil {
 		Error = err
 	}
-	// todo
 	subTypes, err := ctrl.Access.RDBMS.GetSubTypeByTypeId(id)
 
-	var SubTypeRes []structuer.SubTypeRes
+	var SubTypeRes []*structuer.SubTypeRes
 	for _, subtype := range subTypes {
-		obj := structuer.SubTypeRes{
+		obj := &structuer.SubTypeRes{
 			ID:           fmt.Sprintf("%v", subtype.ID),
 			CreatedAt:    subtype.CreatedAt,
 			UpdatedAt:    subtype.UpdatedAt,

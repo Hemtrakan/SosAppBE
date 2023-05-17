@@ -8,11 +8,11 @@ type TypeReq struct {
 }
 
 type TypeRes struct {
-	ID         string       `json:"id,omitempty"`
-	CreatedAt  time.Time    `json:"createdAt,omitempty"`
-	UpdatedAt  time.Time    `json:"updatedAt,omitempty"`
-	NameType   string       `json:"nameType,omitempty"`
-	ImageType  string       `json:"imageType,omitempty"`
-	DeletedBy  string       `json:"deletedBy,omitempty"`
-	SubTypeRes []SubTypeRes `json:"subTypeRes,omitempty"`
+	ID         string        `json:"id"`
+	CreatedAt  time.Time     `json:"createdAt,omitempty"`
+	UpdatedAt  time.Time     `json:"updatedAt,omitempty"`
+	NameType   string        `json:"nameType,omitempty"`
+	ImageType  string        `json:"imageType,omitempty"`
+	DeletedBy  string        `json:"deletedBy,omitempty"`
+	SubTypeRes []*SubTypeRes `json:"subTypeRes,omitempty"`
 }

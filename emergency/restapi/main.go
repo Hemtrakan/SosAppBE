@@ -31,8 +31,8 @@ func NewControllerMain(ctrl Controller) {
 	r := e.Group(config.GetString("service.endpoint"))
 	r.GET("/type", ctrl.GetType)
 	r.GET("/type/:id", ctrl.GetTypeById)
-	//r.GET("/subType/")
-	//r.GET("/subType/:id")
+	r.GET("/subType", ctrl.GetSubType)
+	r.GET("/subType/:id", ctrl.GetSubTypeById)
 	// user
 	u := r.Group(config.GetString("role.user"))
 	u.Use(echojwt.WithConfig(configs), AuthRoleUser)
@@ -65,10 +65,10 @@ func NewControllerMain(ctrl Controller) {
 	t.PUT("/:id", ctrl.PutType)
 	t.DELETE("/:id", ctrl.DeleteType)
 
-	//ts := a.Group("/subType")
-	//ts.POST("/")
-	//ts.PUT("/:id")
-	//ts.DELETE("/:id")
+	ts := a.Group("/subType")
+	ts.POST("/", ctrl.PostSubType)
+	ts.PUT("/:id", ctrl.PutSubType)
+	ts.DELETE("/:id", ctrl.DeleteSubType)
 
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)

@@ -3,6 +3,7 @@ package model
 import "time"
 
 type SubTypeReq struct {
+	TypeId       string `json:"typeId"`
 	NameSubType  string `json:"nameSubType"`
 	ImageSubType string `json:"imageSubType"`
 }

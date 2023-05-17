@@ -38,7 +38,7 @@ type FactoryInterface interface {
 	DeleteType(id uint) (Error error)
 
 	// SubType
-
+	GetSubType() (res []structure.SubType, Error error)
 	GetSubTypeByTypeId(id uint) (res []structure.SubType, Error error)
 	GetSubTypeById(id uint) (res structure.SubType, Error error)
 	PostSubType(SubTypes structure.SubType) (Error error)
