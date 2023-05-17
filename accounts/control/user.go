@@ -300,24 +300,21 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 	}
 	var date = time.Time{}
 	image := ""
-	if req.Gender == "" {
-		image = req.ImageProfile
-	} else {
-		Birthday := strings.Split(req.Birthday, " ")
-		date, err = time.Parse("2006-01-02", Birthday[0])
+
+	Birthday := strings.Split(req.Birthday, " ")
+	date, err = time.Parse("2006-01-02", Birthday[0])
+	if err != nil {
+		Error = append(Error, err)
+		return
+	}
+	if req.ImageProfile == "" {
+		image, err = _image.ImageToBase64()
 		if err != nil {
 			Error = append(Error, err)
 			return
 		}
-		if req.ImageProfile == "" {
-			image, err = _image.ImageToBase64()
-			if err != nil {
-				Error = append(Error, err)
-				return
-			}
-		} else {
-			image = req.ImageProfile
-		}
+	} else {
+		image = req.ImageProfile
 	}
 
 	var Users = new(rdbmsstructure.Users)
@@ -333,6 +330,7 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 			Email:        req.Email,
 			Birthday:     date,
 			Gender:       req.Gender,
+			Workplace:    pointer.NewString(req.Workplace),
 			ImageProfile: &image,
 			UpdateBy:     &userID,
 		}

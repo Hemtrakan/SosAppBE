@@ -6,6 +6,7 @@ type UserReq struct {
 	Email        string   `json:"email,omitempty"`
 	Birthday     string   `json:"birthday,omitempty"`
 	Gender       string   `json:"gender,omitempty"`
+	Workplace    string   `json:"workplace,omitempty"`
 	ImageProfile string   `json:"imageProfile,omitempty"`
 	IdCard       *IdCard  `json:"idCard,omitempty"`
 	Address      *Address `json:"address,omitempty"`
