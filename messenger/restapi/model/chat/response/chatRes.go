@@ -22,6 +22,7 @@ type GetChatList struct {
 type GetChat struct {
 	ID           uint      `json:"id,omitempty"`
 	RoomChatID   uint      `json:"roomChatID,omitempty"`
+	RoomName     string    `json:"roomName,omitempty"`
 	Message      string    `json:"message,omitempty"`
 	Image        string    `json:"image,omitempty"`
 	SenderUserId uint      `json:"senderUserId,omitempty"`

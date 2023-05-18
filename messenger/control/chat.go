@@ -254,6 +254,7 @@ func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint) (res []chatRes.Ge
 		data := chatRes.GetChat{
 			ID:           m1.ID,
 			RoomChatID:   m1.RoomChatID,
+			RoomName:     m1.RoomChat.Name,
 			Message:      m1.Message,
 			Image:        m1.Image,
 			SenderUserId: m1.SenderUserId,
