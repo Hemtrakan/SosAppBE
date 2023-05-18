@@ -13,11 +13,15 @@ type InformResponse struct {
 	// Longitude
 	Longitude string `json:"longitude,omitempty"`
 
-	// UserId
+	// UserId ของคนแจ้งเหตุ
 	UserId string `json:"userId,omitempty"`
-
-	// UserName
+	// UserName ของคนแจ้งเหตุ
 	UserName string `json:"username,omitempty"`
+
+	// UserId ของคนรับแจ้งเหตุ
+	UserIdOps string `json:"userIdOps,omitempty"`
+	// UserName ของคนรับแจ้งเหตุ
+	UserNameOps string `json:"UserNameOps,omitempty"`
 
 	//// PhoneNumber
 	PhoneNumber string `json:"phoneNumber,omitempty"`
@@ -31,6 +35,9 @@ type InformResponse struct {
 
 	// UpdateDate วันเวลาที่อัพเดท
 	UpdateDate string `json:"updateDate,omitempty"`
+
+	// DeletedAt วันเวลาที่ลบ
+	DeletedAt string `json:"deletedAt,omitempty"`
 
 	// Status สถานะการแจ้งเหตู
 	Status string `json:"status,omitempty"`

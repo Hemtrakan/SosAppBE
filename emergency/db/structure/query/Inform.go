@@ -4,6 +4,7 @@ type InformInfoList struct {
 	ID              *string
 	InformCreatedAt *string
 	InformUpdateAt  *string
+	InformDeletedAt *string
 	UserInformID    *string
 	Description     *string
 	CALLBack        *string
@@ -23,6 +24,7 @@ type InformInfoById struct {
 	ID              *string
 	InformCreatedAt *string
 	InformUpdateAt  *string
+	InformDeletedAt *string
 	UserInformID    *string
 	Description     *string
 	CALLBack        *string

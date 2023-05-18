@@ -7,25 +7,25 @@ import (
 	"gorm.io/gorm"
 )
 
-const getInformInfo = `SELECT i.id AS ID
-     , i.created_at             			AS InformCreatedAt
-     , i.updated_at + interval '7 hours'	AS InformUpdateAt
-     , i.user_id                			AS UserInformID
-     , i.description            			AS Description
-     , i.phone_number_call_back 			AS CALLBack
-     , i.latitude               			AS Latitude
-     , i.longitude              			AS longitude
-     , st.id                    			AS SubTypeId
-     , st.name                  			AS SubTypeName
-     , t.id                     			AS TypeID
-     , t.name                   			AS Type
-     , i.ops_id                 			AS UserNotiID
-     , i.status                 			AS Status
-     , i.status_chat                     	AS StatusChat
+const getInformInfo = `SELECT i.id       AS ID
+     , i.created_at                      AS InformCreatedAt
+     , i.updated_at + interval '7 hours' AS InformUpdateAt
+     , i.deleted_at + interval '7 hours' AS InformDeletedAt
+     , i.user_id                         AS UserInformID
+     , i.description                     AS Description
+     , i.phone_number_call_back          AS CALLBack
+     , i.latitude                        AS Latitude
+     , i.longitude                       AS longitude
+     , st.id                             AS SubTypeId
+     , st.name                           AS SubTypeName
+     , t.id                              AS TypeID
+     , t.name                            AS Type
+     , i.ops_id                          AS UserNotiID
+     , i.status                          AS Status
+     , i.status_chat                     AS StatusChat
 FROM informs AS i
          INNER JOIN sub_types st ON st.id = i.sub_type_id
          INNER JOIN types t ON t.id = st.type_id
-Where i.deleted_at is null 
 `
 
 const getInformImage = `SELECT ii.id
@@ -35,7 +35,7 @@ FROM inform_images ii
 WHERE  ii.inform_id =  ?`
 
 func (factory GORMFactory) GetInformList(UserId uint) (response []*query.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.user_id = ? order by i.created_at desc"
+	sql := getInformInfo + "Where i.deleted_at is null  AND i.user_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, UserId).Rows()
 	if err != nil {
 		Error = err
@@ -50,6 +50,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*query.InformI
 			&data.ID,
 			&data.InformCreatedAt,
 			&data.InformUpdateAt,
+			&data.InformDeletedAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -71,7 +72,7 @@ func (factory GORMFactory) GetInformList(UserId uint) (response []*query.InformI
 }
 
 func (factory GORMFactory) GetImageByInformId(informId uint) (response *query.InformInfoById, Error error) {
-	sql := getInformInfo + " AND i.id = ? order by i.created_at desc "
+	sql := getInformInfo + "Where i.id = ? order by i.created_at desc "
 	rows, err := factory.client.Raw(sql, informId).Rows()
 	if err != nil {
 		Error = err
@@ -85,6 +86,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *query.In
 			&data.ID,
 			&data.InformCreatedAt,
 			&data.InformUpdateAt,
+			&data.InformDeletedAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -118,7 +120,7 @@ func (factory GORMFactory) GetImageByInformId(informId uint) (response *query.In
 }
 
 func (factory GORMFactory) GetAllInformListForAdmin() (response []*query.InformInfoList, Error error) {
-	sql := getInformInfo + " order by i.created_at desc"
+	sql := getInformInfo + "order by i.created_at desc"
 
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
@@ -134,6 +136,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*query.InformI
 			&data.ID,
 			&data.InformCreatedAt,
 			&data.InformUpdateAt,
+			&data.InformDeletedAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -155,7 +158,7 @@ func (factory GORMFactory) GetAllInformListForAdmin() (response []*query.InformI
 }
 
 func (factory GORMFactory) GetAllInformList() (response []*query.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.ops_id = 0 order by i.created_at desc"
+	sql := getInformInfo + "Where i.deleted_at is null AND i.ops_id = 0 order by i.created_at desc"
 
 	rows, err := factory.client.Raw(sql).Rows()
 	if err != nil {
@@ -171,6 +174,7 @@ func (factory GORMFactory) GetAllInformList() (response []*query.InformInfoList,
 			&data.ID,
 			&data.InformCreatedAt,
 			&data.InformUpdateAt,
+			&data.InformDeletedAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,
@@ -192,7 +196,7 @@ func (factory GORMFactory) GetAllInformList() (response []*query.InformInfoList,
 }
 
 func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*query.InformInfoList, Error error) {
-	sql := getInformInfo + " AND i.ops_id = ? order by i.created_at desc"
+	sql := getInformInfo + "Where i.deleted_at is null AND i.ops_id = ? order by i.created_at desc"
 	rows, err := factory.client.Raw(sql, OpsId).Rows()
 	if err != nil {
 		Error = err
@@ -207,6 +211,7 @@ func (factory GORMFactory) GetInformListByOpsId(OpsId uint) (response []*query.I
 			&data.ID,
 			&data.InformCreatedAt,
 			&data.InformUpdateAt,
+			&data.InformDeletedAt,
 			&data.UserInformID,
 			&data.Description,
 			&data.CALLBack,

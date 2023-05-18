@@ -36,21 +36,23 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 
 	for _, m1 := range resp {
 		UserRes := new(structure.UserRes)
-		UserNotiID := ""
-		Username := ""
 		PhoneNumber := ""
-		if pointer.GetStringValue(m1.UserNotiID) != "0" {
-			UserNotiID = pointer.GetStringValue(m1.UserNotiID)
+
+		UserID := ""
+		Username := ""
+
+		if pointer.GetStringValue(m1.UserInformID) != "0" {
+			UserID = pointer.GetStringValue(m1.UserInformID)
 		}
 
-		if UserNotiID != "" {
+		if UserID != "" {
 			account := config.GetString("url.account")
 			URL := ""
 
 			if role == constant.Admin {
-				URL = account + "admin/user/" + UserNotiID
+				URL = account + "admin/user/" + UserID
 			} else {
-				URL = account + "user/" + UserNotiID
+				URL = account + "user/" + UserID
 			}
 
 			httpHeaderMap := map[string]string{}
@@ -76,6 +78,48 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
 				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
+		}
+
+		UserIdOps := ""
+		UsernameOps := ""
+
+		if pointer.GetStringValue(m1.UserNotiID) != "0" {
+			UserIdOps = pointer.GetStringValue(m1.UserNotiID)
+		}
+
+		if UserIdOps != "" {
+			account := config.GetString("url.account")
+			URL := ""
+
+			if role == constant.Admin {
+				URL = account + "admin/user/" + UserIdOps
+			} else {
+				URL = account + "user/" + UserIdOps
+			}
+
+			httpHeaderMap := map[string]string{}
+			httpHeaderMap["Authorization"] = Token
+
+			HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
+			if err != nil {
+				Error = err
+				return
+			}
+
+			if HttpResponse.HttpStatusCode != 200 {
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
+				return
+			}
+
+			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+			if err != nil {
+				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+				return
+			}
+
+			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+				UsernameOps = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+			}
 			PhoneNumber = UserRes.Data.PhoneNumber
 		}
 
@@ -91,12 +135,16 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 			PhoneNumberCallBack: pointer.GetStringValue(m1.CALLBack),
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
+			UserIdOps:           UserIdOps,
+			UserNameOps:         UsernameOps,
+			UserId:              UserID,
 			UserName:            Username,
 			PhoneNumber:         PhoneNumber,
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
 			Date:                pointer.GetStringValue(m1.InformCreatedAt),
 			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
+			DeletedAt:           pointer.GetStringValue(m1.InformDeletedAt),
 			Status:              pointer.GetStringValue(status),
 			StatusChat:          pointer.GetBooleanValue(m1.StatusChat),
 		}
@@ -117,20 +165,27 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 		Error = err
 		return
 	}
-	UserNotiID := ""
-	if pointer.GetStringValue(resp.UserNotiID) != "0" {
-		UserNotiID = pointer.GetStringValue(resp.UserNotiID)
-	}
 
 	UserRes := new(structure.UserRes)
-	if UserNotiID != "" {
+	PhoneNumber := ""
+
+	UserID := ""
+	Username := ""
+
+	if pointer.GetStringValue(resp.UserInformID) != "0" {
+		UserID = pointer.GetStringValue(resp.UserInformID)
+	}
+
+	if UserID != "" {
 		account := config.GetString("url.account")
 		URL := ""
+
 		if role == constant.Admin {
-			URL = account + "admin/user/" + UserNotiID
+			URL = account + "admin/user/" + UserID
 		} else {
-			URL = account + "user/" + UserNotiID
+			URL = account + "user/" + UserID
 		}
+
 		httpHeaderMap := map[string]string{}
 		httpHeaderMap["Authorization"] = Token
 
@@ -142,7 +197,6 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 
 		if HttpResponse.HttpStatusCode != 200 {
 			Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
-
 			return
 		}
 
@@ -151,13 +205,55 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 			Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
 			return
 		}
+
+		if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+			Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+		}
 	}
 
-	Username := ""
-	if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
-		Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+	UserIdOps := ""
+	UsernameOps := ""
+
+	if pointer.GetStringValue(resp.UserNotiID) != "0" {
+		UserIdOps = pointer.GetStringValue(resp.UserNotiID)
 	}
-	var PhoneNumber = UserRes.Data.PhoneNumber
+
+	if UserIdOps != "" {
+		account := config.GetString("url.account")
+		URL := ""
+
+		if role == constant.Admin {
+			URL = account + "admin/user/" + UserIdOps
+		} else {
+			URL = account + "user/" + UserIdOps
+		}
+
+		httpHeaderMap := map[string]string{}
+		httpHeaderMap["Authorization"] = Token
+
+		HttpResponse, err := ctrl.HttpClient.Get(URL, httpHeaderMap)
+		if err != nil {
+			Error = err
+			return
+		}
+
+		if HttpResponse.HttpStatusCode != 200 {
+			Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
+			return
+		}
+
+		err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+		if err != nil {
+			Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+			return
+		}
+
+		if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
+			UsernameOps = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+		}
+		PhoneNumber = UserRes.Data.PhoneNumber
+	}
+
 	var ImageInfoArr []model.ImageInfo
 
 	for _, image := range resp.ImageInfo {
@@ -177,16 +273,19 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 	mapData := model.InformResponse{
 		ID:                  pointer.GetStringValue(resp.ID),
 		Description:         pointer.GetStringValue(resp.Description),
-		Image:               ImageInfoArr,
 		PhoneNumberCallBack: pointer.GetStringValue(resp.CALLBack),
 		Latitude:            pointer.GetStringValue(resp.Latitude),
 		Longitude:           pointer.GetStringValue(resp.Longitude),
+		UserIdOps:           UserIdOps,
+		UserNameOps:         UsernameOps,
+		UserId:              UserID,
 		UserName:            Username,
 		PhoneNumber:         PhoneNumber,
 		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
 		Date:                pointer.GetStringValue(resp.InformCreatedAt),
 		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
+		DeletedAt:           pointer.GetStringValue(resp.InformDeletedAt),
 		Status:              pointer.GetStringValue(status),
 		StatusChat:          pointer.GetBooleanValue(resp.StatusChat),
 	}
@@ -254,13 +353,13 @@ func (ctrl Controller) GetAllInformOps(Token string) (res []model.InformResponse
 			Latitude:            pointer.GetStringValue(m1.Latitude),
 			Longitude:           pointer.GetStringValue(m1.Longitude),
 			UserName:            Username,
-			//PhoneNumber:         PhoneNumber,
-			Workplace:   UserRes.Data.Workplace,
-			SubTypeName: pointer.GetStringValue(m1.SubTypeName),
-			Date:        pointer.GetStringValue(m1.InformCreatedAt),
-			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
-			Status:      pointer.GetStringValue(status),
-			StatusChat:  pointer.GetBooleanValue(m1.StatusChat),
+			Workplace:           UserRes.Data.Workplace,
+			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
+			Date:                pointer.GetStringValue(m1.InformCreatedAt),
+			UpdateDate:          pointer.GetStringValue(m1.InformUpdateAt),
+			DeletedAt:           pointer.GetStringValue(m1.InformDeletedAt),
+			Status:              pointer.GetStringValue(status),
+			StatusChat:          pointer.GetBooleanValue(m1.StatusChat),
 		}
 		res = append(res, mapData)
 	}
@@ -337,6 +436,7 @@ func (ctrl Controller) GetInformOps(OpsId uint, Token, role string) (res []model
 			SubTypeName: pointer.GetStringValue(m1.SubTypeName),
 			Date:        pointer.GetStringValue(m1.InformCreatedAt),
 			UpdateDate:  pointer.GetStringValue(m1.InformUpdateAt),
+			DeletedAt:   pointer.GetStringValue(m1.InformDeletedAt),
 			Status:      pointer.GetStringValue(status),
 			StatusChat:  pointer.GetBooleanValue(m1.StatusChat),
 		}
@@ -424,13 +524,13 @@ func (ctrl Controller) GetInformOpsById(ReqInformId, Token, role string) (res mo
 		Longitude:           pointer.GetStringValue(resp.Longitude),
 		UserId:              UserID,
 		UserName:            Username,
-		//PhoneNumber:         PhoneNumber,
-		Workplace:   UserRes.Data.Workplace,
-		SubTypeName: pointer.GetStringValue(resp.SubTypeName),
-		Date:        pointer.GetStringValue(resp.InformCreatedAt),
-		UpdateDate:  pointer.GetStringValue(resp.InformUpdateAt),
-		Status:      pointer.GetStringValue(status),
-		StatusChat:  pointer.GetBooleanValue(resp.StatusChat),
+		Workplace:           UserRes.Data.Workplace,
+		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
+		Date:                pointer.GetStringValue(resp.InformCreatedAt),
+		UpdateDate:          pointer.GetStringValue(resp.InformUpdateAt),
+		DeletedAt:           pointer.GetStringValue(resp.InformDeletedAt),
+		Status:              pointer.GetStringValue(status),
+		StatusChat:          pointer.GetBooleanValue(resp.StatusChat),
 	}
 	res = mapData
 
@@ -514,7 +614,17 @@ func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string
 
 	if UserRes.Code == constant.SuccessCode {
 
-		OpsId, err := strconv.ParseUint(UserRes.Data.ID, 0, 0)
+		var OpsId uint
+		if req.OpsID != nil {
+			OpsId = pointer.GetUintValue(req.OpsID)
+		} else {
+			opsIdConv, err := strconv.ParseUint(UserRes.Data.ID, 0, 0)
+			if err != nil {
+				Error = err
+				return
+			}
+			OpsId = uint(opsIdConv)
+		}
 
 		newReqInform := rdbmsstructure.Inform{
 			Model: gorm.Model{
@@ -526,12 +636,12 @@ func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string
 			Latitude:            pointer.GetStringValue(req.Latitude),
 			Longitude:           pointer.GetStringValue(req.Longitude),
 			SubTypeID:           pointer.GetUintValue(req.SubTypeID),
-			OpsID:               uint(OpsId),
+			OpsID:               OpsId,
 			Status:              strconv.Itoa(pointer.GetIntValue(req.Status)),
 			StatusChat:          pointer.GetBooleanValue(req.StatusChat),
 		}
 
-		err = ctrl.Access.RDBMS.PutInform(newReqInform)
+		err := ctrl.Access.RDBMS.PutInform(newReqInform)
 		if err != nil {
 			Error = err
 			return
