@@ -62,14 +62,20 @@ func (ctrl Controller) GetMembersRoomChat(RoomChatId uint) (res chatRes.GetMembe
 		arr = append(arr, obj)
 	}
 
-	data := chatRes.GetMemberRoomChat{
-		RoomChatID:     fmt.Sprintf("%v", resDB[0].RoomChatID),
-		RoomName:       fmt.Sprintf("%v", resDB[0].RoomChat.Name),
-		OwnerId:        fmt.Sprintf("%v", resDB[0].RoomChat.UserOwnerId),
-		MemberRoomChat: arr,
+	if len(resDB) == 0 {
+		Error = errors.New("record not found.")
+		return
 	}
 
-	res = data
+	if resDB != nil {
+		data := chatRes.GetMemberRoomChat{
+			RoomChatID:     fmt.Sprintf("%v", resDB[0].RoomChatID),
+			RoomName:       fmt.Sprintf("%v", resDB[0].RoomChat.Name),
+			OwnerId:        fmt.Sprintf("%v", resDB[0].RoomChat.UserOwnerId),
+			MemberRoomChat: arr,
+		}
+		res = data
+	}
 	return
 }
 
