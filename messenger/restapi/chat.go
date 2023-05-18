@@ -186,8 +186,10 @@ func (ctrl Controller) GetMembersRoomChat(c echo.Context) error {
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
+	values := token.GetValuesToken(c)
+	token := token.GetAuthToken(c)
 
-	resp, err := ctrl.Ctx.GetMembersRoomChat(uint(roomChatId))
+	resp, err := ctrl.Ctx.GetMembersRoomChat(uint(roomChatId), values.Role, token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()

@@ -17,6 +17,7 @@ type UserRes struct {
 		Workplace    string    `json:"workplace,omitempty"`
 		IdCard       IdCard    `json:"idCard,omitempty"`
 		Address      Address   `json:"address,omitempty"`
+		UserRole     UserRole  `json:"userRole,omitempty"`
 	} `json:"data"`
 }
 
@@ -33,4 +34,9 @@ type Address struct {
 	Province    string `json:"province,omitempty"`
 	PostalCode  string `json:"postalCode,omitempty"`
 	Country     string `json:"country,omitempty"`
+}
+
+type UserRole struct {
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }

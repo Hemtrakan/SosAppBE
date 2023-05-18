@@ -113,7 +113,6 @@ func AuthRoleAllUser(next echo.HandlerFunc) echo.HandlerFunc {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(*token.JwtCustomClaims)
 		var userRole = claims.Role
-
 		fmt.Println(userRole)
 		roleUser := strings.Replace(config.GetString("role.user"), "/", "", 2)
 		roleOps := strings.Replace(config.GetString("role.ops"), "/", "", 2)

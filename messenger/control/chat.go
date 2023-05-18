@@ -8,6 +8,7 @@ import (
 	"messenger/constant"
 	"messenger/control/structure"
 	rdbmsstructure "messenger/db/structure"
+	"messenger/httpclient"
 	"messenger/restapi/model/chat/request"
 	chatRes "messenger/restapi/model/chat/response"
 	"messenger/utility/encoding"
@@ -48,23 +49,62 @@ func (ctrl Controller) GetChatList(userId uint, role string) (res []chatRes.GetC
 	return
 }
 
-func (ctrl Controller) GetMembersRoomChat(RoomChatId uint) (res chatRes.GetMemberRoomChat, Error error) {
+func (ctrl Controller) GetMembersRoomChat(RoomChatId uint, role, token string) (res chatRes.GetMemberRoomChat, Error error) {
+	var err error
 	resDB, err := ctrl.Access.RDBMS.GetMembersRoomChat(RoomChatId)
 	if err != nil {
 		Error = err
 		return
 	}
-	var arr []chatRes.MemberRoomChat
-	for _, m1 := range resDB {
-		obj := chatRes.MemberRoomChat{
-			UserId: m1.UserID,
-		}
-		arr = append(arr, obj)
-	}
 
 	if len(resDB) == 0 {
 		Error = errors.New("record not found.")
 		return
+	}
+
+	var arr []chatRes.MemberRoomChat
+	for _, m1 := range resDB {
+		UserRes := new(structure.UserRes)
+		var HttpResponse httpclient.HttpResponse
+		if m1.UserID != 0 {
+			account := config.GetString("url.account")
+			URL := ""
+
+			if role == constant.Admin {
+				URL = account + "admin/user/" + fmt.Sprintf("%v", m1.UserID)
+			} else {
+				URL = account + "user/" + fmt.Sprintf("%v", m1.UserID)
+			}
+
+			httpHeaderMap := map[string]string{}
+			httpHeaderMap["Authorization"] = token
+
+			HttpResponse, err = ctrl.HttpClient.Get(URL, httpHeaderMap)
+			if err != nil {
+				Error = err
+				return
+			}
+
+			if HttpResponse.HttpStatusCode != 200 {
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
+				return
+			}
+
+			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+			if err != nil {
+				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+				return
+			}
+		}
+
+		obj := chatRes.MemberRoomChat{
+			UserId:    m1.UserID,
+			Firstname: UserRes.Data.FirstName,
+			Lastname:  UserRes.Data.LastName,
+			RoleID:    UserRes.Data.UserRole.ID,
+			RoleName:  UserRes.Data.UserRole.Name,
+		}
+		arr = append(arr, obj)
 	}
 
 	if resDB != nil {

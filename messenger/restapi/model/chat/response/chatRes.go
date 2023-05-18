@@ -41,5 +41,9 @@ type GetMemberRoomChat struct {
 }
 
 type MemberRoomChat struct {
-	UserId uint `json:"userId,omitempty"`
+	UserId    uint   `json:"userId,omitempty"`
+	Firstname string `json:"firstname,omitempty"`
+	Lastname  string `json:"lastname,omitempty"`
+	RoleID    string `json:"roleID,omitempty"`
+	RoleName  string `json:"roleName,omitempty"`
 }
