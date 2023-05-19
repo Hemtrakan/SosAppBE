@@ -47,9 +47,10 @@ func (ctrl Controller) GetUser(id uint) (res *resUser.UserRes, Error error) {
 		ImageProfile: ImageProfile,
 		Workplace:    pointer.GetStringValue(data.Workplace),
 		IdCard: resUser.IdCard{
-			TextIDCard: data.IDCard.TextIDCard,
-			PathImage:  data.IDCard.PathImage,
-			Verify:     data.IDCard.Verify,
+			TextIDCard:  data.IDCard.TextIDCard,
+			PathImage:   data.IDCard.PathImage,
+			Verify:      data.IDCard.Verify,
+			Description: pointer.GetStringValue(data.IDCard.Description),
 		},
 		Address: resUser.Address{
 			Address:     data.Address.Address,
@@ -110,9 +111,10 @@ func (ctrl Controller) GetUserList() (res []resUser.UserRes, Error error) {
 			ImageProfile: pointer.GetStringValue(user.ImageProfile),
 			Workplace:    pointer.GetStringValue(user.Workplace),
 			IdCard: resUser.IdCard{
-				TextIDCard: user.IDCard.TextIDCard,
-				PathImage:  user.IDCard.PathImage,
-				Verify:     user.IDCard.Verify,
+				TextIDCard:  user.IDCard.TextIDCard,
+				PathImage:   user.IDCard.PathImage,
+				Verify:      user.IDCard.Verify,
+				Description: pointer.GetStringValue(user.IDCard.Description),
 			},
 			Address: resUser.Address{
 				Address:     user.Address.Address,
@@ -153,9 +155,10 @@ func (ctrl Controller) SearchUser(value string, id uint) (res []resUser.UserRes,
 			ImageProfile: pointer.GetStringValue(user.ImageProfile),
 			Workplace:    pointer.GetStringValue(user.Workplace),
 			IdCard: resUser.IdCard{
-				TextIDCard: user.IDCard.TextIDCard,
-				PathImage:  user.IDCard.PathImage,
-				Verify:     user.IDCard.Verify,
+				TextIDCard:  user.IDCard.TextIDCard,
+				PathImage:   user.IDCard.PathImage,
+				Verify:      user.IDCard.Verify,
+				Description: pointer.GetStringValue(user.IDCard.Description),
 			},
 			Address: resUser.Address{
 				Address:     user.Address.Address,

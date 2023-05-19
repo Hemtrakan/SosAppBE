@@ -18,9 +18,10 @@ type UserRes struct {
 }
 
 type IdCard struct {
-	TextIDCard string `json:"textIDCard,omitempty"`
-	PathImage  string `json:"pathImage,omitempty"`
-	Verify     bool   `json:"verify"`
+	TextIDCard  string `json:"textIDCard,omitempty"`
+	PathImage   string `json:"pathImage,omitempty"`
+	Verify      bool   `json:"verify"`
+	Description string `json:"description,omitempty"`
 }
 
 type Address struct {

@@ -44,8 +44,6 @@ type FactoryInterface interface {
 	ChangePassword(req *structure.Users) (Error error)
 	DeleteUser(req structure.Users) (Error error)
 	SearchUser(value string, id uint) (response []*structure.Users, Error error)
-
-	// Report
 }
 
 func Create(env *Properties) FactoryInterface {
