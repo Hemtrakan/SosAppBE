@@ -69,7 +69,7 @@ type IDCard struct {
 	TextIDCard  string `gorm:"size:13;unique"`
 	PathImage   string
 	Verify      bool
-	Description string
+	Description *string
 	UpdateBy    *uint
 	DeletedBy   *uint
 }

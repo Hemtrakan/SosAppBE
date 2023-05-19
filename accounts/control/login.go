@@ -4,6 +4,7 @@ import (
 	"accounts/constant"
 	"accounts/db/structure"
 	singin "accounts/restapi/model/singin/request"
+	"accounts/utility/pointer"
 	"accounts/utility/token"
 	"accounts/utility/verify"
 	"errors"
@@ -28,8 +29,8 @@ func (ctrl Controller) Login(request *singin.Login, ip, system string) (Token, d
 		return
 	}
 
-	if account.IDCard.Description != "" && !account.IDCard.Verify {
-		description = account.IDCard.Description
+	if pointer.GetStringValue(account.IDCard.Description) != "" && !account.IDCard.Verify {
+		description = pointer.GetStringValue(account.IDCard.Description)
 		return
 	}
 

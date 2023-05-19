@@ -28,17 +28,17 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	system := c.Request().Header.Get("User-Agent")
 
 	token, description, err := ctrl.Ctx.Login(request, ip, system)
-	if err != nil {
-		res.Msg = err.Error()
-		res.Code = constant.ErrorCode
-		return response.EchoError(c, http.StatusBadRequest, res, APIName)
-	}
-
 	if description != "" {
 		res.Msg = constant.SuccessMsg
 		res.Code = constant.SuccessCode
 		res.Data = description
 		return response.EchoSucceed(c, res, APIName)
+	}
+
+	if err != nil {
+		res.Msg = err.Error()
+		res.Code = constant.ErrorCode
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
 	if token == "" {

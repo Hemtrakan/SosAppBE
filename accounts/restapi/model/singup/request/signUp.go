@@ -49,5 +49,6 @@ type Verify struct {
 type UpdateImageVerifyAgain struct {
 	PhoneNumber string `json:"phoneNumber,omitempty" validate:"required"`
 	Password    string `json:"password"  validate:"required"`
-	IDCard      IDCard `json:"idCard,omitempty" validate:"required"`
+	TextIDCard  string `json:"textIDCard" validate:"required"`
+	PathImage   string `json:"pathImage" validate:"required"`
 }

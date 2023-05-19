@@ -396,7 +396,7 @@ func (ctrl Controller) VerifyIDCard(userID uint, req *request.VerifyIDCard) (Err
 			ID: data.IDCardID,
 		},
 		Verify:      req.Verify,
-		Description: Description,
+		Description: pointer.NewString(Description),
 		UpdateBy:    &userID,
 	}
 
@@ -430,12 +430,15 @@ func (ctrl Controller) ImageVerifyAgain(req *reqSingUp.UpdateImageVerifyAgain) (
 	var Address = new(rdbmsstructure.Address)
 	var IDCard = new(rdbmsstructure.IDCard)
 
+	description := ""
+
 	IDCard = &rdbmsstructure.IDCard{
 		Model: gorm.Model{
 			ID: account.IDCardID,
 		},
-		TextIDCard: req.IDCard.TextIDCard,
-		PathImage:  req.IDCard.PathImage,
+		TextIDCard:  req.TextIDCard,
+		PathImage:   req.PathImage,
+		Description: pointer.NewString(description),
 	}
 
 	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)
