@@ -45,3 +45,9 @@ type Verify struct {
 	OTP        string `json:"otp,omitempty" validate:"required"`
 	VerifyCode string `json:"verifyCode,omitempty" validate:"required"`
 }
+
+type UpdateImageVerifyAgain struct {
+	PhoneNumber string `json:"phoneNumber,omitempty" validate:"required"`
+	Password    string `json:"password"  validate:"required"`
+	IDCard      IDCard `json:"idCard,omitempty" validate:"required"`
+}

@@ -66,9 +66,10 @@ type Address struct {
 
 type IDCard struct {
 	gorm.Model
-	TextIDCard string `gorm:"size:13;unique"`
-	PathImage  string
-	Verify     bool
-	UpdateBy   *uint
-	DeletedBy  *uint
+	TextIDCard  string `gorm:"size:13;unique"`
+	PathImage   string
+	Verify      bool
+	Description string
+	UpdateBy    *uint
+	DeletedBy   *uint
 }

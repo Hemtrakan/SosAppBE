@@ -370,7 +370,7 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 	return
 }
 
-func (ctrl Controller) VerifyIDCard(userID uint) (Error []error) {
+func (ctrl Controller) VerifyIDCard(userID uint, req *request.VerifyIDCard) (Error []error) {
 	reqUserId := rdbmsstructure.Users{
 		Model: gorm.Model{
 			ID: userID,
@@ -386,12 +386,56 @@ func (ctrl Controller) VerifyIDCard(userID uint) (Error []error) {
 	var Address = new(rdbmsstructure.Address)
 	var IDCard = new(rdbmsstructure.IDCard)
 
+	Description := ""
+	if !req.Verify {
+		Description = req.Description
+	}
+
 	IDCard = &rdbmsstructure.IDCard{
 		Model: gorm.Model{
 			ID: data.IDCardID,
 		},
-		Verify:   true,
-		UpdateBy: &userID,
+		Verify:      req.Verify,
+		Description: Description,
+		UpdateBy:    &userID,
+	}
+
+	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)
+	if err != nil {
+		Error = errArr
+		return
+	}
+
+	return
+}
+
+func (ctrl Controller) ImageVerifyAgain(req *reqSingUp.UpdateImageVerifyAgain) (Error []error) {
+	db := rdbmsstructure.Users{
+		PhoneNumber: req.PhoneNumber,
+	}
+
+	account, err := ctrl.Access.RDBMS.GetUserByPhone(db)
+	if err != nil {
+		Error = append(Error, err)
+		return
+	}
+
+	checkPass := verify.VerifyPassword(account.Password, req.Password)
+	if checkPass != nil {
+		Error = append(Error, err)
+		return
+	}
+
+	var Users = new(rdbmsstructure.Users)
+	var Address = new(rdbmsstructure.Address)
+	var IDCard = new(rdbmsstructure.IDCard)
+
+	IDCard = &rdbmsstructure.IDCard{
+		Model: gorm.Model{
+			ID: account.IDCardID,
+		},
+		TextIDCard: req.IDCard.TextIDCard,
+		PathImage:  req.IDCard.PathImage,
 	}
 
 	errArr := ctrl.Access.RDBMS.PutUser(Users, Address, IDCard)

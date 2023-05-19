@@ -130,10 +130,11 @@ func (factory GORMFactory) PutUser(user *structure.Users, address *structure.Add
 	if idCard.ID != 0 {
 		err := factory.client.Model(&idCard).Where("id = ?", idCard.ID).Updates(
 			structure.IDCard{
-				TextIDCard: idCard.TextIDCard,
-				PathImage:  idCard.PathImage,
-				Verify:     idCard.Verify,
-				UpdateBy:   &user.ID,
+				TextIDCard:  idCard.TextIDCard,
+				PathImage:   idCard.PathImage,
+				Verify:      idCard.Verify,
+				Description: idCard.Description,
+				UpdateBy:    &user.ID,
 			}).Error
 
 		if err != nil {

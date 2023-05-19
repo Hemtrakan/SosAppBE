@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Token string, Error error) {
+func (ctrl Controller) Login(request *singin.Login, ip, system string) (Token, description string, Error error) {
 
 	db := structure.Users{
 		PhoneNumber: request.Username,
@@ -25,6 +25,11 @@ func (ctrl Controller) LoginLogic(request *singin.Login, ip, system string) (Tok
 	checkPass := verify.VerifyPassword(account.Password, request.Password)
 	if checkPass != nil {
 		Error = err
+		return
+	}
+
+	if account.IDCard.Description != "" && !account.IDCard.Verify {
+		description = account.IDCard.Description
 		return
 	}
 

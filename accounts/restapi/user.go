@@ -199,7 +199,15 @@ func (ctrl Controller) VerifyIDCard(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	errArr := ctrl.Ctx.VerifyIDCard(uint(id))
+	var req = new(userReq.VerifyIDCard)
+	err = c.Bind(&req)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	errArr := ctrl.Ctx.VerifyIDCard(uint(id), req)
 	if errArr != nil {
 		errRes := ""
 		for _, m1 := range errArr {

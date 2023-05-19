@@ -27,15 +27,22 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	ip := c.RealIP()
 	system := c.Request().Header.Get("User-Agent")
 
-	token, err := ctrl.Ctx.LoginLogic(request, ip, system)
+	token, description, err := ctrl.Ctx.Login(request, ip, system)
 	if err != nil {
 		res.Msg = err.Error()
 		res.Code = constant.ErrorCode
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
+	if description != "" {
+		res.Msg = constant.SuccessMsg
+		res.Code = constant.SuccessCode
+		res.Data = description
+		return response.EchoSucceed(c, res, APIName)
+	}
+
 	if token == "" {
-		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัส่ผ่านไม่ถูกต้อง").Error()
+		res.Msg = errors.New("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง").Error()
 		res.Code = constant.ErrorCode
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
@@ -43,8 +50,5 @@ func (ctrl Controller) SignIn(c echo.Context) error {
 	resp := singinResp.TokenRes{
 		Token: token,
 	}
-	res.Msg = constant.SuccessMsg
-	res.Code = constant.SuccessCode
-	res.Data = resp
 	return response.EchoSucceed(c, resp, APIName)
 }

@@ -31,6 +31,7 @@ func NewControllerMain(ctrl Controller) {
 	s.POST("/verifyOTP", ctrl.VerifyOTP)
 	s.POST("/createUser", ctrl.CreateUser)
 	s.POST("/signIn", ctrl.SignIn)
+	s.PUT("/updateImageVerifyAgain", ctrl.ImageVerifyAgain)
 
 	configs := echojwt.Config{
 		ErrorHandler:  ErrorHandler,

@@ -104,24 +104,44 @@ func (ctrl Controller) CreateUser(c echo.Context) error {
 		res.Msg = err.Error()
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
-	//var requestToken = new(singin.Login)
-	//ip := c.RealIP()
-	//system := c.Request().Header.Get("User-Agent")
-	//requestToken.Username = data.PhoneNumber
-	//requestToken.Password = data.Password
 
-	//token, err := ctrl.Ctx.LoginLogic(requestToken, ip, system)
-	//if err != nil {
-	//	res.Msg = err.Error()
-	//	res.Code = constant.ErrorCode
-	//	return response.EchoError(c, http.StatusBadRequest, res, APIName)
-	//}
-	//
-	//resp := singinResp.TokenRes{
-	//	Token: token,
-	//}
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
-	//res.Data = resp
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) ImageVerifyAgain(c echo.Context) error {
+	var request = new(singup.UpdateImageVerifyAgain)
+	var res response.RespMag
+	APIName := "ImageVerify"
+	loggers.LogStart(APIName)
+
+	err := c.Bind(request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	err = ValidateStruct(request)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	errArr := ctrl.Ctx.ImageVerifyAgain(request)
+	if err != nil {
+		errRes := ""
+		for _, m1 := range errArr {
+			errRes = errRes + m1.Error() + " | "
+		}
+		res.Code = constant.ErrorCode
+		res.Msg = errRes
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
 	return response.EchoSucceed(c, res, APIName)
 }

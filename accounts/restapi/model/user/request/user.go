@@ -31,3 +31,8 @@ type ChangePassword struct {
 	NewPassword     string `json:"newPassword,omitempty"`
 	ConfirmPassword string `json:"confirmPassword,omitempty"`
 }
+
+type VerifyIDCard struct {
+	Description string `json:"description,omitempty"`
+	Verify      bool   `json:"verify,omitempty"`
+}
