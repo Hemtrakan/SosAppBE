@@ -305,11 +305,14 @@ func (ctrl Controller) PutUser(req *request.UserReq, userID uint) (Error []error
 	image := ""
 
 	Birthday := strings.Split(req.Birthday, " ")
-	date, err = time.Parse("2006-01-02", Birthday[0])
-	if err != nil {
-		Error = append(Error, err)
-		return
+	if Birthday[0] != "" {
+		date, err = time.Parse("2006-01-02", Birthday[0])
+		if err != nil {
+			Error = append(Error, err)
+			return
+		}
 	}
+
 	if req.ImageProfile == "" {
 		image, err = _image.ImageToBase64()
 		if err != nil {
