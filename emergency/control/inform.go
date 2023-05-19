@@ -581,6 +581,7 @@ func (ctrl Controller) PostInform(req *model.InformRequest) (Error error) {
 }
 
 func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string, informId uint, role string) (Error error) {
+
 	UserRes := new(structure.UserRes)
 	if informId != 0 {
 		account := config.GetString("url.account")
@@ -588,6 +589,15 @@ func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string
 		if role == constant.Admin {
 			URL = account + "admin/"
 		} else {
+			checkUserInform, err := ctrl.Access.RDBMS.GetImageByInformId(informId)
+			if err != nil {
+				Error = err
+				return
+			}
+			if pointer.GetStringValue(checkUserInform.UserNotiID) != "0" {
+				Error = errors.New("มีเจ้าหน้าที่ท่านอื่นรับเรื่องนี้แล้ว")
+				return
+			}
 			URL = account + "ops/"
 		}
 
@@ -613,7 +623,6 @@ func (ctrl Controller) UpdateInform(req *model.UpdateInformRequest, token string
 	}
 
 	if UserRes.Code == constant.SuccessCode {
-
 		var OpsId uint
 		if req.OpsID != nil {
 			OpsId = pointer.GetUintValue(req.OpsID)
