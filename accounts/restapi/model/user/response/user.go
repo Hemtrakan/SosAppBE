@@ -21,7 +21,7 @@ type IdCard struct {
 	TextIDCard  string `json:"textIDCard,omitempty"`
 	PathImage   string `json:"pathImage,omitempty"`
 	Verify      bool   `json:"verify"`
-	Description string `json:"description,omitempty"`
+	Description string `json:"description"`
 }
 
 type Address struct {
