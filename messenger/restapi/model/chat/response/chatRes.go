@@ -20,17 +20,17 @@ type GetChatList struct {
 }
 
 type GetChat struct {
-	ID           uint      `json:"id,omitempty"`
-	RoomChatID   uint      `json:"roomChatID,omitempty"`
-	RoomName     string    `json:"roomName,omitempty"`
-	Message      string    `json:"message,omitempty"`
-	Image        string    `json:"image,omitempty"`
-	SenderUserId uint      `json:"senderUserId,omitempty"`
-	ReadingDate  int       `json:"readingDate,omitempty"` // todo นับจำนวนการอ่านข้อความ
-	CreatedAt    time.Time `json:"createdAt,omitempty"`
-	UpdatedAt    time.Time `json:"updatedAt,omitempty"`
-	DeletedAT    time.Time `json:"deletedAT,omitempty"`
-	DeletedBy    uint      `json:"deletedBy,omitempty"`
+	ID           uint      `json:"id"`
+	RoomChatID   uint      `json:"roomChatID"`
+	RoomName     string    `json:"roomName"`
+	Message      string    `json:"message"`
+	Image        string    `json:"image"`
+	SenderUserId uint      `json:"senderUserId"`
+	ReadingDate  int       `json:"readingDate"` // todo นับจำนวนการอ่านข้อความ
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	DeletedAT    time.Time `json:"deletedAT"`
+	DeletedBy    uint      `json:"deletedBy"`
 }
 
 type GetMemberRoomChat struct {

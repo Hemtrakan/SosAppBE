@@ -146,7 +146,21 @@ func (factory GORMFactory) GetMembersRoomChat(RoomChatID uint) (res []structure.
 }
 
 func (factory GORMFactory) GetMessage(roomChatId uint) (res []structure.Message, Error error) {
-	err := factory.client.Preload("RoomChat").Where("room_chat_id = ? ", roomChatId).Order("created_at asc").Find(&res).Error
+	err := factory.client.Preload("RoomChat").Where("room_chat_id = ? ", roomChatId).Order("created_at desc").Find(&res).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			Error = err
+			return
+		} else {
+			Error = errors.New("record not found")
+			return
+		}
+	}
+	return
+}
+
+func (factory GORMFactory) GetImageByMessageId(messageId uint) (res structure.Message, Error error) {
+	err := factory.client.Where("id = ?", messageId).First(&res).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			Error = err

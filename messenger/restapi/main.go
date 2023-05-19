@@ -43,6 +43,8 @@ func NewControllerMain(ctrl Controller) {
 	u.GET("/getChatList", ctrl.GetChatList)
 	u.GET("/getMembersRoomChat/:roomChatId", ctrl.GetMembersRoomChat)
 	u.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)
+	u.GET("/chat/message/image/:messageId", ctrl.GetImageByMessageId)
+
 	u.POST("/chat/message", ctrl.SendMessage)
 	u.PUT("/chat/message/:messageId", ctrl.UpdateMessage)
 	u.DELETE("/chat/message/:messageId/:roomChatId", ctrl.DeleteMessage)
@@ -58,6 +60,7 @@ func NewControllerMain(ctrl Controller) {
 	a.GET("/getChatList", ctrl.GetChatList)
 	a.GET("/getMembersRoomChat/:roomChatId", ctrl.GetMembersRoomChat)
 	a.GET("/chat/message/:roomChatId", ctrl.GetMessageByRoomChatId)
+	a.GET("/chat/message/image/:messageId", ctrl.GetImageByMessageId)
 	a.POST("/chat/message", ctrl.SendMessage)
 
 	a.PUT("/chat/message/:messageId", ctrl.UpdateMessage)

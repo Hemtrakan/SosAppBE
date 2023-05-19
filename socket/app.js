@@ -33,6 +33,7 @@ io.of(/^\/\d+$/).on("connection", (socket) => {
       const message = {
         message: data.message,
         senderUsername: username,
+        image: data.image,
         sentAt: Date.now(),
       };
       messages.push(message);

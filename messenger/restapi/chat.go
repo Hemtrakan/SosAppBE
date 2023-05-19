@@ -215,7 +215,9 @@ func (ctrl Controller) GetMessageByRoomChatId(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	resp, err := ctrl.Ctx.GetMessageByRoomChatId(uint(roomChatId))
+	values := token.GetValuesToken(c)
+
+	resp, err := ctrl.Ctx.GetMessageByRoomChatId(uint(roomChatId), values.Role)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -228,6 +230,33 @@ func (ctrl Controller) GetMessageByRoomChatId(c echo.Context) error {
 	}
 	res.Msg = constant.SuccessMsg
 	res.Code = constant.SuccessCode
+	return response.EchoSucceed(c, res, APIName)
+}
+
+func (ctrl Controller) GetImageByMessageId(c echo.Context) error {
+	var res response.RespMag
+	APIName := "GetImageByMessageId"
+	loggers.LogStart(APIName)
+
+	messageIdStr := c.Param("messageId")
+	messageId, err := strconv.ParseUint(messageIdStr, 0, 0)
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	resp, err := ctrl.Ctx.GetImageByMessageId(uint(messageId))
+	if err != nil {
+		res.Code = constant.ErrorCode
+		res.Msg = err.Error()
+		return response.EchoError(c, http.StatusBadRequest, res, APIName)
+	}
+
+	res.Msg = constant.SuccessMsg
+	res.Code = constant.SuccessCode
+	res.Total = len(resp)
+	res.Data = resp
 	return response.EchoSucceed(c, res, APIName)
 }
 
