@@ -20,6 +20,8 @@ type FactoryInterface interface {
 
 	// LogLogin
 	LogLogin(req structure.LogLogin) (Error error)
+	GetLogLogin() (res []structure.LogLogin, Error error)
+
 	//Role
 	GetRoleList() (response []structure.Role, Error error)
 	GetRoleByName(req structure.Role) (response structure.Role, Error error)
@@ -42,6 +44,8 @@ type FactoryInterface interface {
 	ChangePassword(req *structure.Users) (Error error)
 	DeleteUser(req structure.Users) (Error error)
 	SearchUser(value string, id uint) (response []*structure.Users, Error error)
+
+	// Report
 }
 
 func Create(env *Properties) FactoryInterface {

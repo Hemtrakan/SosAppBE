@@ -75,6 +75,9 @@ func NewControllerMain(ctrl Controller) {
 	a.PUT("/role/:id", ctrl.UpdateRole)
 	a.DELETE("/role/:id", ctrl.DeleteRole)
 
+	// Report
+	a.GET("/logLogin", ctrl.GetLogLogin)
+
 	e.Start(":" + config.GetString("service.port"))
 	err := graceful.ListenAndServe(e.Server, 5*time.Second)
 

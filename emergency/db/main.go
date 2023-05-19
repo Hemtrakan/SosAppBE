@@ -45,6 +45,8 @@ type FactoryInterface interface {
 	PostSubType(SubTypes structure.SubType) (Error error)
 	PutSubType(SubTypes structure.SubType) (Error error)
 	DeleteSubType(id uint) (Error error)
+
+	// Report
 }
 
 func Create(env *Properties) FactoryInterface {
