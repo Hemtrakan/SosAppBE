@@ -12,7 +12,7 @@ jwt:
   secret: "SosApp"
 
 url:
-  account: "http://127.0.0.1:80/SosApp/accounts/"
-  emergency: "http://127.0.0.1:81/SosApp/emergency/"
-  hotline: "http://127.0.0.1:82/SosApp/hotline/"
-  messenger: "http://127.0.0.1:83/SosApp/messenger/"
+  account: "http://35.229.220.89:80/SosApp/accounts/"
+  emergency: "http://35.229.220.89:81/SosApp/emergency/"
+  hotline: "http://35.229.220.89:82/SosApp/hotline/"
+  messenger: "http://35.229.220.89:83/SosApp/messenger/"
