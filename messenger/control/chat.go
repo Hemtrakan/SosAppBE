@@ -278,7 +278,8 @@ func (ctrl Controller) JoinChat(req request.GroupChat, Token string) (res chatRe
 	return
 }
 
-func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint, role string) (res []chatRes.GetChat, Error error) {
+func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint, role, token string) (res []chatRes.GetChat, Error error) {
+
 	resDB, err := ctrl.Access.RDBMS.GetMessage(roomChatID)
 	if err != nil {
 		Error = err
@@ -286,23 +287,60 @@ func (ctrl Controller) GetMessageByRoomChatId(roomChatID uint, role string) (res
 	}
 
 	var dataArr []chatRes.GetChat
+	username := ""
 	for _, m1 := range resDB {
 		image := ""
 		if role == constant.Admin {
 			image = m1.Image
 		}
 
+		UserRes := new(structure.UserRes)
+		var HttpResponse httpclient.HttpResponse
+		if m1.SenderUserId != 0 {
+			account := config.GetString("url.account")
+			URL := ""
+
+			if role == constant.Admin {
+				URL = account + "admin/user/" + fmt.Sprintf("%v", m1.SenderUserId)
+			} else {
+				URL = account + "user/" + fmt.Sprintf("%v", m1.SenderUserId)
+			}
+
+			httpHeaderMap := map[string]string{}
+			httpHeaderMap["Authorization"] = token
+
+			HttpResponse, err = ctrl.HttpClient.Get(URL, httpHeaderMap)
+			if err != nil {
+				Error = err
+				return
+			}
+
+			if HttpResponse.HttpStatusCode != 200 {
+				Error = errors.New(fmt.Sprintf("Error HttpStatusCode : %#v \n Msg : %#v", HttpResponse.HttpStatusCode, HttpResponse.ResponseMsg))
+				return
+			}
+
+			err = encoding.JsonToStruct(HttpResponse.ResponseMsg, UserRes)
+			if err != nil {
+				Error = errors.New(fmt.Sprintf("URL : %#v json response message invalid", err.Error()))
+				return
+			}
+
+			username = fmt.Sprintf("%v %v", UserRes.Data.FirstName, UserRes.Data.LastName)
+		}
+
 		data := chatRes.GetChat{
-			ID:           m1.ID,
-			RoomChatID:   m1.RoomChatID,
-			RoomName:     m1.RoomChat.Name,
-			Message:      m1.Message,
-			Image:        image,
-			SenderUserId: m1.SenderUserId,
-			ReadingDate:  m1.ReadingDate,
-			DeletedBy:    m1.DeletedBy,
-			CreatedAt:    m1.CreatedAt,
-			UpdatedAt:    m1.UpdatedAt,
+			ID:             m1.ID,
+			RoomChatID:     m1.RoomChatID,
+			RoomName:       m1.RoomChat.Name,
+			Message:        m1.Message,
+			Image:          image,
+			SenderUserId:   m1.SenderUserId,
+			SenderUsername: username,
+			ReadingDate:    m1.ReadingDate,
+			DeletedBy:      m1.DeletedBy,
+			CreatedAt:      m1.CreatedAt,
+			UpdatedAt:      m1.UpdatedAt,
 			//DeletedAT:    time,
 		}
 		dataArr = append(dataArr, data)
@@ -357,7 +395,7 @@ func (ctrl Controller) SendMessage(req request.SendMessage, userId uint) (Error 
 	return
 }
 
-func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId uint, role string) (Error error) {
+func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId uint, role, token string) (Error error) {
 	roomChatID, err := strconv.ParseUint(req.RoomChatID, 0, 0)
 	if err != nil {
 		Error = err
@@ -375,7 +413,7 @@ func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId 
 		if role == constant.Admin {
 			checkMsg = true
 		} else {
-			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID, role)
+			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID, role, token)
 			for _, m1 := range check {
 				if messageId == m1.ID && userId == m1.SenderUserId {
 					checkMsg = true
@@ -407,7 +445,7 @@ func (ctrl Controller) UpdateMessage(req request.SendMessage, messageId, userId 
 	return
 }
 
-func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint, role string) (Error error) {
+func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint, role, token string) (Error error) {
 	roomChat, err := ctrl.Access.RDBMS.GetRoomChatById(roomChatID)
 	if err != nil {
 		Error = errors.New(constant.ROOMCHAT_NOT_FOUND)
@@ -419,7 +457,7 @@ func (ctrl Controller) DeleteMessage(messageId, roomChatID, userId uint, role st
 		if role == constant.Admin {
 			checkMsg = true
 		} else {
-			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID, role)
+			check, err = ctrl.GetMessageByRoomChatId(roomChat.ID, role, token)
 			for _, m1 := range check {
 				if messageId == m1.ID && userId == m1.SenderUserId {
 					checkMsg = true

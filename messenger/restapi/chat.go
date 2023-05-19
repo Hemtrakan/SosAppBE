@@ -216,8 +216,9 @@ func (ctrl Controller) GetMessageByRoomChatId(c echo.Context) error {
 	}
 
 	values := token.GetValuesToken(c)
+	token := token.GetAuthToken(c)
 
-	resp, err := ctrl.Ctx.GetMessageByRoomChatId(uint(roomChatId), values.Role)
+	resp, err := ctrl.Ctx.GetMessageByRoomChatId(uint(roomChatId), values.Role, token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -301,6 +302,7 @@ func (ctrl Controller) UpdateMessage(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 	values := token.GetValuesToken(c)
+	token := token.GetAuthToken(c)
 	userId := values.ID
 
 	messageIdStr := c.Param("messageId")
@@ -311,7 +313,7 @@ func (ctrl Controller) UpdateMessage(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.UpdateMessage(req, uint(messageId), userId, values.Role)
+	err = ctrl.Ctx.UpdateMessage(req, uint(messageId), userId, values.Role, token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
@@ -329,6 +331,7 @@ func (ctrl Controller) DeleteMessage(c echo.Context) error {
 	loggers.LogStart(APIName)
 
 	values := token.GetValuesToken(c)
+	token := token.GetAuthToken(c)
 	userId := values.ID
 
 	messageIdStr := c.Param("messageId")
@@ -347,7 +350,7 @@ func (ctrl Controller) DeleteMessage(c echo.Context) error {
 		return response.EchoError(c, http.StatusBadRequest, res, APIName)
 	}
 
-	err = ctrl.Ctx.DeleteMessage(uint(messageId), uint(roomChatID), userId, values.Role)
+	err = ctrl.Ctx.DeleteMessage(uint(messageId), uint(roomChatID), userId, values.Role, token)
 	if err != nil {
 		res.Code = constant.ErrorCode
 		res.Msg = err.Error()
