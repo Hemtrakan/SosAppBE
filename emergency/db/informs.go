@@ -9,8 +9,8 @@ import (
 
 const getInformInfo = `SELECT i.id       AS ID
      , i.created_at                      AS InformCreatedAt
-     , i.updated_at + interval '7 hours' AS InformUpdateAt
-     , i.deleted_at + interval '7 hours' AS InformDeletedAt
+     , i.updated_at 					 AS InformUpdateAt
+     , i.deleted_at  					 AS InformDeletedAt
      , i.user_id                         AS UserInformID
      , i.description                     AS Description
      , i.phone_number_call_back          AS CALLBack
