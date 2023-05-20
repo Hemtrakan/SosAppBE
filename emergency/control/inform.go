@@ -39,7 +39,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 		PhoneNumber := ""
 
 		UserID := ""
-		Username := ""
+		//Username := ""
 
 		if pointer.GetStringValue(m1.UserInformID) != "0" {
 			UserID = pointer.GetStringValue(m1.UserInformID)
@@ -76,7 +76,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 			}
 
 			if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
-				Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+				//Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 			}
 		}
 
@@ -138,7 +138,7 @@ func (ctrl Controller) GetInform(UserId uint, Token, role string) (res []model.I
 			UserIdOps:           UserIdOps,
 			UserNameOps:         UsernameOps,
 			UserId:              UserID,
-			UserName:            Username,
+			UserName:            UsernameOps,
 			PhoneNumber:         PhoneNumber,
 			Workplace:           UserRes.Data.Workplace,
 			SubTypeName:         pointer.GetStringValue(m1.SubTypeName),
@@ -170,7 +170,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 	PhoneNumber := ""
 
 	UserID := ""
-	Username := ""
+	//Username := ""
 
 	if pointer.GetStringValue(resp.UserInformID) != "0" {
 		UserID = pointer.GetStringValue(resp.UserInformID)
@@ -207,7 +207,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 		}
 
 		if UserRes.Data.FirstName != "" && UserRes.Data.LastName != "" {
-			Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
+			//Username = UserRes.Data.FirstName + " " + UserRes.Data.LastName
 		}
 	}
 
@@ -279,7 +279,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 		UserIdOps:           UserIdOps,
 		UserNameOps:         UsernameOps,
 		UserId:              UserID,
-		UserName:            Username,
+		UserName:            UsernameOps,
 		PhoneNumber:         PhoneNumber,
 		Workplace:           UserRes.Data.Workplace,
 		SubTypeName:         pointer.GetStringValue(resp.SubTypeName),
