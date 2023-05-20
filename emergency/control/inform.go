@@ -271,6 +271,7 @@ func (ctrl Controller) GetInformById(ReqInformId, Token, role string) (res model
 	}
 
 	mapData := model.InformResponse{
+		Image:               ImageInfoArr,
 		ID:                  pointer.GetStringValue(resp.ID),
 		Description:         pointer.GetStringValue(resp.Description),
 		PhoneNumberCallBack: pointer.GetStringValue(resp.CALLBack),
